@@ -1,0 +1,22 @@
+{
+  "extends": "airbnb-base",
+  "plugins": [
+    "import"
+  ],
+  "env": {
+    "jquery": true,
+    "browser": true
+  },
+  "rules": {
+    "no-mixed-operators": "off",
+    "no-restricted-syntax": "off",
+    "no-continue": "off",
+    "comma-dangle": "off",
+    "no-constant-condition": "off",
+    "class-methods-use-this": "off",
+    "no-unused-vars": "off"
+  },
+  "globals": {
+    "MarchingSquaresJS": true
+  }
+}
