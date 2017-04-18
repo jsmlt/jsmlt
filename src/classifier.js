@@ -5,8 +5,6 @@ import Classifier from './classifier/classifier';
 import KNN from './classifier/knn';
 import SVM from './classifier/svm';
 import Perceptron from './classifier/perceptron';
-import PerceptronOld from './classifier/perceptronold';
-import SVMJS from './classifier/svmjs';
 
 export default {
   BinaryClassifier,
@@ -16,6 +14,4 @@ export default {
   KNN,
   SVM,
   Perceptron,
-  PerceptronOld,
-  SVMJS,
 };
