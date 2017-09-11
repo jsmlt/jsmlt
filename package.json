@@ -1,5 +1,5 @@
 {
-  "name": "jsml",
+  "name": "jsmlt",
   "version": "0.1.0",
   "description": "JavaScript Machine Learning",
   "main": "lib/bundle.js",
@@ -13,6 +13,19 @@
     "eslint": "^3.18.0",
     "eslint-config-airbnb-base": "^11.1.1",
     "eslint-loader": "^1.6.3",
-    "eslint-plugin-import": "^2.2.0"
-  }
+    "eslint-plugin-import": "^2.2.0",
+    "webpack": "^3.5.6"
+  },
+  "directories": {
+    "lib": "lib"
+  },
+  "dependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jsmlt/jsmlt.git"
+  },
+  "bugs": {
+    "url": "https://github.com/jsmlt/jsmlt/issues"
+  },
+  "homepage": "https://github.com/jsmlt/jsmlt#readme"
 }
