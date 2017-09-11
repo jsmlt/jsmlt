@@ -1,3 +1,4 @@
+// Internal dependencies
 import BinaryClassifier from './binaryclassifier';
 import LinAlg from '../math/linalg';
 import Random from '../util/random';

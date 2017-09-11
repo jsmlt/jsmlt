@@ -1,3 +1,4 @@
+// Internal dependencies
 import LinAlg from '../math/linalg';
 import Kernel from './kernel';
 

@@ -1,3 +1,4 @@
+// Internal dependencies
 import Classifier from './classifier';
 import LinAlg from '../math/linalg';
 import Arrays from '../util/arrays';

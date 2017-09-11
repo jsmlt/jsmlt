@@ -1,3 +1,4 @@
+// Internal dependencies
 import CanvasDatapoint from './datapoint';
 
 /**

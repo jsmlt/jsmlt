@@ -1,6 +1,7 @@
 // External dependencies
 import * as MarchingSquaresJS from 'marchingsquares';
 
+// Internal dependencies
 import LinAlg from '../math/linalg';
 import Arrays from '../util/arrays';
 

@@ -1,3 +1,4 @@
+// Internal dependencies
 import Datapoint from './datapoint';
 
 class Dataset {

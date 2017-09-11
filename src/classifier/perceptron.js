@@ -1,3 +1,4 @@
+// Internal dependencies
 import OneVsAll from './onevsall';
 import BinaryPerceptron from './binaryperceptron';
 import LinAlg from '../math/linalg';
