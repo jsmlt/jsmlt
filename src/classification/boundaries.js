@@ -1,3 +1,6 @@
+// External dependencies
+import * as MarchingSquaresJS from 'marchingsquares';
+
 import LinAlg from '../math/linalg';
 import Arrays from '../util/arrays';
 
@@ -135,9 +138,9 @@ class Boundaries {
     }
 
     // Calculate contours
-    const contours = MarchingSquaresJS.IsoBands(gridLocal, -2, 0.5);
+    const contours = MarchingSquaresJS.isoBands(gridLocal, -2, 0.5);
 
-    // Reshape contours to fit square centered around 0. This has to be done because IsoBands
+    // Reshape contours to fit square centered around 0. This has to be done because isoBands
     // assumes the x- and y-coordinates of the grid points are the array indices. The square is
     // roughly 2-by-2, but slightly larger to account for the outside boundaries formed because of
     // the "cliff" padding added earlier.

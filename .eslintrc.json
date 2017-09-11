@@ -15,8 +15,5 @@
     "no-constant-condition": "off",
     "class-methods-use-this": "off",
     "no-unused-vars": "off"
-  },
-  "globals": {
-    "MarchingSquaresJS": true
   }
 }

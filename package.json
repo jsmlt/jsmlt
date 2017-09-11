@@ -19,7 +19,9 @@
   "directories": {
     "lib": "lib"
   },
-  "dependencies": {},
+  "dependencies": {
+    "marchingsquares": "^1.2.0"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/jsmlt/jsmlt.git"
