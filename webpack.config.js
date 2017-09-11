@@ -1,9 +1,9 @@
 module.exports = {
     entry: './src/main.js',
     output: {
-        path: './lib',
+        path: __dirname + '/lib',
         filename: 'bundle.js',
-        library: 'jsml',
+        library: 'jsmlt',
         libraryTarget: 'var'
     },
     module: {
