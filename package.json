@@ -1,5 +1,5 @@
 {
-  "name": "jsmlt",
+  "name": "@jsmlt/jsmlt",
   "version": "0.1.0",
   "description": "JavaScript Machine Learning",
   "main": "lib/bundle.js",
