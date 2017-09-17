@@ -1,4 +1,5 @@
 // Internal dependencies
+import jQuery from 'jquery';
 import CanvasDatapoint from './datapoint';
 
 /**
@@ -15,17 +16,17 @@ class Canvas {
     // Settings for canvas
     this.canvas = {
       element: el,
-      width: el.offsetWidth,
-      height: el.offsetHeight,
       context: el.getContext('2d'),
     };
 
+    this.resize();
+
     // User-defined options
-    const optionsDefault = {
+    this.options = {
       continuousClick: false,
       continuousClickInterval: 50,
+      ...options,
     };
-    this.options = jQuery.extend(true, {}, optionsDefault, options);
 
     // Event listeners bound to the canvas
     this.listeners = new Map();
@@ -43,7 +44,7 @@ class Canvas {
     // Initialization
     this.handleMouseEvents();
 
-    this.resize();
+    // Animation
     window.requestAnimationFrame(() => this.refresh());
 
     // Temporary properties
@@ -176,6 +177,8 @@ class Canvas {
    * Handle the canvas size for different device pixel ratios and on window resizes
    */
   resize() {
+    this.canvas.width = jQuery(this.canvas.element).parent()[0].offsetWidth;
+    this.canvas.height = jQuery(this.canvas.element).parent()[0].offsetHeight;
     this.canvas.element.width = this.canvas.width * window.devicePixelRatio;
     this.canvas.element.height = this.canvas.height * window.devicePixelRatio;
     this.canvas.element.style.width = `${this.canvas.width}px`;
