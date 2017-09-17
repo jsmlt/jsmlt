@@ -5,7 +5,7 @@ import Util from './util';
 import Math from './math';
 import UI from './ui';
 
-export {
+export default {
   Classification,
   Classifier,
   Data,
