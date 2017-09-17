@@ -1,18 +1,20 @@
 module.exports = {
-    entry: './src/main.js',
-    output: {
-        path: __dirname + '/lib',
-        filename: 'bundle.js',
-        library: 'jsmlt',
-        libraryTarget: 'var'
-    },
-    module: {
-        rules: [
-            {
-                test: /\.js$/,
-                exclude: /node_modules/,
-                loader: "eslint-loader",
-            },
+  entry: './src/index.js',
+  output: {
+    path: __dirname + '/build',
+    filename: 'bundle.js',
+    //libraryExport: 'default',
+  },
+  module: {
+    rules: [
+      {
+        test: /\.js$/,
+        include: /src/,
+        loader: [
+          'babel-loader',
+          'eslint-loader',
         ],
-    },
+      },
+    ],
+  },
 }
