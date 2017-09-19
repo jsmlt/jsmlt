@@ -133,14 +133,23 @@ class Canvas {
       });
 
       document.addEventListener('mousemove', (e) => {
-        this.mouseX = e.pageX;
-        this.mouseY = e.pageY;
+        [this.mouseX, this.mouseY] =
+          this.transformAbsolutePositionToRelativePosition(e.clientX, e.clientY);
       });
     }
 
     this.canvas.element.addEventListener('mousedown', (e) => {
-      this.click(e.pageX, e.pageY);
+      this.click(...this.transformAbsolutePositionToRelativePosition(e.clientX, e.clientY));
     });
+  }
+
+  transformAbsolutePositionToRelativePosition(x, y) {
+    // Properties used for calculating mouse position
+    const el = this.canvas.element;
+    const rect = el.getBoundingClientRect();
+    const win = el.ownerDocument.defaultView;
+
+    return [x - rect.left - win.pageXOffset, y - rect.top - win.pageYOffset];
   }
 
   /**
@@ -302,14 +311,9 @@ class Canvas {
    *                       second element corresponds to y)
    */
   convertCanvasCoordinatesToFeatures(x, y) {
-    // Properties used for calculating mouse position
-    const el = this.canvas.element;
-    const rect = el.getBoundingClientRect();
-    const win = el.ownerDocument.defaultView;
-
     // Mouse x- and y-position on [0,1] interval
-    let f1 = (x - rect.left + win.pageXOffset) / this.canvas.width;
-    let f2 = (y - rect.top + win.pageYOffset) / this.canvas.height;
+    let f1 = x / this.canvas.width;
+    let f2 = y / this.canvas.height;
 
     // Convert to [-1,1] interval
     f1 = -1 + f1 * 2;
