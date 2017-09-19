@@ -5,8 +5,10 @@
   ],
   "env": {
     "jquery": true,
-    "browser": true
+    "browser": true,
+    "es6": true
   },
+  "parser": "babel-eslint",
   "rules": {
     "no-mixed-operators": "off",
     "no-restricted-syntax": "off",
@@ -14,6 +16,8 @@
     "comma-dangle": "off",
     "no-constant-condition": "off",
     "class-methods-use-this": "off",
-    "no-unused-vars": "off"
+    "no-unused-vars": "off",
+    "prefer-destructuring": "off",
+    "function-paren-newline": "off"
   }
 }
