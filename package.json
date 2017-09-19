@@ -25,7 +25,6 @@
     "lib": "lib"
   },
   "dependencies": {
-    "jquery": "^3.2.1",
     "marchingsquares": "^1.2.0"
   },
   "repository": {
