@@ -7,8 +7,9 @@ class Datapoint {
   constructor(features) {
     this.features = features; // Data point features array
     this.classIndex = null; // Index of data point's class
-    this.marked = false; // "marked" status of data point. Can be used e.g. to indicate
-                         // support vectors
+
+    // "marked" status of data point. Can be used e.g. to indicate support vectors
+    this.marked = false;
   }
 
   /**
