@@ -1,5 +1,4 @@
 // Internal dependencies
-import jQuery from 'jquery';
 import CanvasDatapoint from './datapoint';
 
 /**
@@ -19,6 +18,7 @@ class Canvas {
       context: el.getContext('2d'),
     };
 
+    window.addEventListener('resize', () => this.resize());
     this.resize();
 
     // User-defined options
@@ -177,19 +177,16 @@ class Canvas {
    * Handle the canvas size for different device pixel ratios and on window resizes
    */
   resize() {
-    this.canvas.width = jQuery(this.canvas.element).parent()[0].offsetWidth;
-    this.canvas.height = jQuery(this.canvas.element).parent()[0].offsetHeight;
-    this.canvas.element.width = this.canvas.width * window.devicePixelRatio;
-    this.canvas.element.height = this.canvas.height * window.devicePixelRatio;
-    this.canvas.element.style.width = `${this.canvas.width}px`;
-    this.canvas.element.style.height = `${this.canvas.height}px`;
+    this.canvas.element.style.width = '100%';
+    this.canvas.element.style.height = '100%';
+    this.canvas.element.width = this.canvas.element.offsetWidth * window.devicePixelRatio;
+    this.canvas.element.height = this.canvas.element.offsetHeight * window.devicePixelRatio;
+    this.canvas.width = this.canvas.element.offsetWidth;
+    this.canvas.height = this.canvas.element.offsetHeight;
     this.canvas.context.scale(window.devicePixelRatio, window.devicePixelRatio);
   }
 
-  /**
-   * Refresh (i.e. redraw) everything on the canvas
-   */
-  refresh() {
+  redraw() {
     // Clear canvas
     this.clear();
 
@@ -197,9 +194,8 @@ class Canvas {
     this.drawGrid();
     this.drawAxes();
 
-    // Dynamic canvas elements
+    // Draw dynamic canvas elements
     this.elements.forEach((element) => {
-      element.update();
       element.draw();
     });
 
@@ -230,6 +226,18 @@ class Canvas {
 
     // Refresh again
     window.requestAnimationFrame(() => this.refresh());
+  }
+
+  /**
+   * Refresh (i.e. redraw) everything on the canvas
+   */
+  refresh() {
+    // Dynamic canvas elements
+    this.elements.forEach((element) => {
+      element.update();
+    });
+
+    this.redraw();
   }
 
   setWeightVector(weights) {
@@ -294,9 +302,16 @@ class Canvas {
    *                       second element corresponds to y)
    */
   convertCanvasCoordinatesToFeatures(x, y) {
-    let f1 = (x - jQuery(this.canvas.element).position().left) / this.canvas.width;
-    let f2 = (y - jQuery(this.canvas.element).position().top) / this.canvas.height;
+    // Properties used for calculating mouse position
+    const el = this.canvas.element;
+    const rect = el.getBoundingClientRect();
+    const win = el.ownerDocument.defaultView;
 
+    // Mouse x- and y-position on [0,1] interval
+    let f1 = (x - rect.left + win.pageXOffset) / this.canvas.width;
+    let f2 = (y - rect.top + win.pageYOffset) / this.canvas.height;
+
+    // Convert to [-1,1] interval
     f1 = -1 + f1 * 2;
     f2 = 1 - f2 * 2;
 
