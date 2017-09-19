@@ -143,13 +143,20 @@ class Canvas {
     });
   }
 
+  /**
+   * Transform the absolute position of the mouse in the viewport to the mouse position relative
+   * to the top-left point of the canvas
+   *
+   * @param float x Absolute mouse x-coordinate within viewport
+   * @param float y Absolute mouse y-coordinate within viewport
+   * @return array Two-dimensional array consisting of relative x- and y-coordinate
+   */
   transformAbsolutePositionToRelativePosition(x, y) {
     // Properties used for calculating mouse position
     const el = this.canvas.element;
     const rect = el.getBoundingClientRect();
-    const win = el.ownerDocument.defaultView;
 
-    return [x - rect.left - win.pageXOffset, y - rect.top - win.pageYOffset];
+    return [x - rect.left, y - rect.top];
   }
 
   /**
