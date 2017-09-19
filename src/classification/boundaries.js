@@ -227,7 +227,6 @@ class Boundaries {
     // Join coordinate components per data point, yielding the feature vector
     return LinAlg.concatenate(1, gridXVec, gridYVec);
   }
-
 }
 
 export default Boundaries;

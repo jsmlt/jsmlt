@@ -46,7 +46,7 @@ class BinaryClassifier extends Classifier {
     if (positiveClass !== null
       && uniqueLabels.includes(positiveClass)
       && uniqueLabels.length === 2
-      ) {
+    ) {
       this.getOrCreateLabelClassIndex(uniqueLabels[1 - uniqueLabels.indexOf(positiveClass)]);
     }
 

@@ -18,12 +18,18 @@ class BinarySVM extends BinaryClassifier {
 
     // Parse options
     const optionsDefault = {
-      C: 100.0, // Regularization (i.e. penalty for slack variables)
-      kernel: null, // Kernel. Defaults to null (which is checked to instantiate the linear kernel),
-      convergenceNumPasses: 10, // Number of passes without alphas changing to treat the algorithm
-                                 // as converged
-      numericalTolerance: 1e-4, // Numerical tolerance for a value in the to be equal to another
-                                // SMO algorithm to be equal to another value
+      // Regularization (i.e. penalty for slack variables)
+      C: 100.0,
+
+      // Kernel. Defaults to null (which is checked to instantiate the linear kernel)
+      kernel: null,
+
+      // Number of passes without alphas changing to treat the algorithm as converged
+      convergenceNumPasses: 10,
+
+      // Numerical tolerance for a value in the to be equal to another SMO algorithm to be equal to
+      // another value
+      numericalTolerance: 1e-4,
     };
 
     const options = Object.assign({}, optionsDefault, optionsUser);

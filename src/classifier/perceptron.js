@@ -42,8 +42,8 @@ class Perceptron extends OneVsAll {
 
     // Parse options
     const optionsDefault = {
-      trackAccuracy: true, // Whether the number of misclassified samples should be tracked
-                            // at each iteration
+      // Whether the number of misclassified samples should be tracked at each iteration
+      trackAccuracy: true,
     };
 
     const options = Object.assign({}, optionsDefault, optionsUser);
