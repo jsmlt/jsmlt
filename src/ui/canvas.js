@@ -1,3 +1,6 @@
+// Standard dependencies
+import jQuery from 'jquery';
+
 // Internal dependencies
 import CanvasDatapoint from './datapoint';
 
