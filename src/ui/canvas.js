@@ -122,7 +122,7 @@ class Canvas {
       this.mouseX = 0;
       this.mouseY = 0;
 
-      jQuery(this.canvas.element).on('mousedown', () => {
+      this.canvas.element.addEventListener('mousedown', () => {
         this.mouseStatus = 1;
         this.continuousClickIntervalId = setInterval(
           () => this.click(),
@@ -130,18 +130,18 @@ class Canvas {
         );
       });
 
-      jQuery(document).on('mouseup', () => {
+      document.addEventListener('mouseup', () => {
         this.mouseStatus = 0;
         clearInterval(this.continuousClickIntervalId);
       });
 
-      jQuery(document).on('mousemove', (e) => {
+      document.addEventListener('mousemove', (e) => {
         this.mouseX = e.pageX;
         this.mouseY = e.pageY;
       });
     }
 
-    jQuery(this.canvas.element).on('mousedown', (e) => {
+    this.canvas.element.addEventListener('mousedown', (e) => {
       this.click(e.pageX, e.pageY);
     });
   }

@@ -7062,25 +7062,25 @@ var Canvas = function () {
         this.mouseX = 0;
         this.mouseY = 0;
 
-        (0, _jquery2.default)(this.canvas.element).on('mousedown', function () {
+        this.canvas.element.addEventListener('mousedown', function () {
           _this2.mouseStatus = 1;
           _this2.continuousClickIntervalId = setInterval(function () {
             return _this2.click();
           }, _this2.options.continuousClickInterval);
         });
 
-        (0, _jquery2.default)(document).on('mouseup', function () {
+        document.addEventListener('mouseup', function () {
           _this2.mouseStatus = 0;
           clearInterval(_this2.continuousClickIntervalId);
         });
 
-        (0, _jquery2.default)(document).on('mousemove', function (e) {
+        document.addEventListener('mousemove', function (e) {
           _this2.mouseX = e.pageX;
           _this2.mouseY = e.pageY;
         });
       }
 
-      (0, _jquery2.default)(this.canvas.element).on('mousedown', function (e) {
+      this.canvas.element.addEventListener('mousedown', function (e) {
         _this2.click(e.pageX, e.pageY);
       });
     }
