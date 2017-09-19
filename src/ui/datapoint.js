@@ -17,8 +17,7 @@ class Datapoint {
    * Update information about this element from the model
    */
   updateFromModel() {
-    this.x = this.model.features[0];
-    this.y = this.model.features[1];
+    [this.x, this.y] = this.model.features;
     this.color = this.canvas.getClassColor(this.model.classIndex);
     this.marked = this.model.isMarked();
   }
@@ -41,8 +40,7 @@ class Datapoint {
    * Draw the element on the canvas
    */
   draw() {
-    const canvas = this.canvas.canvas;
-    const context = canvas.context;
+    const context = this.canvas.canvas.context;
 
     // Calculate position of point
     const [pointCx, pointCy] = this.canvas.convertFeaturesToCanvasCoordinates(this.x, this.y);
