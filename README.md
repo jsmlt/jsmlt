@@ -6,3 +6,9 @@ The JavaScript Machine Learning Toolkit, or JSMLT, is an open source JavaScript 
 
 ## Development
 JSMLT is maintained by [Jesper van Engelen](https://github.com/engelen), and is in active development. It is currently not ready to be used in any production environments.
+
+## Installation
+JSMLT is available on [npm](https://www.npmjs.com/package/@jsmlt/jsmlt). To use it in your project, simply run
+```
+$ npm install @jsmlt/jsmlt
+```
