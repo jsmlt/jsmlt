@@ -4,7 +4,7 @@
   "description": "JavaScript Machine Learning",
   "main": "src/index.js",
   "scripts": {
-    "start": "webpack --watch",
+    "start": "webpack --watch --progress --watch",
     "build": "webpack -p"
   },
   "author": "Jesper van Engelen <contact@jepps.nl> (https://jespervanengelen.com)",
