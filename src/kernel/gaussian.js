@@ -1,6 +1,6 @@
 // Internal dependencies
 import LinAlg from '../math/linalg';
-import Kernel from './kernel';
+import Kernel from './base';
 
 class GaussianKernel extends Kernel {
   constructor(sigmaSquared = 0.5) {

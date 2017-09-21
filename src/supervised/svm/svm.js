@@ -1,13 +1,14 @@
 // Internal dependencies
-import BinaryClassifier from './binaryclassifier';
-import LinAlg from '../math/linalg';
-import Random from '../util/random';
-import LinearKernel from '../classification/linearkernel';
+import { OneVsAllClassifier, Classifier } from '../base';
+import LinAlg from '../../math/linalg';
+import Arrays from '../../util/arrays';
+import Random from '../../util/random';
+import LinearKernel from '../../kernel/linear';
 
 /**
  * SVM learner for binary classification problem
  */
-class BinarySVM extends BinaryClassifier {
+export class BinarySVM extends Classifier {
   /**
    * Constructor
    *
@@ -30,19 +31,21 @@ class BinarySVM extends BinaryClassifier {
       // Numerical tolerance for a value in the to be equal to another SMO algorithm to be equal to
       // another value
       numericalTolerance: 1e-4,
+
+      // Whether to cache calculated kernel values for training sample pairs
+      useKernelCache: true,
     };
 
-    const options = Object.assign({}, optionsDefault, optionsUser);
+    const options = {
+      ...optionsDefault,
+      ...optionsUser,
+    };
 
     // Set options
     this.C = options.C;
     this.kernel = options.kernel === null ? new LinearKernel() : options.kernel;
     this.numericalTolerance = options.numericalTolerance;
     this.convergenceNumPasses = options.convergenceNumPasses;
-
-    this.supportVectors = [];
-    this.kernelCache = null;
-    this.kernelCacheStatus = null;
   }
 
   /**
@@ -66,24 +69,11 @@ class BinarySVM extends BinaryClassifier {
   }
 
   /**
-   * Train the binary SVM algorithm on a dataset
-   *
-   * @param Array[Array[Number]] features Optional. Features per data point. If null, uses features
-   *   and labels stored using loadTrainingData. Defaults to null
-   * @param Array[mixed] labels Optional. Class labels per data point. If null, uses features and
-   *   labels stored using loadTrainingData. Defaults to null
-   * @param bool positiveClass Optional. Whether a specific class should be marked as the positive
-   *   class. Relevant for "raw" or "normalized" output where one wants to know to which class each
-   *   side of the boundary corresponds. Defaults to null
+   * @see jsmlt.supervised.base.Classifier::train()
    */
-  train(features = null, labels = null, positiveClass = null) {
-    if (features !== null || labels !== null) {
-      // Load training data
-      this.loadTrainingData(features, labels, positiveClass);
-    }
-
+  train(X, y) {
     // Number of training samples
-    const numSamples = this.training.features.length;
+    const numSamples = X.length;
 
     // Alphas (Lagrange multipliers)
     this.alphas = LinAlg.zeroVector(numSamples);
@@ -99,8 +89,8 @@ class BinarySVM extends BinaryClassifier {
     let numPasses = 0;
 
     // Shorthand notation for features and labels
-    const X = this.training.features;
-    const Y = this.training.labels.map(x => this.getClassIndexSign(x));
+    this.training = { X, y };
+    const ySigns = y.map(x => this.getClassIndexSign(x));
 
     while (numPasses < this.convergenceNumPasses) {
       let alphasChanged = 0;
@@ -108,11 +98,11 @@ class BinarySVM extends BinaryClassifier {
       // Loop over all training samples
       for (let i = 0; i < numSamples; i += 1) {
         // Calculate offset to the 1-margin of sample i
-        const ei = this.sampleMargin(X[i]) - Y[i];
+        const ei = this.sampleMargin(X[i]) - ySigns[i];
 
         // Check whether the KKT constraints were violated
-        if ((Y[i] * ei < -this.numericalTolerance && this.alphas[i] < this.C)
-          || (Y[i] * ei > this.numericalTolerance && this.alphas[i] > 0)) {
+        if ((ySigns[i] * ei < -this.numericalTolerance && this.alphas[i] < this.C)
+          || (ySigns[i] * ei > this.numericalTolerance && this.alphas[i] > 0)) {
           /* Now, we need to update \alpha_i as it violates the KKT constraints */
 
           // Thus, we pick a random \alpha_j such that j does not equal i
@@ -120,7 +110,7 @@ class BinarySVM extends BinaryClassifier {
           if (j >= i) j += 1;
 
           // Calculate offset to the 1-margin of sample j
-          const ej = this.sampleMargin(X[j]) - Y[j];
+          const ej = this.sampleMargin(X[j]) - ySigns[j];
 
           // Calculate lower and upper bounds for \alpha_j
           const [boundL, boundH] = this.calculateAlphaBounds(i, j);
@@ -145,7 +135,7 @@ class BinarySVM extends BinaryClassifier {
 
           // Compute new \alpha_j
           const oldAlphaJ = this.alphas[j];
-          let newAlphaJ = oldAlphaJ - Y[j] * (ei - ej) / eta;
+          let newAlphaJ = oldAlphaJ - ySigns[j] * (ei - ej) / eta;
           newAlphaJ = Math.min(newAlphaJ, boundH);
           newAlphaJ = Math.max(newAlphaJ, boundL);
 
@@ -156,17 +146,17 @@ class BinarySVM extends BinaryClassifier {
 
           // Compute new \alpha_i
           const oldAlphaI = this.alphas[i];
-          const newAlphaI = oldAlphaI + Y[i] * Y[j] * (oldAlphaJ - newAlphaJ);
+          const newAlphaI = oldAlphaI + ySigns[i] * ySigns[j] * (oldAlphaJ - newAlphaJ);
 
           // Update \alpha_j and \alpha_i
           this.alphas[j] = newAlphaJ;
           this.alphas[i] = newAlphaI;
 
           // Update the bias term, interpolating between the bias terms for \alpha_i and \alpha_j
-          const b1 = this.b - ei - Y[i] * (newAlphaI - oldAlphaI) * Kii
-                       - Y[j] * (newAlphaJ - oldAlphaJ) * Kij;
-          const b2 = this.b - ej - Y[i] * (newAlphaI - oldAlphaI) * Kij
-                       - Y[j] * (newAlphaJ - oldAlphaJ) * Kjj;
+          const b1 = this.b - ei - ySigns[i] * (newAlphaI - oldAlphaI) * Kii
+                       - ySigns[j] * (newAlphaJ - oldAlphaJ) * Kij;
+          const b2 = this.b - ej - ySigns[i] * (newAlphaI - oldAlphaI) * Kij
+                       - ySigns[j] * (newAlphaJ - oldAlphaJ) * Kjj;
 
           if (newAlphaJ > 0 && newAlphaJ < this.C) {
             this.b = b2;
@@ -199,9 +189,9 @@ class BinarySVM extends BinaryClassifier {
   sampleMargin(sample) {
     let rval = this.b;
 
-    for (let i = 0; i < this.training.features.length; i += 1) {
+    for (let i = 0; i < this.training.X.length; i += 1) {
       const k = this.applyKernel(sample, i);
-      rval += this.getClassIndexSign(this.training.labels[i]) * this.alphas[i] * k;
+      rval += this.getClassIndexSign(this.training.y[i]) * this.alphas[i] * k;
     }
 
     return rval;
@@ -226,8 +216,8 @@ class BinarySVM extends BinaryClassifier {
       return this.kernelCache[x][y];
     }
 
-    const xf = (typeof x === 'number') ? this.training.features[x] : x;
-    const yf = (typeof y === 'number') ? this.training.features[y] : y;
+    const xf = (typeof x === 'number') ? this.training.X[x] : x;
+    const yf = (typeof y === 'number') ? this.training.X[y] : y;
     const result = this.kernel.apply(xf, yf);
 
     if (fromCache) {
@@ -251,7 +241,7 @@ class BinarySVM extends BinaryClassifier {
     let boundL;
     let boundH;
 
-    if (this.training.labels[i] === this.training.labels[j]) {
+    if (this.training.y[i] === this.training.y[j]) {
       // The alphas lie on a line with slope -1
       boundL = this.alphas[j] - (this.C - this.alphas[i]);
       boundH = this.alphas[j] + this.alphas[i];
@@ -294,7 +284,7 @@ class BinarySVM extends BinaryClassifier {
         // Raw output: do nothing
       } else {
         // Class label output
-        output = this.getClassIndexLabel(this.getSignClassIndex(output > 0 ? 1 : -1));
+        output = this.getSignClassIndex(output > 0 ? 1 : -1);
       }
 
       return output;
@@ -302,4 +292,47 @@ class BinarySVM extends BinaryClassifier {
   }
 }
 
-export default BinarySVM;
+/**
+ * Perceptron learner for 2 or more classes. Uses 1-vs-all classification
+ */
+class SVM extends OneVsAllClassifier {
+  /**
+   * Constructor
+   *
+   * @see BinarySVM.constructor()
+   *
+   * @param dict optionsUser User-defined options for SVM. Options are passed to created BinarySVM
+   *   objects. See BinarySVM.constructor() for more details
+   */
+  constructor(optionsUser = {}) {
+    super();
+
+    /**
+     * Number of errors per iteration. Only used if accuracy tracking is enabled
+     *
+     * @var bool
+     */
+    this.numErrors = null;
+
+    // Set options
+    this.optionsUser = optionsUser;
+  }
+
+  /**
+   * @see OneVsAll.createClassifier()
+   */
+  createClassifier() {
+    return new BinarySVM(this.optionsUser);
+  }
+
+  /**
+   */
+  train(X, y) {
+    this.training = { X, y };
+
+    this.createClassifiers(y);
+    this.trainBatch(X, y);
+  }
+}
+
+export default SVM;

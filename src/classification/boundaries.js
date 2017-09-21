@@ -23,7 +23,7 @@ class Boundaries {
    * @return Array[Array[mixed]]
    *   Predicted class labels for each grid point. m x n array for m rows, n columns
    */
-  calculateClassifierDecisionBoundaries(classifier, resolution) {
+  calculateClassifierDecisionBoundaries(classifier, resolution, labelEncoder = null) {
     const resolutionX = Array.isArray(resolution) ? resolution[0] : resolution;
     const resolutionY = Array.isArray(resolution) ? resolution[1] : resolution;
 

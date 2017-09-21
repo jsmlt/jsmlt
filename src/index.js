@@ -1,5 +1,7 @@
 import Classification from './classification';
-import Classifier from './classifier';
+import Supervised from './supervised';
+import Preprocessing from './preprocessing';
+import Kernel from './kernel';
 import Data from './data';
 import Util from './util';
 import Math from './math';
@@ -7,7 +9,9 @@ import UI from './ui';
 
 export default {
   Classification,
-  Classifier,
+  Supervised,
+  Preprocessing,
+  Kernel,
   Data,
   Util,
   Math,

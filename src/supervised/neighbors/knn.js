@@ -1,25 +1,15 @@
 // Internal dependencies
-import Classifier from './classifier';
-import LinAlg from '../math/linalg';
-import Arrays from '../util/arrays';
+import Neighbors from './base';
+import LinAlg from '../../math/linalg';
+import Arrays from '../../util/arrays';
 
 /**
  * k-nearest neighbours learner. Classifies points based on the (possibly weighted) vote
  * of its k nearest neighbours (euclidian distance)
  */
-class KNN extends Classifier {
+class KNN extends Neighbors {
   constructor(numNeighbours = 3) {
     super();
-
-    /**
-     * Object to store training data
-     *
-     * @var dict
-     */
-    this.training = {
-      features: [],
-      labels: []
-    };
 
     /**
      * Number of nearest neighbours to consider for the majority vote
@@ -30,39 +20,31 @@ class KNN extends Classifier {
   }
 
   /**
-   * Train the KNN algorithm on a dataset
-   *
-   * @param Array[Array[Number]] features Features per data point
-   * @param Array[mixed] labels Class labels per data point
+   * @see jsmlt.supervised.base.Classifier::train()
    */
-  train(features, labels) {
-    if (features.length !== labels.length) {
+  train(X, y) {
+    if (X.length !== y.length) {
       throw new Error('Number of data points should match number of labels.');
     }
 
     // Store data points
-    this.training.features = features;
-    this.training.labels = labels;
+    this.training = { X, y };
   }
 
   /**
-   * Make a prediction for a data set
-   *
-   * @param Array[Array[mixed]] Features for each data point
-   * @return Array[mixed] Predictions. Label of class with highest prevalence among k nearest
-   *   neighbours for each sample
+   * @see jsmlt.supervised.base.Classifier::predict()
    */
-  predict(features) {
-    if (this.training.features.length === 0) {
+  predict(X) {
+    if (typeof this.training === 'undefined') {
       throw new Error('Model has to be trained in order to make predictions.');
     }
 
-    if (features[0].length !== this.training.features[0].length) {
+    if (X[0].length !== this.training.X[0].length) {
       throw new Error('Number of features of test data should match number of features of training data.');
     }
 
     // Make prediction for each data point
-    const predictions = features.map(x => this.predictSample(x));
+    const predictions = X.map(x => this.predictSample(x));
 
     return predictions;
   }
@@ -70,13 +52,13 @@ class KNN extends Classifier {
   /**
    * Make a prediction for a single sample
    *
-   * @param Array[mixed] Data point features
+   * @param Array[mixed] sampleFeatures Data point features
    * @return mixed Prediction. Label of class with highest prevalence among k nearest neighbours
    */
   predictSample(sampleFeatures) {
     // Calculate distances to all other data points
     const distances = Arrays.zipWithIndex(
-      this.training.features.map(
+      this.training.X.map(
         x => LinAlg.norm(LinAlg.sum(sampleFeatures, LinAlg.scale(x, -1)))
       )
     );
@@ -92,7 +74,7 @@ class KNN extends Classifier {
     const k = Math.min(this.numNeighbours, distances.length);
 
     // Take top k distances
-    const distancesTopKClasses = distances.slice(0, k).map(x => this.training.labels[x[1]]);
+    const distancesTopKClasses = distances.slice(0, k).map(x => this.training.y[x[1]]);
 
     // Count the number of neighbours per class
     const votes = Arrays.valueCounts(distancesTopKClasses);
