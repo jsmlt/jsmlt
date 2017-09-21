@@ -18,6 +18,7 @@ class Canvas {
       context: el.getContext('2d'),
     };
 
+    // Handle canvas resize on window resize
     window.addEventListener('resize', () => this.resize());
     this.resize();
 
