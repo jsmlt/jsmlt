@@ -30,7 +30,7 @@ export class BinarySVM extends Classifier {
 
       // Numerical tolerance for a value in the to be equal to another SMO algorithm to be equal to
       // another value
-      numericalTolerance: 1e-4,
+      numericalTolerance: 1e-6,
 
       // Whether to cache calculated kernel values for training sample pairs
       useKernelCache: true,
