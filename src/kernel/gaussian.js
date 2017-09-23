@@ -8,7 +8,7 @@ class GaussianKernel extends Kernel {
    *
    * @param float sigmaSquared Optional. Normalization parameter for exponential
    */
-  constructor(sigmaSquared = 0.5) {
+  constructor(sigmaSquared = 1) {
     super();
 
     this.sigmaSquared = sigmaSquared;
