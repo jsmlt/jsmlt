@@ -26,6 +26,10 @@ class Canvas {
     this.options = {
       continuousClick: false,
       continuousClickInterval: 50,
+      x1: -5,
+      y1: -5,
+      x2: 5,
+      y2: 5,
       ...options,
     };
 
@@ -310,11 +314,11 @@ class Canvas {
 
   /**
    * Calculate normalized canvas coordinates, i.e. transform mouse coordinates (relative to the
-   * canvas origin = top left) to feature space in the range [-1,1] for both x and y. The origin at
-   * (0,0) corresponds to the center of the canvas
+   * canvas origin = top left) to feature space for both x and y. The feature subspace shape is
+   * determined by the x1, y1, x2, and y2 parameters in the class options (see constructor)
    *
-   * @param int x x-coordinate in canvas
-   * @param int y y-coordinate in canvas
+   * @param float x x-coordinate in canvas
+   * @param float y y-coordinate in canvas
    * @return Array[double] Corresponding point in feature space (first element corresponds to x,
    *                       second element corresponds to y)
    */
@@ -324,8 +328,24 @@ class Canvas {
     let f2 = y / this.canvas.height;
 
     // Convert to [-1,1] interval
-    f1 = -1 + f1 * 2;
-    f2 = 1 - f2 * 2;
+    f1 = this.options.x1 + f1 * (this.options.x2 - this.options.x1);
+    f2 = this.options.y1 + (1 - f2) * (this.options.y2 - this.options.y1);
+
+    return [f1, f2];
+  }
+
+  /**
+   * Convert coordinates on a centered, double unit square (i.e., a square from (-1, -1) to (1, 1))
+   * to feature space
+   *
+   * @param float bx Input x-coordinate in input space
+   * @param float by Input y-coordinate in input space
+   * @return Array[double] Corresponding point in feature space (first element corresponds to x,
+   *   second element corresponds to y)
+   */
+  convertBoundaryCoordinatesToFeatures(bx, by) {
+    const f1 = this.options.x1 + (bx + 1) / 2 * (this.options.x2 - this.options.x1);
+    const f2 = this.options.y1 + (by + 1) / 2 * (this.options.y2 - this.options.y1);
 
     return [f1, f2];
   }
@@ -333,16 +353,16 @@ class Canvas {
   /**
    * Calculate canvas coordinates (origin at (0,0)) for a 2-dimensional data point's features
    *
-   * @param double x0 First feature
-   * @param double x1 Second feature
+   * @param double f1 First feature
+   * @param double f2 Second feature
    * @return Array[int] Corresponding point in the canvas (first element corresponds to x, second
    *                    element corresponds to y)
    */
-  convertFeaturesToCanvasCoordinates(x0, x1) {
-    const x = (x0 + 1) / 2 * this.canvas.width;
-    const y = -(x1 - 1) / 2 * this.canvas.height;
+  convertFeaturesToCanvasCoordinates(f1, f2) {
+    const x = (f1 - this.options.x1) / (this.options.x2 - this.options.x1);
+    const y = 1 - ((f2 - this.options.y1) / (this.options.y2 - this.options.y1));
 
-    return [x, y];
+    return [x * this.canvas.width, y * this.canvas.height];
   }
 
   /**
@@ -416,8 +436,7 @@ class Canvas {
 
         classBoundary.forEach((boundaryPoint) => {
           const [xx, yy] = this.convertFeaturesToCanvasCoordinates(
-            boundaryPoint[0],
-            boundaryPoint[1]
+            ...this.convertBoundaryCoordinatesToFeatures(boundaryPoint[0], boundaryPoint[1])
           );
 
           if (firstpoint) {

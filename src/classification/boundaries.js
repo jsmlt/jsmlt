@@ -20,10 +20,12 @@ class Boundaries {
    * @param Array[Integer]|Integer resolution
    *   Number of points on the x-axis and on the y-axis. Use integer for the same resolution on the
    *   x- and y-axis, and a 2-dimensional array to specify resolutions per axis.
+   * @param Array[Integer] gridCoordinates Optional. 4-dimensional array containing, in order,
+   *   the x1, y1, x2, and y2-coordinates of the grid
    * @return Array[Array[mixed]]
    *   Predicted class labels for each grid point. m x n array for m rows, n columns
    */
-  calculateClassifierDecisionBoundaries(classifier, resolution, labelEncoder = null) {
+  calculateClassifierDecisionBoundaries(classifier, resolution, gridCoordinates = [-1, -1, 1, 1]) {
     const resolutionX = Array.isArray(resolution) ? resolution[0] : resolution;
     const resolutionY = Array.isArray(resolution) ? resolution[1] : resolution;
 
@@ -31,8 +33,8 @@ class Boundaries {
     const features = this.generateFeaturesFromLinSpaceGrid(
       resolutionX,
       resolutionY,
-      [-1, 1],
-      [-1, 1]
+      [gridCoordinates[0], gridCoordinates[2]],
+      [gridCoordinates[1], gridCoordinates[3]]
     );
 
     // Predict labels for all grid points
