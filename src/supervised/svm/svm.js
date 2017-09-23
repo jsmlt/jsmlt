@@ -105,7 +105,7 @@ export class BinarySVM extends Classifier {
       // Loop over all training samples
       for (let i = 0; i < numSamples; i += 1) {
         // Calculate offset to the 1-margin of sample i
-        const ei = this.sampleMargin(X[i]) - ySigns[i];
+        const ei = this.sampleMargin(i) - ySigns[i];
 
         // Check whether the KKT constraints were violated
         if ((ySigns[i] * ei < -this.numericalTolerance && this.alphas[i] < this.C)
@@ -117,7 +117,7 @@ export class BinarySVM extends Classifier {
           if (j >= i) j += 1;
 
           // Calculate offset to the 1-margin of sample j
-          const ej = this.sampleMargin(X[j]) - ySigns[j];
+          const ej = this.sampleMargin(j) - ySigns[j];
 
           // Calculate lower and upper bounds for \alpha_j
           const [boundL, boundH] = this.calculateAlphaBounds(i, j);
