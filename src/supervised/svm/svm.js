@@ -44,8 +44,12 @@ export class BinarySVM extends Classifier {
     // Set options
     this.C = options.C;
     this.kernel = options.kernel === null ? new LinearKernel() : options.kernel;
-    this.numericalTolerance = options.numericalTolerance;
     this.convergenceNumPasses = options.convergenceNumPasses;
+    this.numericalTolerance = options.numericalTolerance;
+    this.useKernelCache = options.useKernelCache;
+
+    // Set properties
+    this.isTraining = false;
   }
 
   /**
@@ -72,6 +76,9 @@ export class BinarySVM extends Classifier {
    * @see jsmlt.supervised.base.Classifier::train()
    */
   train(X, y) {
+    // Mark that the SVM is currently in the training procedure
+    this.isTraining = true;
+
     // Number of training samples
     const numSamples = X.length;
 
@@ -177,7 +184,15 @@ export class BinarySVM extends Classifier {
       }
     }
 
-    this.supportVectors = this.alphas.map(x => x > 1e-6);
+    // Store indices of support vectors (where alpha > 0, or, in this case, where alpha is greater
+    // than some numerical tolerance)
+    this.supportVectors = Arrays
+      .zipWithIndex(this.alphas)
+      .filter(x => x[0] > 1e-6)
+      .map(x => x[1]);
+
+    // Mark that training has completed
+    this.isTraining = false;
   }
 
   /**
@@ -189,9 +204,18 @@ export class BinarySVM extends Classifier {
   sampleMargin(sample) {
     let rval = this.b;
 
-    for (let i = 0; i < this.training.X.length; i += 1) {
-      const k = this.applyKernel(sample, i);
-      rval += this.getClassIndexSign(this.training.y[i]) * this.alphas[i] * k;
+    if (this.isTraining) {
+      // If we're in the training phase, we have to loop over all elements
+      for (let i = 0; i < this.training.X.length; i += 1) {
+        const k = this.applyKernel(sample, i);
+        rval += this.getClassIndexSign(this.training.y[i]) * this.alphas[i] * k;
+      }
+    } else {
+      // If training is done, we only loop over the support vectors
+      for (const sv of this.supportVectors) {
+        const k = this.applyKernel(sample, this.training.X[sv]);
+        rval += this.getClassIndexSign(this.training.y[sv]) * this.alphas[sv] * k;
+      }
     }
 
     return rval;
@@ -210,7 +234,7 @@ export class BinarySVM extends Classifier {
    * @return Number Kernel result
    */
   applyKernel(x, y) {
-    const fromCache = (typeof x === 'number' && typeof y === 'number');
+    const fromCache = (this.useKernelCache && typeof x === 'number' && typeof y === 'number');
 
     if (fromCache && this.kernelCacheStatus[x][y] === true) {
       return this.kernelCache[x][y];
