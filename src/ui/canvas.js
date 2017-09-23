@@ -26,10 +26,10 @@ class Canvas {
     this.options = {
       continuousClick: false,
       continuousClickInterval: 50,
-      x1: -5,
-      y1: -5,
-      x2: 5,
-      y2: 5,
+      x1: -2.5,
+      y1: -2.5,
+      x2: 2.5,
+      y2: 2.5,
       ...options,
     };
 
