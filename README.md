@@ -15,3 +15,8 @@ JSMLT is available on [npm](https://www.npmjs.com/package/@jsmlt/jsmlt). To use 
 ```
 $ npm install @jsmlt/jsmlt
 ```
+
+This will install JSMLT into your node project and make it available through NPM's `require` directive:
+```
+jsmlt = require('jsmlt');
+```
