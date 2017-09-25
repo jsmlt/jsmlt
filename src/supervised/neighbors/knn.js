@@ -8,15 +8,27 @@ import Arrays from '../../util/arrays';
  * of its k nearest neighbours (euclidian distance)
  */
 class KNN extends Neighbors {
-  constructor(numNeighbours = 3) {
+  /**
+   * Constructor
+   *
+   * @param dict optionsUser User-defined options for KNN. See method implementation for details
+   */
+  constructor(optionsUser = {}) {
     super();
 
-    /**
-     * Number of nearest neighbours to consider for the majority vote
-     *
-     * @var int
-     */
-    this.numNeighbours = numNeighbours;
+    // Parse options
+    const optionsDefault = {
+      // Number of nearest neighbours to consider for the majority vote
+      numNeighbours: 3,
+    };
+
+    const options = {
+      ...optionsDefault,
+      ...optionsUser,
+    };
+
+    // Set options
+    this.numNeighbours = options.numNeighbours;
   }
 
   /**
