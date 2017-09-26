@@ -2,9 +2,10 @@
   "name": "@jsmlt/jsmlt",
   "version": "0.1.5",
   "description": "JavaScript Machine Learning",
-  "main": "src/index.js",
+  "main": "distribution/index.js",
   "scripts": {
     "start": "webpack --watch --progress --watch",
+    "compile": "babel -d distribution/ src/",
     "build": "webpack -p"
   },
   "author": "Jesper van Engelen <contact@jepps.nl> (https://jespervanengelen.com)",
@@ -25,6 +26,9 @@
     "lib": "lib"
   },
   "dependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-plugin-add-module-exports": "^0.2.1",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.26.0",
     "marchingsquares": "^1.2.0"
   },
   "repository": {
