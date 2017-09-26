@@ -6,7 +6,8 @@
   "scripts": {
     "start": "webpack --watch --progress --watch",
     "compile": "babel -d distribution/ src/",
-    "build": "webpack -p"
+    "build": "webpack -p",
+    "prepublish": "npm run compile"
   },
   "author": "Jesper van Engelen <contact@jepps.nl> (https://jespervanengelen.com)",
   "license": "ISC",
