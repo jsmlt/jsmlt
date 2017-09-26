@@ -22,7 +22,7 @@ $ npm install @jsmlt/jsmlt
 ## Getting started
 In this small example, we're going to train an SVM on a small example dataset. The code example below starts with loading JSMLT, creating some dummy training and test data, and running an SVM classifier on it. It's pretty simple!
 
-```
+```js
 // Import JSMLT library
 var jsmlt = require('@jsmlt/jsmlt');
 
