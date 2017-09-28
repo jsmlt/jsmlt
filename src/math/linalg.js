@@ -406,6 +406,8 @@ function reshape(A, shape) {
 /**
  * Extract a sub-block of a matrix of a particular shape at a particular position
  *
+ * @deprecated Use slice() instead
+ *
  * @param Array[...[mixed]] A Array to extract block from
  * @param Array[Number] offset  Array specifying the offset per dimension. n-th element corresponds
  *                to the number of elements to skip, before extracting the block, in the n-th
@@ -426,6 +428,63 @@ function subBlock(A, offset, shape) {
   }
 
   return subblock;
+}
+
+/**
+ * Take a slice out of an input array. Negative indices can be used in both the starting indices and
+ * the stopping indices. Negative indices: the negative stopping index is used as the negative
+ * offset relative to the last index in the particular dimension.
+ *
+ * @param Array[...[mixed]] A Array to extract block from
+ * @param Array[Number] start  Array specifying the starting index per dimension. n-th element
+ *   corresponds to the number of elements to skip, before extracting the block, in the n-th
+ *   dimension. Negative indices are supported.
+ * @param Array[Number] stop Array specifying the index to stop at (exclusive) per dimension. n-th
+ *   element corresponds to the stopping index in the n-th dimension. Negative indices are
+ *   supported. Use null for unlimited offset.
+ * @return Array[...[mixed]] Array slice extracted from input array
+ */
+function slice(A, start, stop) {
+  // Check whether the same number of start and stop indices is supplied
+  if (start.length !== stop.length) {
+    throw new Error('"start" and "stop" must contain the same number of indices.');
+  }
+
+  // Check whether the number of dimensions to slice on does not exceed the number of dimensions of
+  // the array
+  if (start.length > getShape(A).length) {
+    throw new Error('The number of start and stop indices must not exceed the number of input array dimensions');
+  }
+
+  // Parse start and end indices for highest dimension
+  const parseIndex = (index, allowNull) => {
+    if (allowNull && index === null) {
+      return A.length;
+    }
+
+    if (index < 0) {
+      return A.length + index;
+    }
+
+    return index;
+  };
+
+  const parsedStart = parseIndex(start[0], false);
+  const parsedStop = parseIndex(stop[0], true);
+
+  // If this is the deepest dimension where we should slice, simply slice the array
+  if (start.length === 1) {
+    return A.slice(parsedStart, parsedStop);
+  }
+
+  // If it isn't the deepest dimension to slice, slice in the sub-array
+  const subslice = [];
+
+  for (let i = parsedStart; i < parsedStop; i += 1) {
+    subslice.push(slice(A[i], start.slice(1), stop.slice(1)));
+  }
+
+  return subslice;
 }
 
 /**
@@ -468,6 +527,7 @@ export default {
   repeat,
   reshape,
   subBlock,
+  slice,
   setArrayElement,
   getArrayElement,
 };
