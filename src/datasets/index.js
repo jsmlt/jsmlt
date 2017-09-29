@@ -14,7 +14,7 @@ import { LinAlg } from '../math';
  * @param callable callback Callback function with arguments X (features) and y (targets)
  */
 function loadDatasetFromCSV(input, callback) {
-  csv.parse(input, (err, output) => {
+  csv.parse(input, { auto_parse: true }, (err, output) => {
     // Extract the feature and target columns
     const X = LinAlg.slice(output, [0, 0], [null, -1]);
     const y = LinAlg.slice(output, [0, -1], [null, null]);
