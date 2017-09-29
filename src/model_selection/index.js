@@ -1,5 +1,5 @@
 // Local imports
-import Arrays from '../util/arrays';
+import * as Arrays from '../util/arrays';
 
 /**
  * Split a dataset into a training and a test set
@@ -47,7 +47,7 @@ function trainTestSplit(input, optionsUser = {}) {
   }
 
   // Generate list of all possible array indices
-  const indices = Arrays.sample([...Array(numElements).keys()]);
+  const indices = [...Array(numElements).keys()];
 
   // Number of training elements
   const numTrainElements = Math.round(numElements * options.trainSize);
@@ -61,18 +61,18 @@ function trainTestSplit(input, optionsUser = {}) {
     .map(trainArray =>
       trainArray
       .filter((x, i) => trainIndices.includes(i))
-      .map(x => Array.isArray(x) ? x.slice() : x)
+      .map(x => (Array.isArray(x) ? x.slice() : x))
     );
 
   const testArrays = input
     .map(testArray =>
       testArray
       .filter((x, i) => !trainIndices.includes(i))
-      .map(x => Array.isArray(x) ? x.slice() : x)
+      .map(x => (Array.isArray(x) ? x.slice() : x))
     );
 
   // Return train and test sets
-  return [...trainArrays, ...testArrays]
+  return [...trainArrays, ...testArrays];
 }
 
 export default {
