@@ -1,3 +1,6 @@
+// Local imports
+import Random from './random';
+
 /**
  * Take a slice out of an array, but wrap around the beginning an end of the array. For example,
  * if `begin` is -1, the last element of the input array is used as the first output element.
@@ -70,9 +73,59 @@ function argMax(array) {
   return zipWithIndex(array).reduce((r, x) => (x[0] > r[0] ? x : r))[1];
 }
 
+/**
+ * Take a random sample without replacement from an array. Uses the Fisher-Yates shuffling,
+ * algorithm, modified to accomodate sampling
+ *
+ * @param Array input Input array
+ * @param int number Number of elements to sample from the input array
+ * @param dict optionsUser Optional. Additional options for sampling. See the method implementation
+ * @return Array Dependent on options.returnRemainder:
+ *   returnRemainder = false: Array of length {number} with values sampled from the input array
+ *   returnRemainder = true: Two-dimensional array containing the sampled values in the first
+ *     element and the remaining values in the second element
+ */
+function sample(input, number, optionsUser = {}) {
+  // Options
+  const optionsDefault = {
+    // Whether to return the remainder of the input values alongside the sampled values
+    returnRemainder: false,
+  };
+
+  const options = {
+    ...optionsDefault,
+    ...optionsUser,
+  };
+
+  // Copy input array
+  const shuffledArray = input.slice(0);
+
+  // Number of elements in the input array
+  const numElements = input.length;
+
+  for (let i = numElements - 1; i >= numElements - number; i -= 1) {
+    const index = Random.randint(0, i + 1);
+    const tmp = shuffledArray[index];
+    shuffledArray[index] = shuffledArray[i];
+    shuffledArray[i] = tmp;
+  }
+
+  // Return the remainder of the array (i.e., what wasn't sampled) if the user requests it
+  if (options.returnRemainder) {
+    return [
+      shuffledArray.slice(numElements - number), // Sampled values
+      shuffledArray.slice(0, numElements - number), // Remaining values
+    ];
+  }
+
+  // Return the sampled values
+  return shuffledArray.slice(numElements - number);
+}
+
 export default {
   wrapSlice,
   zipWithIndex,
   valueCounts,
   argMax,
+  sample,
 };
