@@ -81,18 +81,7 @@ export function argMax(array) {
  * @param int number Number of elements to sample from the input array
  * @return Array Array of length {number} with values sampled from the input array
  */
-export function sample(input, number, optionsUser = {}) {
-  // Options
-  const optionsDefault = {
-    // Whether to return the remainder of the input values alongside the sampled values
-    returnRemainder: false,
-  };
-
-  const options = {
-    ...optionsDefault,
-    ...optionsUser,
-  };
-
+export function sample(input, number) {
   // Copy input array
   const shuffledArray = input.slice(0);
 
