@@ -17,7 +17,7 @@ function loadDatasetFromCSV(input, callback) {
   csv.parse(input, { auto_parse: true }, (err, output) => {
     // Extract the feature and target columns
     const X = LinAlg.slice(output, [0, 0], [null, -1]);
-    const y = LinAlg.slice(output, [0, -1], [null, null]);
+    const y = LinAlg.flatten(LinAlg.slice(output, [0, -1], [null, null]));
 
     // Call user-provided callback
     callback(X, y);
