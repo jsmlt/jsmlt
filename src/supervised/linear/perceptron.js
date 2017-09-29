@@ -1,6 +1,6 @@
 // Internal dependencies
 import { OneVsAllClassifier, Classifier } from '../base';
-import LinAlg from '../../math/linalg';
+import * as LinAlg from '../../math/linalg';
 
 /**
  * Perceptron learner for binary classification problem.

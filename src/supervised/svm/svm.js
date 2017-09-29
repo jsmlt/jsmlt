@@ -1,8 +1,8 @@
 // Internal dependencies
 import { OneVsAllClassifier, Classifier } from '../base';
-import LinAlg from '../../math/linalg';
-import Arrays from '../../util/arrays';
-import Random from '../../util/random';
+import * as LinAlg from '../../math/linalg';
+import * as Arrays from '../../util/arrays';
+import * as Random from '../../util/random';
 import LinearKernel from '../../kernel/linear';
 
 /**
@@ -319,7 +319,7 @@ export class BinarySVM extends Classifier {
 /**
  * Perceptron learner for 2 or more classes. Uses 1-vs-all classification
  */
-class SVM extends OneVsAllClassifier {
+export default class SVM extends OneVsAllClassifier {
   /**
    * Constructor
    *
@@ -358,5 +358,3 @@ class SVM extends OneVsAllClassifier {
     this.trainBatch(X, y);
   }
 }
-
-export default SVM;

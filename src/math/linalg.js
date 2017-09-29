@@ -10,7 +10,7 @@
  * @return Array[Number] shape  Array specifying the number of elements per dimension. n-th element
  *                corresponds to the number of elements in the n-th dimension.
  */
-function getShape(A) {
+export function getShape(A) {
   if (!Array.isArray(A)) {
     return [];
   }
@@ -28,7 +28,7 @@ function getShape(A) {
  * @param Number a Ending point
  * @param Integer n Number of points
  */
-function linspace(a, b, n) {
+export function linspace(a, b, n) {
   const r = [];
 
   for (let i = 0; i < n; i += 1) {
@@ -45,7 +45,7 @@ function linspace(a, b, n) {
  * @param mixed value Value to initialize entries at
  * @return Array Vector of n elements of the specified value
  */
-function valueVector(n, value) {
+export function valueVector(n, value) {
   return [...Array(n)].map(() => value);
 }
 
@@ -57,7 +57,7 @@ function valueVector(n, value) {
  * @param mixed value     Value to fill the array with
  * @return Array[...[mixed]]  Array of the specified with zero in all entries
  */
-function full(shape, value) {
+export function full(shape, value) {
   if (shape.length === 1) {
     return valueVector(shape[0], value);
   }
@@ -71,7 +71,7 @@ function full(shape, value) {
  * @param Integer n Number of elements in the vector
  * @return Array Vector of n elements of value 0
  */
-function zeroVector(n) {
+export function zeroVector(n) {
   return valueVector(n, 0);
 }
 
@@ -82,7 +82,7 @@ function zeroVector(n) {
  *                corresponds to the number of elements in the n-th dimension.
  * @return Array[...[mixed]]  Array of the specified with zero in all entries
  */
-function zeros(shape) {
+export function zeros(shape) {
   return full(shape, 0);
 }
 
@@ -93,7 +93,7 @@ function zeros(shape) {
  * @param mixed value Value the array entries should be changed to
  * @return Array[...[mixed]] Array with modified entries
  */
-function fill(A, value) {
+export function fill(A, value) {
   return A.map(B => (Array.isArray(B) ? fill(B, value) : value));
 }
 
@@ -105,7 +105,7 @@ function fill(A, value) {
  *                  in the dimension corresponding to axis (the first, by default)
  * @return Array Concatenated array
  */
-function concatenate(axis, ...S) {
+export function concatenate(axis, ...S) {
   if (axis === 0) {
     return [].concat(...S);
   }
@@ -128,7 +128,7 @@ function concatenate(axis, ...S) {
  * @param Array[...[mixed]] A Array to repeat
  * @return Array[...[mixed]] Specified array repeated numRepeats times
  */
-function repeat(axis, numRepeats, A) {
+export function repeat(axis, numRepeats, A) {
   let R = A.slice();
 
   for (let i = 0; i < numRepeats - 1; i += 1) {
@@ -143,7 +143,7 @@ function repeat(axis, numRepeats, A) {
  *
  * @param Array[...[mixed]] A Array to be padded
  */
-function pad(A, paddingLengths = [[1, 1]], paddingValues = [[0, 0]], axes = []) {
+export function pad(A, paddingLengths = [[1, 1]], paddingValues = [[0, 0]], axes = []) {
   let B = A.slice();
 
   // Use default axes to padded (first n axes where n is the number of axes used in paddingLenghts
@@ -207,7 +207,7 @@ function pad(A, paddingLengths = [[1, 1]], paddingValues = [[0, 0]], axes = []) 
  * @param Array[Number] y Second vector
  * @return Number Dot product scalar result
  */
-function dot(x, y) {
+export function dot(x, y) {
   return x.reduce((r, a, i) => r + a * y[i], 0);
 }
 
@@ -216,7 +216,7 @@ function dot(x, y) {
  *
  * @param Array[Number] x Vector of which to calculate the norm
  */
-function norm(x) {
+export function norm(x) {
   return Math.sqrt(dot(x, x));
 }
 
@@ -227,7 +227,7 @@ function norm(x) {
  * @param Array[Number] y Second vector
  * @return Array[Number] Sum of vectors
  */
-function sum(x, y) {
+export function sum(x, y) {
   return x.map((a, i) => a + y[i]);
 }
 
@@ -238,7 +238,7 @@ function sum(x, y) {
  * @param Number c Scalar
  * @return Array[Number] Scaled vector
  */
-function scale(x, c) {
+export function scale(x, c) {
   return x.map(a => c * a);
 }
 
@@ -248,7 +248,7 @@ function scale(x, c) {
  * @param Array[...[Number]] x Array
  * @return Number Sum of all vector elements
  */
-function internalSum(A) {
+export function internalSum(A) {
   return A.reduce((r, B) => r + (Array.isArray(B) ? internalSum(B) : B), 0);
 }
 
@@ -258,7 +258,7 @@ function internalSum(A) {
  * @param Array[...[Number]] A Array to get absolute values array from
  * @return Array[...[Number]] Array with absolute values
  */
-function abs(A) {
+export function abs(A) {
   return A.map(B => (Array.isArray(B) ? abs(B) : Math.abs(B)));
 }
 
@@ -270,7 +270,7 @@ function abs(A) {
  * @param Array[Array]
  * @return Array[Array[mixed]] Permuted matrix
  */
-function permuteRows(...S) {
+export function permuteRows(...S) {
   // Copy matrices
   const SPermutated = S.map(A => A.slice());
 
@@ -301,7 +301,7 @@ function permuteRows(...S) {
  * @param Array[...[mixed]] A Array to be flattened
  * @return Array[mixed] Flattened array
  */
-function flatten(A) {
+export function flatten(A) {
   return [].concat(...A.map(x => (Array.isArray(x) ? flatten(x) : x)));
 }
 
@@ -311,7 +311,7 @@ function flatten(A) {
  * @param Array[Array[Number]] A Matrix or vector
  * @return Array[Array[Number]] Transpose of the matrix
  */
-function transpose(A) {
+export function transpose(A) {
   const ATranspose = zeros([A[0].length, A.length]);
 
   for (let i = 0; i < A.length; i += 1) {
@@ -337,7 +337,7 @@ function transpose(A) {
  * @param Array[Number] y Vector of y-coordinates
  * @return [Array[Array[Number]], Array[Array[Number]]] Grids
  */
-function meshGrid(x, y) {
+export function meshGrid(x, y) {
   const gridX = transpose(repeat(1, y.length, x));
   const gridY = repeat(1, x.length, y);
 
@@ -352,7 +352,7 @@ function meshGrid(x, y) {
  *                            n-th dimension
  * @param mixed value New element value at index
  */
-function setArrayElement(A, index, value) {
+export function setArrayElement(A, index, value) {
   const B = A.slice();
 
   B[index[0]] = index.length === 1 ? value : setArrayElement(A[index[0]], index.slice(1), value);
@@ -367,7 +367,7 @@ function setArrayElement(A, index, value) {
  *                corresponds to the number of elements in the n-th dimension.
  * @return Array[...[mixed]] Reshaped array
  */
-function reshape(A, shape) {
+export function reshape(A, shape) {
   const AValues = flatten(A);
 
   let B = zeros(shape);
@@ -416,7 +416,7 @@ function reshape(A, shape) {
  *                corresponds to the number of elements in the n-th dimension.
  * @return Array[...[mixed]]  Sub-block extracted from array
  */
-function subBlock(A, offset, shape) {
+export function subBlock(A, offset, shape) {
   if (offset.length === 1) {
     return A.slice(offset[0], offset[0] + shape[0]);
   }
@@ -444,7 +444,7 @@ function subBlock(A, offset, shape) {
  *   supported. Use null for unlimited offset.
  * @return Array[...[mixed]] Array slice extracted from input array
  */
-function slice(A, start, stop) {
+export function slice(A, start, stop) {
   // Check whether the same number of start and stop indices is supplied
   if (start.length !== stop.length) {
     throw new Error('"start" and "stop" must contain the same number of indices.');
@@ -496,38 +496,10 @@ function slice(A, start, stop) {
  *                            n-th dimension
  * @return mixed Array element value at index
  */
-function getArrayElement(A, index) {
+export function getArrayElement(A, index) {
   if (index.length === 1) {
     return A[index];
   }
 
   return getArrayElement(A[index[0]], index.slice(1));
 }
-
-export default {
-  linspace,
-  zeroVector,
-  valueVector,
-  zeros,
-  full,
-  fill,
-  pad,
-  getShape,
-  dot,
-  norm,
-  sum,
-  scale,
-  internalSum,
-  abs,
-  permuteRows,
-  flatten,
-  concatenate,
-  transpose,
-  meshGrid,
-  repeat,
-  reshape,
-  subBlock,
-  slice,
-  setArrayElement,
-  getArrayElement,
-};

@@ -1,8 +1,8 @@
 // Internal dependencies
-import LinAlg from '../math/linalg';
 import Kernel from './base';
+import * as LinAlg from '../math/linalg';
 
-class LinearKernel extends Kernel {
+export default class LinearKernel extends Kernel {
   /**
    * @see jsmlt.Kernel.Kernel::apply()
    */
@@ -10,5 +10,3 @@ class LinearKernel extends Kernel {
     return LinAlg.dot(x, y);
   }
 }
-
-export default LinearKernel;

@@ -1,4 +1,4 @@
-class Datapoint {
+export default class Datapoint {
   /**
    * Constructor
    *
@@ -48,5 +48,3 @@ class Datapoint {
     return this.marked;
   }
 }
-
-export default Datapoint;

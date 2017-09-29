@@ -1,13 +1,14 @@
 import Classification from './classification/';
 import Data from './data/';
-import Datasets from './datasets/';
+import * as Datasets from './datasets/';
 import Kernel from './kernel/';
 import Math from './math/';
-import ModelSelection from './model_selection/';
+import * as ModelSelection from './model_selection/';
 import Preprocessing from './preprocessing/';
 import Supervised from './supervised/';
 import UI from './ui/';
 import Util from './util/';
+import Validation from './validation/';
 
 export default {
   Classification,
@@ -20,4 +21,5 @@ export default {
   Supervised,
   UI,
   Util,
+  Validation,
 };

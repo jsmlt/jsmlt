@@ -2,10 +2,10 @@
 import * as MarchingSquaresJS from 'marchingsquares';
 
 // Internal dependencies
-import LinAlg from '../math/linalg';
-import Arrays from '../util/arrays';
+import * as LinAlg from '../math/linalg';
+import * as Arrays from '../util/arrays';
 
-class Boundaries {
+export default class Boundaries {
   constructor() {
     this.features = null;
     this.predictions = null;
@@ -230,5 +230,3 @@ class Boundaries {
     return LinAlg.concatenate(1, gridXVec, gridYVec);
   }
 }
-
-export default Boundaries;

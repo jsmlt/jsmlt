@@ -1,5 +1,5 @@
 // Local imports
-import Random from './random';
+import * as Random from './random';
 
 /**
  * Take a slice out of an array, but wrap around the beginning an end of the array. For example,
@@ -10,7 +10,7 @@ import Random from './random';
  *   included in output)
  * @return Array[mixed] Sliced array
  */
-function wrapSlice(array, begin, end) {
+export function wrapSlice(array, begin, end) {
   const result = [];
 
   for (let i = begin; i <= end; i += 1) {
@@ -28,7 +28,7 @@ function wrapSlice(array, begin, end) {
  * @param Array[mixed] array Input array
  * @return Array[Array[mixed]] Output array
  */
-function zipWithIndex(array) {
+export function zipWithIndex(array) {
   return array.map((x, i) => [x, i]);
 }
 
@@ -40,7 +40,7 @@ function zipWithIndex(array) {
  *   the first element corresponds to the unique array value, and the second elements corresponds
  *   to the number of times this value occurs in the original array.
  */
-function valueCounts(array) {
+export function valueCounts(array) {
   // Create map of counts per array value
   const counts = [];
   const valuesIndex = {};
@@ -65,7 +65,7 @@ function valueCounts(array) {
  * @param Array[Number] array Input array
  * @return int Index of array element with largest value
  */
-function argMax(array) {
+export function argMax(array) {
   if (array.length === 0) {
     return null;
   }
@@ -85,7 +85,7 @@ function argMax(array) {
  *   returnRemainder = true: Two-dimensional array containing the sampled values in the first
  *     element and the remaining values in the second element
  */
-function sample(input, number, optionsUser = {}) {
+export function sample(input, number, optionsUser = {}) {
   // Options
   const optionsDefault = {
     // Whether to return the remainder of the input values alongside the sampled values
@@ -110,22 +110,6 @@ function sample(input, number, optionsUser = {}) {
     shuffledArray[i] = tmp;
   }
 
-  // Return the remainder of the array (i.e., what wasn't sampled) if the user requests it
-  if (options.returnRemainder) {
-    return [
-      shuffledArray.slice(numElements - number), // Sampled values
-      shuffledArray.slice(0, numElements - number), // Remaining values
-    ];
-  }
-
   // Return the sampled values
   return shuffledArray.slice(numElements - number);
 }
-
-export default {
-  wrapSlice,
-  zipWithIndex,
-  valueCounts,
-  argMax,
-  sample,
-};

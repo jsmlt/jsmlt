@@ -1,13 +1,13 @@
 // Internal dependencies
 import Neighbors from './base';
-import LinAlg from '../../math/linalg';
-import Arrays from '../../util/arrays';
+import * as LinAlg from '../../math/linalg';
+import * as Arrays from '../../util/arrays';
 
 /**
  * k-nearest neighbours learner. Classifies points based on the (possibly weighted) vote
  * of its k nearest neighbours (euclidian distance)
  */
-class KNN extends Neighbors {
+export default class KNN extends Neighbors {
   /**
    * Constructor
    *
@@ -105,5 +105,3 @@ class KNN extends Neighbors {
     return highestLabel;
   }
 }
-
-export default KNN;

@@ -1,3 +1,5 @@
+/* eslint import/prefer-default-export: "off" */
+
 // Local imports
 import * as Arrays from '../util/arrays';
 
@@ -19,7 +21,7 @@ import * as Arrays from '../util/arrays';
  *  Now, X_train and y_train will contain the features and labels of the training set, respectively,
  *  and X_test and y_test will contain the features and labels of the test set.
  */
-function trainTestSplit(input, optionsUser = {}) {
+export function trainTestSplit(input, optionsUser = {}) {
   // Options
   const optionsDefault = {
     /**
@@ -74,7 +76,3 @@ function trainTestSplit(input, optionsUser = {}) {
   // Return train and test sets
   return [...trainArrays, ...testArrays];
 }
-
-export default {
-  trainTestSplit,
-};

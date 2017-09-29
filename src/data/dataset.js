@@ -1,7 +1,7 @@
 // Internal dependencies
 import Datapoint from './datapoint';
 
-class Dataset {
+export default class Dataset {
   constructor() {
     this.numDimensions = 0;
     this.numDatapoints = 0;
@@ -92,5 +92,3 @@ class Dataset {
     return this.datapoints.map(x => x.classIndex);
   }
 }
-
-export default Dataset;

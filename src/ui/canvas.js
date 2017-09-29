@@ -10,7 +10,7 @@ import CanvasDatapoint from './datapoint';
  * `removeListener`. The `emit` method is not intended for use by the outside world, and is used by
  *  this class to emit an event to the listeners bound to it.
  */
-class Canvas {
+export default class Canvas {
   constructor(el, options) {
     // Settings for canvas
     this.canvas = {
@@ -502,5 +502,3 @@ class Canvas {
     };
   }
 }
-
-export default Canvas;

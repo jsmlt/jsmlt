@@ -4,7 +4,7 @@ import { Classifier } from '../base';
 /**
  * Base class for neighbors-based classifiers such as KNN
  */
-class Neighbors extends Classifier {
+export default class Neighbors extends Classifier {
   /**
    * @see jsmlt.supervised.base.Classifier::train()
    */
@@ -17,5 +17,3 @@ class Neighbors extends Classifier {
     this.training = { X, y };
   }
 }
-
-export default Neighbors;

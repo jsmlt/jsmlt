@@ -1,8 +1,8 @@
 // Internal dependencies
-import LinAlg from '../math/linalg';
 import Kernel from './base';
+import * as LinAlg from '../math/linalg';
 
-class GaussianKernel extends Kernel {
+export default class GaussianKernel extends Kernel {
   /**
    * Constructor
    *
@@ -23,5 +23,3 @@ class GaussianKernel extends Kernel {
     return Math.exp(-LinAlg.dot(diff, diff) / (2 * this.sigmaSquared));
   }
 }
-
-export default GaussianKernel;

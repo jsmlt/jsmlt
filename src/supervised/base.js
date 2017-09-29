@@ -1,6 +1,6 @@
 // Standard imports
-import LinAlg from '../math/linalg';
-import Arrays from '../util/arrays';
+import * as LinAlg from '../math/linalg';
+import * as Arrays from '../util/arrays';
 
 /**
  * Base class for supervised estimators (classifiers or regression models)

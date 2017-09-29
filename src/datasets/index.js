@@ -3,7 +3,7 @@ import request from 'request';
 import csv from 'csv';
 
 // Local imports
-import { LinAlg } from '../math';
+import * as LinAlg from '../math/linalg';
 
 /**
  * Load a dataset (features and target) from some CSV input string. Extracts the data from the CSV
@@ -13,7 +13,7 @@ import { LinAlg } from '../math';
  * @param string input Input CSV string
  * @param callable callback Callback function with arguments X (features) and y (targets)
  */
-function loadDatasetFromCSV(input, callback) {
+export function loadDatasetFromCSV(input, callback) {
   csv.parse(input, { auto_parse: true }, (err, output) => {
     // Extract the feature and target columns
     const X = LinAlg.slice(output, [0, 0], [null, -1]);
@@ -32,7 +32,7 @@ function loadDatasetFromCSV(input, callback) {
  * @param string input Input CSV file URL
  * @param callable callback Callback function with arguments X (features) and y (targets)
  */
-function loadDatasetFromRemoteCSV(url, callback) {
+export function loadDatasetFromRemoteCSV(url, callback) {
   request.get(url, (error, response, body) => {
     if (error || response.statusCode !== 200) {
       throw new Error('Unable to load remote dataset file.');
@@ -52,10 +52,6 @@ function loadDatasetFromRemoteCSV(url, callback) {
  * @param callable callback Callback function with arguments X (features) and y (targets). Called
  *   when the dataset is successfully loaded
  */
-function loadIris(callback) {
+export function loadIris(callback) {
   loadDatasetFromRemoteCSV('https://raw.githubusercontent.com/jsmlt/datasets/master/iris/data.csv', callback);
 }
-
-export default {
-  loadIris,
-};

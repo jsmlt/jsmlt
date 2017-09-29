@@ -1,4 +1,4 @@
-class Datapoint {
+export default class Datapoint {
   /**
    * Constructor
    *
@@ -64,5 +64,3 @@ class Datapoint {
     }
   }
 }
-
-export default Datapoint;
