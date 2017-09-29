@@ -79,11 +79,7 @@ export function argMax(array) {
  *
  * @param Array input Input array
  * @param int number Number of elements to sample from the input array
- * @param dict optionsUser Optional. Additional options for sampling. See the method implementation
- * @return Array Dependent on options.returnRemainder:
- *   returnRemainder = false: Array of length {number} with values sampled from the input array
- *   returnRemainder = true: Two-dimensional array containing the sampled values in the first
- *     element and the remaining values in the second element
+ * @return Array Array of length {number} with values sampled from the input array
  */
 export function sample(input, number, optionsUser = {}) {
   // Options
