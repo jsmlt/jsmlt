@@ -47,5 +47,38 @@ console.log(clf.predict(test_X));
 
 Running this simple example will output the classification result `[1,1,0,0]`, meaning it classified the first two points as 0, and the second two points as 1.
 
+# API
+> The entire API documentation can be found [here](http://visualml.io/jsmlt/docs/identifiers.html). You can also build the documentation locally by downloading and installing JSMLT and running `npm run-script build-documentation`: the documentation will then be available in the `docs` folder.
+
+### Supervised learning algorithms
+JSMLT.[Supervised](http://visualml.io/jsmlt/docs/identifiers.html#supervised): Overview of supervised learning algorithms
+- JSMLT.Supervised.SVM.[SVM](http://visualml.io/jsmlt/docs/class/src/supervised/svm/svm.js~SVM.html): Support Vector Machine classifier
+- JSMLT.Supervised.Linear.[Perceptron](http://visualml.io/jsmlt/docs/class/src/supervised/linear/perceptron.js~Perceptron.html): Perceptron classifier
+- JSMLT.Supervised.Neighbors.[KNN](http://visualml.io/jsmlt/docs/class/src/supervised/neighbors/knn.js~KNN.html): k-nearest neighbors classifier
+
+### Kernels
+JSMLT.[Kernel](http://visualml.io/jsmlt/docs/identifiers.html#kernel): Available kernels
+- JSMLT.Kernel.[LinearKernel](http://visualml.io/jsmlt/docs/class/src/kernel/linear.js~LinearKernel.html): Linear kernel
+- JSMLT.Kernel.[GaussianKernel](http://visualml.io/jsmlt/docs/class/src/kernel/gaussian.js~GaussianKernel.html): Gaussian (RBF) kernel
+
+### Preprocessing
+JSMLT.[Preprocessing](http://visualml.io/jsmlt/docs/identifiers.html#preprocessing)
+- JSMLT.Preprocessing.[LabelEncoder](http://visualml.io/jsmlt/docs/class/src/preprocessing/labelencoder.js~LabelEncoder.html)
+
+### Model selection
+JSMLT.[ModelSelection](http://visualml.io/jsmlt/docs/identifiers.html#model-selection)
+- JSMLT.ModelSelection.[trainTestSplit](http://visualml.io/jsmlt/docs/function/index.html#static-function-trainTestSplit): Data set splitting
+
+### Datasets
+JSMLT.[Datasets](http://visualml.io/jsmlt/docs/identifiers.html#datasets): Datasets API for loading datasets
+- JSMLT.Datasets.loadIris(http://visualml.io/jsmlt/docs/function/index.html#static-function-loadIris): Iris dataset loading
+
+### Validation
+JSMLT.Validation.Metrics: Validation metrics for classification predictions
+- JSMLT.Validation.Metrics.[accuracy](http://visualml.io/jsmlt/docs/function/index.html#static-function-accuracy)
+
+### Classification boundaries
+JSMLT.Classification.[Boundaries](http://visualml.io/jsmlt/docs/class/src/classification/boundaries.js~Boundaries.html): Classification boundaries for trained classifier
+
 # Development
 JSMLT is maintained by [Jesper van Engelen](https://github.com/engelen), and is in active development. It is currently not ready to be used in any production environments.
