@@ -5,20 +5,21 @@ import * as Arrays from '../../util/arrays';
 
 /**
  * k-nearest neighbours learner. Classifies points based on the (possibly weighted) vote
- * of its k nearest neighbours (euclidian distance)
+ * of its k nearest neighbours (euclidian distance).
  */
 export default class KNN extends Neighbors {
   /**
-   * Constructor
+   * Constructor. Initialize class members and store user-defined options.
    *
-   * @param dict optionsUser User-defined options for KNN. See method implementation for details
+   * @param {Object} [optionsUser] - User-defined options for KNN
+   * @param {number} [optionsUser.numNeighbours = 3] - Number of nearest neighbours to consider for
+   *   the majority vote
    */
   constructor(optionsUser = {}) {
     super();
 
     // Parse options
     const optionsDefault = {
-      // Number of nearest neighbours to consider for the majority vote
       numNeighbours: 3,
     };
 
@@ -32,7 +33,7 @@ export default class KNN extends Neighbors {
   }
 
   /**
-   * @see jsmlt.supervised.base.Classifier::train()
+   * @see {@link Classifier#train}
    */
   train(X, y) {
     if (X.length !== y.length) {
@@ -44,7 +45,7 @@ export default class KNN extends Neighbors {
   }
 
   /**
-   * @see jsmlt.supervised.base.Classifier::predict()
+   * @see {@link Classifier#predict}
    */
   predict(X) {
     if (typeof this.training === 'undefined') {
@@ -62,10 +63,10 @@ export default class KNN extends Neighbors {
   }
 
   /**
-   * Make a prediction for a single sample
+   * Make a prediction for a single sample.
    *
-   * @param Array[mixed] sampleFeatures Data point features
-   * @return mixed Prediction. Label of class with highest prevalence among k nearest neighbours
+   * @param {Array.<number>} sampleFeatures - Data point features
+   * @return {mixed} Prediction. Label of class with highest prevalence among k nearest neighbours
    */
   predictSample(sampleFeatures) {
     // Calculate distances to all other data points

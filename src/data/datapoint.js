@@ -1,8 +1,8 @@
 export default class Datapoint {
   /**
-   * Constructor
+   * Constructor. Load data point features.
    *
-   * @param Array[Number] features Data point features array
+   * @param {Array.<number>} features - Data point features array
    */
   constructor(features) {
     this.features = features; // Data point features array
@@ -13,36 +13,36 @@ export default class Datapoint {
   }
 
   /**
-   * Change the class index of this data point
+   * Change the class index of this data point.
    *
-   * @param mixed classIndex New class index
+   * @param {mixed} classIndex - New class index
    */
   setClassIndex(classIndex) {
     this.classIndex = classIndex;
   }
 
   /**
-   * Get the class index of this data point
+   * Get the class index of this data point.
    *
-   * @return mixed Class index
+   * @return {mixed} Class index
    */
   getClassIndex() {
     return this.classIndex;
   }
 
   /**
-   * Change the "marked" status of this data point. Can be used for e.g. support vectors
+   * Change the "marked" status of this data point. Can be used for e.g. support vectors.
    *
-   * @param bool isMarked Whether the data point should be marked or not
+   * @param {boolean} marked - Whether the data point should be marked or not
    */
   setMarked(marked) {
     this.marked = marked;
   }
 
   /**
-   * Check whether the data point is marked
+   * Check whether the data point is marked.
    *
-   * @return bool Whether the data point is marked
+   * @return {boolean} - Whether the data point is marked
    */
   isMarked() {
     return this.marked;

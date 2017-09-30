@@ -1,9 +1,12 @@
+/**
+ * Data point element to be drawn on the canvas
+ */
 export default class Datapoint {
   /**
-   * Constructor
+   * Constructor. Attach the datapoint to the canvas and its model.
    *
-   * @param jsml.UI.Canvas Canvas to which this datapoint element is bound
-   * @param jsml.Dataset.Datapoint datapoint Datapoint model
+   * @param {jsml.UI.Canvas} canvas - Canvas to which this datapoint element is bound
+   * @param {jsml.Dataset.Datapoint} datapoint - Datapoint model
    */
   constructor(canvas, datapoint) {
     this.canvas = canvas;
@@ -14,7 +17,7 @@ export default class Datapoint {
   }
 
   /**
-   * Update information about this element from the model
+   * Update information about this element from the model.
    */
   updateFromModel() {
     [this.x, this.y] = this.model.features;
@@ -23,7 +26,7 @@ export default class Datapoint {
   }
 
   /**
-   * Update drawing properties of the model
+   * Update drawing properties of the model.
    */
   update() {
     this.updateFromModel();
@@ -37,7 +40,7 @@ export default class Datapoint {
   }
 
   /**
-   * Draw the element on the canvas
+   * Draw the element on the canvas.
    */
   draw() {
     const context = this.canvas.canvas.context;

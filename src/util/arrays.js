@@ -5,10 +5,11 @@ import * as Random from './random';
  * Take a slice out of an array, but wrap around the beginning an end of the array. For example,
  * if `begin` is -1, the last element of the input array is used as the first output element.
  *
- * @param int begin Index of first array element
- * @param int end Index of end of slice range (element with this index will itself not be
+ * @param {Array.<mixed>} array - Input array
+ * @param {number} begin Index of first array element
+ * @param {number} end Index of end of slice range (element with this index will itself not be
  *   included in output)
- * @return Array[mixed] Sliced array
+ * @return {Array.<mixed>} Sliced array
  */
 export function wrapSlice(array, begin, end) {
   const result = [];
@@ -25,8 +26,8 @@ export function wrapSlice(array, begin, end) {
  * From an input array, create a new array where each element is comprised of a 2-dimensional array
  * where the first element is the original array entry and the second element is its index
  *
- * @param Array[mixed] array Input array
- * @return Array[Array[mixed]] Output array
+ * @param {Array.<mixed>} array Input array
+ * @return {Array.<Array.<mixed>>} Output array
  */
 export function zipWithIndex(array) {
   return array.map((x, i) => [x, i]);
@@ -35,10 +36,10 @@ export function zipWithIndex(array) {
 /**
  * Count the occurrences of the unique values in an array
  *
- * @param Array[mixed] array Input array
- * @param Array[Array[mixed]] Array where each element is a 2-dimensional array. In these 2D arrays,
- *   the first element corresponds to the unique array value, and the second elements corresponds
- *   to the number of times this value occurs in the original array.
+ * @param {Array.<mixed>} array Input array
+ * @return {Array.<Array.<mixed>>} Array where each element is a 2-dimensional array. In these 2D
+ *   arrays, the first element corresponds to the unique array value, and the second elements
+ *   corresponds to the number of times this value occurs in the original array
  */
 export function valueCounts(array) {
   // Create map of counts per array value
@@ -60,10 +61,10 @@ export function valueCounts(array) {
 }
 
 /**
- * Get array key corresponding to largest element in the array
+ * Get array key corresponding to largest element in the array.
  *
- * @param Array[Number] array Input array
- * @return int Index of array element with largest value
+ * @param {Array.<number>} array Input array
+ * @return {number} Index of array element with largest value
  */
 export function argMax(array) {
   if (array.length === 0) {
@@ -75,11 +76,11 @@ export function argMax(array) {
 
 /**
  * Take a random sample without replacement from an array. Uses the Fisher-Yates shuffling,
- * algorithm, modified to accomodate sampling
+ * algorithm, modified to accomodate sampling.
  *
- * @param Array input Input array
- * @param int number Number of elements to sample from the input array
- * @return Array Array of length {number} with values sampled from the input array
+ * @param {Array.<mixed>} input Input array
+ * @param {number} number Number of elements to sample from the input array
+ * @return {Array.<mixed>} Array of length {number} with values sampled from the input array
  */
 export function sample(input, number) {
   // Copy input array

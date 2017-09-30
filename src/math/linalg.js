@@ -4,11 +4,11 @@
  */
 
 /**
- * Find the shape of an array, i.e. the number of elements per dimension of the array
+ * Find the shape of an array, i.e. the number of elements per dimension of the array.
  *
- * @param Array[...[mixed]] A Array to find shape of
- * @return Array[Number] shape  Array specifying the number of elements per dimension. n-th element
- *                corresponds to the number of elements in the n-th dimension.
+ * @param {Array.<mixed>} A - Arbitrarily nested array to find shape of.
+ * @return {Array.<number>} Array specifying the number of elements per dimension. n-th
+ *   element corresponds to the number of elements in the n-th dimension.
  */
 export function getShape(A) {
   if (!Array.isArray(A)) {
@@ -22,11 +22,16 @@ export function getShape(A) {
 }
 
 /**
- * Generate n points on the interval (a,b), with intervals (b-a)/(n-1)
+ * Generate n points on the interval (a,b), with intervals (b-a)/(n-1).
  *
- * @param Number a Starting point
- * @param Number a Ending point
- * @param Integer n Number of points
+ * @example
+ * var list = linspace(1, 3, 0.5);
+ * // list now contains [1, 1.5, 2, 2.5, 3]
+ *
+ * @param {number} a - Starting point
+ * @param {number} b - Ending point
+ * @param {number} n - Number of points
+ * @return {Array.<number>} Array of evenly spaced points on the interval (a,b)
  */
 export function linspace(a, b, n) {
   const r = [];
@@ -39,10 +44,10 @@ export function linspace(a, b, n) {
 }
 
 /**
- * Initialize a vector of a certain length with a specific value in each entry
+ * Initialize a vector of a certain length with a specific value in each entry.
  *
- * @param Integer n Number of elements in the vector
- * @param mixed value Value to initialize entries at
+ * @param {number} n - Number of elements in the vector
+ * @param {mixed} value - Value to initialize entries at
  * @return Array Vector of n elements of the specified value
  */
 export function valueVector(n, value) {
@@ -50,12 +55,12 @@ export function valueVector(n, value) {
 }
 
 /**
- * Initialize an n-dimensional array of a certain value
+ * Initialize an n-dimensional array of a certain value.
  *
- * @param Array[Number] shape Array specifying the number of elements per dimension. n-th element
- *                corresponds to the number of elements in the n-th dimension.
- * @param mixed value     Value to fill the array with
- * @return Array[...[mixed]]  Array of the specified with zero in all entries
+ * @param {Array.<number>} shape - Array specifying the number of elements per dimension. n-th
+ *   element corresponds to the number of elements in the n-th dimension.
+ * @param {mixed} value - Value to fill the array with
+ * @return {Array.<mixed>} Array of the specified with zero in all entries
  */
 export function full(shape, value) {
   if (shape.length === 1) {
@@ -66,32 +71,32 @@ export function full(shape, value) {
 }
 
 /**
- * Initialize a zero vector of a certain length
+ * Initialize a zero vector of a certain length.
  *
- * @param Integer n Number of elements in the vector
- * @return Array Vector of n elements of value 0
+ * @param {number} n - Number of elements in the vector
+ * @return {Array} Vector of n elements of value 0
  */
 export function zeroVector(n) {
   return valueVector(n, 0);
 }
 
 /**
- * Initialize an n-dimensional array of zeros
+ * Initialize an n-dimensional array of zeros.
  *
- * @param Array[Number] shape Array specifying the number of elements per dimension. n-th element
+ * @param {Array.<number>} shape - Array specifying the number of elements per dimension. n-th element
  *                corresponds to the number of elements in the n-th dimension.
- * @return Array[...[mixed]]  Array of the specified with zero in all entries
+ * @return {Array.<mixed>}  Array of the specified with zero in all entries
  */
 export function zeros(shape) {
   return full(shape, 0);
 }
 
 /**
- * Set all entries in an array to a specific value
+ * Set all entries in an array to a specific value.
  *
- * @param Array[...[mixed]] A Array of which entries should be changed
- * @param mixed value Value the array entries should be changed to
- * @return Array[...[mixed]] Array with modified entries
+ * @param {Array.<mixed>} A - Array of which entries should be changed
+ * @param {mixed} value - Value the array entries should be changed to
+ * @return {Array.<mixed>} Array with modified entries
  */
 export function fill(A, value) {
   return A.map(B => (Array.isArray(B) ? fill(B, value) : value));
@@ -100,10 +105,10 @@ export function fill(A, value) {
 /**
  * Concatenate two or more n-dimensional arrays.
  *
- * @param Integer axis Axis to perform concatenation on
- * @param Array[...[mixed]] ...S  Arrays to concatenate. They must have the same shape, except
- *                  in the dimension corresponding to axis (the first, by default)
- * @return Array Concatenated array
+ * @param {number} axis - Axis to perform concatenation on
+ * @param {...Array.<mixed>} S - Arrays to concatenate. They must have the same shape, except in
+ *   the dimension corresponding to axis (the first, by default)
+ * @return {Array} Concatenated array
  */
 export function concatenate(axis, ...S) {
   if (axis === 0) {
@@ -121,12 +126,12 @@ export function concatenate(axis, ...S) {
 
 /**
  * Repeat an array multiple times along an axis. This is essentially one or more concatenations of
- * an array with itself
+ * an array with itself.
  *
- * @param Integer axis Axis to perform repetition on
- * @param Integer numRepeats Number of times to repeat the array
- * @param Array[...[mixed]] A Array to repeat
- * @return Array[...[mixed]] Specified array repeated numRepeats times
+ * @param {number} axis - Axis to perform repetition on
+ * @param {number} numRepeats - Number of times to repeat the array
+ * @param {Array.<mixed>} A - Array to repeat
+ * @return {Array.<mixed>} Specified array repeated numRepeats times
  */
 export function repeat(axis, numRepeats, A) {
   let R = A.slice();
@@ -139,11 +144,21 @@ export function repeat(axis, numRepeats, A) {
 }
 
 /**
- * Pad an array along one or multiple axes
+ * Pad an array along one or multiple axes.
  *
- * @param Array[...[mixed]] A Array to be padded
+ * @param {Array.<mixed>} A - Array to be padded
+ * @param {Array.<number> | Array.<Array.<number>>} paddingLengths - Amount of padding for each axis
+ *   that should be padded. Each element in this array should be a two-dimensional array, where the
+ *   first element specifies the padding at the start (front) of the axis, and the second element
+ *   specifies the padding at the end (back) of the axis. The nth element of `paddingLength`
+ *   specifies the front and back padding of the nth axis in the `axes` parameter
+ * @param {Array.<number> | Array.<Array.<number>>} paddingValues - The values to pad each axis
+ *   with. See the specification of the `paddingLenghts` parameter for the expected structure
+ * @param {Array.<number>} [axes] - Indices of axes to be padded. Defaults to the first n axes,
+ *   where n is the number of elements in `paddingLengths`
+ * @return {Array.<mixed>} Padded array
  */
-export function pad(A, paddingLengths = [[1, 1]], paddingValues = [[0, 0]], axes = []) {
+export function pad(A, paddingLengths, paddingValues, axes = []) {
   let B = A.slice();
 
   // Use default axes to padded (first n axes where n is the number of axes used in paddingLenghts
@@ -203,18 +218,18 @@ export function pad(A, paddingLengths = [[1, 1]], paddingValues = [[0, 0]], axes
 /**
  * Calculate dot product of two vectors. Vectors should have same size.
  *
- * @param Array[Number] x First vector
- * @param Array[Number] y Second vector
- * @return Number Dot product scalar result
+ * @param {Array.<number>} x - First vector
+ * @param {Array.<number>} y - Second vector
+ * @return {number} Dot product scalar result
  */
 export function dot(x, y) {
   return x.reduce((r, a, i) => r + a * y[i], 0);
 }
 
 /**
- * Calculate the Euclidian norm of a vector
+ * Calculate the Euclidian norm of a vector.
  *
- * @param Array[Number] x Vector of which to calculate the norm
+ * @param {Array.<number>} x - Vector of which to calculate the norm
  */
 export function norm(x) {
   return Math.sqrt(dot(x, x));
@@ -223,52 +238,51 @@ export function norm(x) {
 /**
  * Calculate sum of two vectors. Vectors should have same size.
  *
- * @param Array[Number] x First vector
- * @param Array[Number] y Second vector
- * @return Array[Number] Sum of vectors
+ * @param {Array.<number>} x - First vector
+ * @param {Array.<number>} y - Second vector
+ * @return {Array.<number>} Sum of vectors
  */
 export function sum(x, y) {
   return x.map((a, i) => a + y[i]);
 }
 
 /**
- * Multiply a vector by a scalar (i.e. scale the vector)
+ * Multiply a vector by a scalar (i.e. scale the vector).
  *
- * @param Array[Number] x Vector
- * @param Number c Scalar
- * @return Array[Number] Scaled vector
+ * @param {Array.<number>} x - Vector
+ * @param {number} c - Scalar
+ * @return {Array.<number>} Scaled vector
  */
 export function scale(x, c) {
   return x.map(a => c * a);
 }
 
 /**
- * Sum all elements of an array
+ * Sum all elements of an array.
  *
- * @param Array[...[Number]] x Array
- * @return Number Sum of all vector elements
+ * @param {Array.<number>} A - Array
+ * @return {number} Sum of all vector elements
  */
 export function internalSum(A) {
   return A.reduce((r, B) => r + (Array.isArray(B) ? internalSum(B) : B), 0);
 }
 
 /**
- * Get a copy of an array with absolute values of the original array entries
+ * Get a copy of an array with absolute values of the original array entries.
  *
- * @param Array[...[Number]] A Array to get absolute values array from
- * @return Array[...[Number]] Array with absolute values
+ * @param {Array.<mixed>} A Array to get absolute values array from
+ * @return {Array.<mixed>} Array with absolute values
  */
 export function abs(A) {
   return A.map(B => (Array.isArray(B) ? abs(B) : Math.abs(B)));
 }
 
 /**
- * Randomly permute the rows of a matrix
+ * Randomly permute the rows of a matrix.
  *
- * @param Array[Array[mixed]] S Matrix
- * @param Array[Array[mixed]] ... Other matrices to permute in the same way
- * @param Array[Array]
- * @return Array[Array[mixed]] Permuted matrix
+ * @param {Array.<Array.<mixed>>} S Matrix
+ * @param {Array.<Array.<mixed>>} ... Other matrices to permute in the same way
+ * @return {Array.<Array.<mixed>>} Permuted matrix
  */
 export function permuteRows(...S) {
   // Copy matrices
@@ -296,20 +310,20 @@ export function permuteRows(...S) {
 }
 
 /**
- * Recursively flatten an array
+ * Recursively flatten an array.
  *
- * @param Array[...[mixed]] A Array to be flattened
- * @return Array[mixed] Flattened array
+ * @param {Array.<mixed>} A - Array to be flattened
+ * @return {Array.<mixed>} Flattened array
  */
 export function flatten(A) {
   return [].concat(...A.map(x => (Array.isArray(x) ? flatten(x) : x)));
 }
 
 /**
- * Get the transpose of a matrix or vector
+ * Get the transpose of a matrix or vector.
  *
- * @param Array[Array[Number]] A Matrix or vector
- * @return Array[Array[Number]] Transpose of the matrix
+ * @param {Array.<Array.<number>>} A - Matrix or vector
+ * @return {Array.<Array.<number>>} Transpose of the matrix
  */
 export function transpose(A) {
   const ATranspose = zeros([A[0].length, A.length]);
@@ -326,16 +340,17 @@ export function transpose(A) {
 /**
  * Generate a mesh grid, i.e. two m-by-n arrays where m=|y| and n=|x|, from two vectors. The mesh
  * grid generates two grids, where the first grid repeats x row-wise m times, and the second grid
- * repeats y column-wise n times. Can be used to generate coordinate grids
+ * repeats y column-wise n times. Can be used to generate coordinate grids.
  *
  * Example input: x=[0, 1, 2], y=[2, 4, 6, 8]
  * Corresponding output:
  *   matrix 1: [[0, 1, 2], [0, 1, 2], [0, 1, 2], [0, 1, 2]]
  *   matrix 2: [[2, 2, 2], [4, 4, 4], [6, 6, 6], [8, 8, 8]]
  *
- * @param Array[Number] x Vector of x-coordinates
- * @param Array[Number] y Vector of y-coordinates
- * @return [Array[Array[Number]], Array[Array[Number]]] Grids
+ * @param {Array.<number>} x - Vector of x-coordinates
+ * @param {Array.<number>} y - Vector of y-coordinates
+ * @return {Array.<Array.<Array.<number>>>} Two-dimensional array containing the x-grid as the first
+ *   element, and the y-grid as the second element
  */
 export function meshGrid(x, y) {
   const gridX = transpose(repeat(1, y.length, x));
@@ -345,12 +360,13 @@ export function meshGrid(x, y) {
 }
 
 /**
- * Set an arbitrary element in an array, using another array to determine the index inside the array
+ * Set an arbitrary element in an array, using another array to determine the index inside the
+ * array.
  *
- * @param Array[...[mixed]] A Array to set an element in
- * @param Array[Number] index Indices to find array element. n-th element corresponds to index in
- *                            n-th dimension
- * @param mixed value New element value at index
+ * @param {Array.<mixed>} A - Array to set an element in
+ * @param {Array.<number>} index - Indices to find array element. n-th element corresponds to index
+ *   in n-th dimension
+ * @param {mixed} value New element value at index
  */
 export function setArrayElement(A, index, value) {
   const B = A.slice();
@@ -360,12 +376,12 @@ export function setArrayElement(A, index, value) {
 }
 
 /**
- * Reshape an array into a different shape
+ * Reshape an array into a different shape.
  *
- * @param Array[...[mixed]] A Array to reshape
- * @param Array[Number] shape Array specifying the number of elements per dimension. n-th element
- *                corresponds to the number of elements in the n-th dimension.
- * @return Array[...[mixed]] Reshaped array
+ * @param {Array.<mixed>} A - Array to reshape
+ * @param {Array.<number>} shape - Array specifying the number of elements per dimension. n-th
+ *   element corresponds to the number of elements in the n-th dimension.
+ * @return {Array.<mixed>} Reshaped array
  */
 export function reshape(A, shape) {
   const AValues = flatten(A);
@@ -404,17 +420,17 @@ export function reshape(A, shape) {
 }
 
 /**
- * Extract a sub-block of a matrix of a particular shape at a particular position
+ * Extract a sub-block of a matrix of a particular shape at a particular position.
  *
  * @deprecated Use slice() instead
  *
- * @param Array[...[mixed]] A Array to extract block from
- * @param Array[Number] offset  Array specifying the offset per dimension. n-th element corresponds
- *                to the number of elements to skip, before extracting the block, in the n-th
- *                dimension.
- * @param Array[Number] shape Array specifying the number of elements per dimension. n-th element
- *                corresponds to the number of elements in the n-th dimension.
- * @return Array[...[mixed]]  Sub-block extracted from array
+ * @param {Array.<mixed>} A - Array to extract block from
+ * @param {Array.<number>} offset -  Array specifying the offset per dimension. n-th element
+ *   corresponds to the number of elements to skip, before extracting the block, in the n-th
+ *   dimension.
+ * @param {Array.<number>} shape - Array specifying the number of elements per dimension. n-th
+ *   element corresponds to the number of elements in the n-th dimension.
+ * @return {Array.<mixed>} Sub-block extracted from array
  */
 export function subBlock(A, offset, shape) {
   if (offset.length === 1) {
@@ -435,14 +451,14 @@ export function subBlock(A, offset, shape) {
  * the stopping indices. Negative indices: the negative stopping index is used as the negative
  * offset relative to the last index in the particular dimension.
  *
- * @param Array[...[mixed]] A Array to extract block from
- * @param Array[Number] start  Array specifying the starting index per dimension. n-th element
+ * @param {Array.<mixed>} A - Array to extract block from
+ * @param {Array.<number>} start -  Array specifying the starting index per dimension. n-th element
  *   corresponds to the number of elements to skip, before extracting the block, in the n-th
  *   dimension. Negative indices are supported.
- * @param Array[Number] stop Array specifying the index to stop at (exclusive) per dimension. n-th
+ * @param {Array.<number>} stop - Array specifying the index to stop at (exclusive) per dimension. n-th
  *   element corresponds to the stopping index in the n-th dimension. Negative indices are
  *   supported. Use null for unlimited offset.
- * @return Array[...[mixed]] Array slice extracted from input array
+ * @return {Array.<mixed>} Array slice extracted from input array
  */
 export function slice(A, start, stop) {
   // Check whether the same number of start and stop indices is supplied
@@ -489,12 +505,12 @@ export function slice(A, start, stop) {
 
 /**
  * Get an arbitrary element from an array, using another array to determine the index inside the
- * first array
+ * first array.
  *
- * @param Array[...[mixed]] A Array to get an element from
- * @param Array[Number] index Indices to find array element. n-th element corresponds to index in
- *                            n-th dimension
- * @return mixed Array element value at index
+ * @param {Array.<mixed>} A - Array to get an element from
+ * @param {Array.<number>} index - Indices to find array element. n-th element corresponds to index
+ *   in n-th dimension
+ * @return {mixed} Array element value at index
  */
 export function getArrayElement(A, index) {
   if (index.length === 1) {

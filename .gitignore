@@ -1,10 +1,15 @@
 ### Custom
 
+# Documentation
+docs
+
 # NPM transpiled distribution
 distribution
 
 # Build files
 build
+
+### Standard
 
 # Logs
 logs

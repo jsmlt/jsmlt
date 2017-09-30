@@ -1,14 +1,14 @@
 /* eslint import/prefer-default-export: "off" */
 
 /**
- * Evaluate the accuracy of a set of predictions
+ * Evaluate the accuracy of a set of predictions.
  *
- * @param Array yTrue True labels
- * @param Array yPred Predicted labels
- * @param bool normalize Optional. Whether to normalize the accuracy to a range between
+ * @param {Array.<mixed>} yTrue - True labels
+ * @param {Array.<mixed>} yPred - Predicted labels
+ * @param {boolean} [normalize = true] - Whether to normalize the accuracy to a range between
  *   0 and 1. In this context, 0 means no predictions were correct, and 1 means all predictions
  *   were correct. If set to false, the integer number of correct predictions is returned
- * @return float|int Proportion of correct predictions (if normalize=true) or integer number of
+ * @return {number} Proportion of correct predictions (if normalize=true) or integer number of
  *   correct predictions (if normalize=false)
  */
 export function accuracy(yTrue, yPred, normalize = true) {

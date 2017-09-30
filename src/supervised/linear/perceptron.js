@@ -7,27 +7,27 @@ import * as LinAlg from '../../math/linalg';
  */
 export class BinaryPerceptron extends Classifier {
   /**
-   * Get the signed value of the class index. Returns -1 for class index 0, 1 for class index 1
+   * Get the signed value of the class index. Returns -1 for class index 0, 1 for class index 1.
    *
-   * @param int classIndex Class index
-   * @return int Sign corresponding to class index
+   * @param {number} classIndex - Class index
+   * @return {number} Sign corresponding to class index
    */
   getClassIndexSign(classIndex) {
     return classIndex * 2 - 1;
   }
 
   /**
-   * Get the class index corresponding to a sign
+   * Get the class index corresponding to a sign.
    *
-   * @param int sign Sign
-   * @return int Class index corresponding to sign
+   * @param {number} sign - Sign
+   * @return {number} Class index corresponding to sign
    */
   getSignClassIndex(sign) {
     return (sign + 1) / 2;
   }
 
   /**
-   * @see jsmlt.supervised.base.Classifier::train()
+   * @see {Classifier#train}
    */
   train(X, y) {
     // Weights increment to check for convergence
@@ -58,7 +58,10 @@ export class BinaryPerceptron extends Classifier {
   }
 
   /**
-   * Train the classifier for a single iteration on the stored training data
+   * Train the classifier for a single iteration on the stored training data.
+   *
+   * @param {Array.<Array.<number>>} X - Features per data point
+   * @param {Array.<mixed>} y Class labels per data point
    */
   trainIteration(X, y) {
     // Initialize the weights increment vector, which is used to increment the weights in each
@@ -104,24 +107,25 @@ export class BinaryPerceptron extends Classifier {
   }
 
   /**
-   * Check whether training has convergence when using iterative training using trainIteration
+   * Check whether training has convergence when using iterative training using trainIteration.
    *
-   * @return bool Whether the algorithm has converged
+   * @return {boolean} Whether the algorithm has converged
    */
   checkConvergence() {
     return LinAlg.internalSum(LinAlg.abs(this.weightsIncrement)) < 0.0001;
   }
 
   /**
-   * Make a prediction for a data set
+   * Make a prediction for a data set.
    *
-   * @param Array[Array[mixed]] Features for each data point
-   * @param Object optionsUser Optional. Additional options:
-   *    @prop string output Output for predictions. Either "classLabels" (default, output predicted
-   *       class label), "raw" (dot product of weights vector with augmented features vector) or
-   *       "normalized" (dot product from "raw" but with unit-length weights)
-   *
-   * @return Array[mixed] Predictions. Output dependent on options.output, defaults to class labels
+   * @param {Array.Array.<number>} features - Features for each data point
+   * @param {Object} [optionsUser] User-defined options
+   * @param {string} [optionsUser.output = 'classLabels'] Output for predictions. Either
+   *   "classLabels" (default, output predicted class label), "raw" (dot product of weights vector
+   *   with augmented features vector) or "normalized" (dot product from "raw" but with unit-length
+   *   weights)
+   * @return {Array.<number>} Predictions. Output dependent on options.output, defaults to class
+   *   labels
    */
   predict(features, optionsUser = {}) {
     // Options
@@ -171,13 +175,16 @@ export class BinaryPerceptron extends Classifier {
 }
 
 /**
- * Perceptron learner for 2 or more classes. Uses 1-vs-all classification
+ * Perceptron learner for 2 or more classes. Uses 1-vs-all classification.
  */
 export default class Perceptron extends OneVsAllClassifier {
   /**
-   * Constructor
+   * Constructor. Initialize class members and store user-defined options.
    *
-   * @param dict optionsUser User-defined options for perceptron
+   * @param {Object} [optionsUser] User-defined options
+   * @param {trackAccuracy} [optionsUser.trackAccuracy = false] Whether to track accuracy during the
+   *   training process. This will let the perceptron keep track of the error rate on the test set
+   *   in each training iteration
    */
   constructor(optionsUser = {}) {
     super();
@@ -203,14 +210,14 @@ export default class Perceptron extends OneVsAllClassifier {
   }
 
   /**
-   * @see OneVsAll.createClassifier()
+   * @see {@link OneVsAll#createClassifier}
    */
   createClassifier(classIndex) {
     return new BinaryPerceptron();
   }
 
   /**
-   * @see jsmlt.supervised.base.Classifier::train()
+   * @see {@link Classifier#train}
    */
   train(X, y) {
     this.createClassifiers(y);

@@ -2,20 +2,28 @@
 import Kernel from './base';
 import * as LinAlg from '../math/linalg';
 
+/**
+ * The Gaussian kernel, also known as the radial basis function (RBF) kernel
+ */
 export default class GaussianKernel extends Kernel {
   /**
-   * Constructor
+   * Initialize the Gaussian kernel with user-specified parameters
    *
-   * @param float sigmaSquared Optional. Normalization parameter for exponential
+   * @param {number} [sigmaSquared = 1] - Normalization parameter for exponential
    */
   constructor(sigmaSquared = 1) {
     super();
 
+    /**
+     * Normalization parameter for exponential
+     *
+     * @type {number}
+     */
     this.sigmaSquared = sigmaSquared;
   }
 
   /**
-   * @see jsmlt.Kernel.Kernel::apply()
+   * @see {@link Kernel#apply}
    */
   apply(x, y) {
     // Gaussian

@@ -1,37 +1,54 @@
 /**
  * Encoder of categorical values to integers. For k different values, encoding yields integer
- * numbers from 0 to k-1 (inclusive)
+ * numbers from 0 to k-1 (inclusive).
+ *
+ * @example
+ * // List of raw input values
+ * var y = ['Car', 'Bike', 'Bike', 'Car', 'Duck', 'Bike'];
+ *
+ * // Create encoder
+ * var encoder = new LabelEncoder();
+ *
+ * // Encode input values, encoding the values to integers
+ * var yEncoded = encoder.encode(y);
+ * console.log(yEncoded); // [0, 1, 1, 0, 2, 0]
+ *
+ * // Decode the encoded values, and see that they match the original input values
+ * console.log(encoder.decode(yEncoded)); // ['Car', 'Bike', 'Bike', 'Car', 'Duck', 'Bike']
  */
 export default class LabelEncoder {
+  /**
+   * Initialize object properties.
+   */
   constructor() {
     /**
      * Dictionary mapping class labels to class indices.
      *
-     * @var dict[string => int]
+     * @type {Object.<string, number>}
      */
     this.labelsClassIndex = {};
 
     /**
      * Array of class labels for class indices
      *
-     * @var Array[string]
+     * @type {Array.<string>}
      */
     this.classIndicesLabel = [];
 
     /**
      * Number of unique class labels
      *
-     * @var int
+     * @type {number}
      */
     this.numLabels = 0;
   }
 
   /**
-   * Encode a set of labels or a single label
+   * Encode a set of labels or a single label.
    *
-   * @param mixed|Array[mixed] labels Single label or list of labels. Each label should support the
-   *   toString() method
-   * @return int|Array[int] Single encoded label or list of encoded labels (i.e., integers
+   * @param {mixed|Array.<mixed>} labels - Single label or list of labels. Each label should support
+   *   the toString() method
+   * @return {number|Array.<number>} Single encoded label or list of encoded labels (i.e., integers
    *   associated with the input labels)
    */
   encode(labels) {
@@ -53,10 +70,10 @@ export default class LabelEncoder {
   }
 
   /**
-   * Decode a set of labels or a single label
+   * Decode a set of labels or a single label.
    *
-   * @param int|Array[int] encodedLabels Single encoded label or list of encoded labels
-   * @return int|Array[int] Single decoded label or list of decoded labels
+   * @param {number|Array.<number>} encodedLabels - Single encoded label or list of encoded labels
+   * @return {mixed|Array.<mixed>} Single decoded label or list of decoded labels
    */
   decode(encodedLabels) {
     // In case multiple labels are passed, decode them one-by-one

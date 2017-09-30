@@ -2,7 +2,7 @@
 import CanvasDatapoint from './datapoint';
 
 /**
- * UI canvas for displaying machine learning results
+ * UI canvas for displaying machine learning results.
  *
  * Listeners:
  *  This class supports event listeners, meaning that the outside world can bind functions to events
@@ -11,7 +11,38 @@ import CanvasDatapoint from './datapoint';
  *  this class to emit an event to the listeners bound to it.
  */
 export default class Canvas {
-  constructor(el, options) {
+  /**
+   * Contructor. Load DOM element and user options.
+   *
+   * @param {Object} el DOM Canvas element
+   * @param {Object} [optionsUser] - User-defined options for the canvas
+   * @param {boolean} [optionsUser.continuousClick = false] - Whether the "click" callback should
+   *   be called any time the mouse is down (true) or only at the moment the mouse button is first
+   *   pressed (false). If true, a click event is emitted every `continuousClickInterval`
+   *   milliseconds when the left mouse button is down
+   * @param {number} [optionsUser.continuousClickInterval = 50] - Number of milliseconds between
+   *   emitting each click event when `continuousClick` is enabled
+   * @param {number} [optionsUser.x1 = -2.5] - Left bound of coordinate system for canvas
+   * @param {number} [optionsUser.y1 = -2.5] - Bottom bound of coordinate system for canvas
+   * @param {number} [optionsUser.x2 = 2.5] - Right bound of coordinate system for canvas
+   * @param {number} [optionsUser.y2 = 2.5] - Top bound of coordinate system for canvas
+   */
+  constructor(el, optionsUser) {
+    // Options
+    const optionsDefault = {
+      continuousClick: false,
+      continuousClickInterval: 50,
+      x1: -2.5,
+      y1: -2.5,
+      x2: 2.5,
+      y2: 2.5,
+    };
+
+    this.options = {
+      ...optionsDefault,
+      ...optionsUser,
+    }
+
     // Settings for canvas
     this.canvas = {
       element: el,
@@ -21,17 +52,6 @@ export default class Canvas {
     // Handle canvas resize on window resize
     window.addEventListener('resize', () => this.resize());
     this.resize();
-
-    // User-defined options
-    this.options = {
-      continuousClick: false,
-      continuousClickInterval: 50,
-      x1: -2.5,
-      y1: -2.5,
-      x2: 2.5,
-      y2: 2.5,
-      ...options,
-    };
 
     // Event listeners bound to the canvas
     this.listeners = new Map();
@@ -59,10 +79,10 @@ export default class Canvas {
   }
 
   /**
-   * Add an event listener for events of some type emitted from this object
+   * Add an event listener for events of some type emitted from this object.
    *
-   * @param label Event
-   * @param callback Callback function
+   * @param {string} label - Event identifier
+   * @param {function} callback - Callback function for when the event is emitted
    */
   addListener(label, callback) {
     if (!this.listeners.has(label)) {
@@ -73,10 +93,10 @@ export default class Canvas {
   }
 
   /**
-   * Remove a previously added event listener for events of some type emitted from this object
+   * Remove a previously added event listener for events of some type emitted from this object.
    *
-   * @param label Event
-   * @param callback Callback function
+   * @param {string} label - Event identifier
+   * @param {function} callback - Callback function to remove from event
    */
   removeListener(label, callback) {
     const listeners = this.listeners.get(label);
@@ -89,11 +109,12 @@ export default class Canvas {
   }
 
   /**
-   * Emit an event, which triggers the listener callback functions bound to it
+   * Emit an event, which triggers the listener callback functions bound to it.
    *
-   * @param label Event
-   * @param ...args Remaining arguments contain arguments that should be passed to the
-   *                callback functions
+   * @param {string} label - Event identifier
+   * @param {...mixed} args - Remaining arguments contain arguments that should be passed to the
+   *   callback functions
+   * @return {boolean} Whether any listener callback functions were executed
    */
   emit(label, ...args) {
     const listeners = this.listeners.get(label);
@@ -107,16 +128,16 @@ export default class Canvas {
   }
 
   /**
-   * Add a data point element to the canvas, using a dataset datapoint as its model
+   * Add a data point element to the canvas, using a dataset datapoint as its model.
    *
-   * @param jsml.Dataset.Datapoint datapoint Dataset datapoint (model)
+   * @param {jsmlt.Dataset.Datapoint} datapoint - Dataset datapoint (model)
    */
   addDatapoint(datapoint) {
     this.elements.push(new CanvasDatapoint(this, datapoint));
   }
 
   /**
-   * Handle mouse events on the canvas, e.g. for adding data points
+   * Handle mouse events on the canvas, e.g. for adding data points.
    */
   handleMouseEvents() {
     if (this.options.continuousClick) {
@@ -150,11 +171,11 @@ export default class Canvas {
 
   /**
    * Transform the absolute position of the mouse in the viewport to the mouse position relative
-   * to the top-left point of the canvas
+   * to the top-left point of the canvas.
    *
-   * @param float x Absolute mouse x-coordinate within viewport
-   * @param float y Absolute mouse y-coordinate within viewport
-   * @return array Two-dimensional array consisting of relative x- and y-coordinate
+   * @param {number} x - Absolute mouse x-coordinate within viewport
+   * @param {number} y - Absolute mouse y-coordinate within viewport
+   * @return {Array.<number>} Two-dimensional array consisting of relative x- and y-coordinate
    */
   transformAbsolutePositionToRelativePosition(x, y) {
     // Properties used for calculating mouse position
@@ -165,12 +186,12 @@ export default class Canvas {
   }
 
   /**
-   * Trigger a click at some position in the canvas
+   * Trigger a click at some position in the canvas.
    *
-   * @param int x Optional. X-coordinate of the click. Defaults to stored mouse position from
-   *                        mousemove event
-   * @param int y Optional. Y-coordinate of the click. Defaults to stored mouse position from
-   *                        mousemove event
+   * @param {number} [x = -1] - X-coordinate of the click. Defaults to stored mouse position from
+   *   mousemove event
+   * @param {number} [y = -1] - Y-coordinate of the click. Defaults to stored mouse position from
+   *   mousemove event
    */
   click(x = -1, y = -1) {
     let clickX = x;
@@ -188,14 +209,14 @@ export default class Canvas {
   }
 
   /**
-   * Clear the canvas
+   * Clear the canvas.
    */
   clear() {
     this.canvas.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
   }
 
   /**
-   * Handle the canvas size for different device pixel ratios and on window resizes
+   * Handle the canvas size for different device pixel ratios and on window resizes.
    */
   resize() {
     this.canvas.element.style.width = '100%';
@@ -207,6 +228,9 @@ export default class Canvas {
     this.canvas.context.scale(window.devicePixelRatio, window.devicePixelRatio);
   }
 
+  /**
+   * Redraw the canvas, clearing it and drawing all elements on it.
+   */
   redraw() {
     // Clear canvas
     this.clear();
@@ -223,34 +247,12 @@ export default class Canvas {
     // Class boundaries
     this.drawClassBoundaries();
 
-    // for (let i = 0; i < this.tmp.predFeatures.length; i++) {
-    //  let [xx,yy] = this.convertFeaturesToCanvasCoordinates(
-    //    this.tmp.predFeatures[i][0],
-    //    this.tmp.predFeatures[i][1]
-    //  );
-
-    //  this.canvas.context.fillStyle = this.getClassColor(this.tmp.predLabels[i]);
-    //  this.canvas.context.fillRect(xx - 2, yy - 2, 4, 4);
-    // }
-
-    // Draw the weight vector
-    // this.drawWeightVector(this.weights);
-
-    // if (Array.isArray(this.multiWeights)) {
-    //  let i = 0;
-    //  for (let weights of this.multiWeights) {
-    //    context.strokeStyle = this.getClassColor(i);
-    //    this.drawWeightVector(weights);
-    //    i++;
-    //  }
-    // }
-
     // Refresh again
     window.requestAnimationFrame(() => this.refresh());
   }
 
   /**
-   * Refresh (i.e. redraw) everything on the canvas
+   * Refresh (i.e. redraw) everything on the canvas.
    */
   refresh() {
     // Dynamic canvas elements
@@ -266,61 +268,24 @@ export default class Canvas {
   }
 
   /**
-   * Set the class boundaries used for drawing the decision regions on the canvas
+   * Set the class boundaries used for drawing the decision regions on the canvas.
    *
-   * @param Map[string => Array[Array[Number]]] Class boundaries per class label
+   * @param {Object<string, Array.<Array.<Array.<number>>>>} classesBoundaries - Class boundaries
+   *   per class label
    */
   setClassBoundaries(classesBoundaries) {
     this.classesBoundaries = classesBoundaries;
   }
 
-  drawWeightVector(weights) {
-    if (weights) {
-      let fromX;
-      let fromY;
-      let toX;
-      let toY;
-
-      // w0 + w1 * x + w2 * y = 0
-
-      if (Math.abs(weights[1]) > Math.abs(weights[2])) {
-        fromX = -1;
-        fromY = -(weights[0] - weights[1]) / weights[2];
-        toX = 1;
-        toY = -(weights[0] + weights[1]) / weights[2];
-      } else {
-        fromY = -1;
-        fromX = -(weights[0] - weights[2]) / weights[1];
-        toY = 1;
-        toX = -(weights[0] + weights[2]) / weights[1];
-      }
-
-      const canvas = this.canvas;
-      const context = canvas.context;
-
-      fromX = (fromX + 1) / 2;
-      fromY = 1 - (fromY + 1) / 2;
-      toX = (toX + 1) / 2;
-      toY = 1 - (toY + 1) / 2;
-
-      context.beginPath();
-      context.moveTo(fromX * canvas.width, fromY * canvas.height);
-      context.lineTo(toX * canvas.width, toY * canvas.height);
-      context.lineWidth = 3;
-      // context.strokeStyle = '#BBB';
-      context.stroke();
-    }
-  }
-
   /**
    * Calculate normalized canvas coordinates, i.e. transform mouse coordinates (relative to the
    * canvas origin = top left) to feature space for both x and y. The feature subspace shape is
-   * determined by the x1, y1, x2, and y2 parameters in the class options (see constructor)
+   * determined by the x1, y1, x2, and y2 parameters in the class options (see constructor).
    *
-   * @param float x x-coordinate in canvas
-   * @param float y y-coordinate in canvas
-   * @return Array[double] Corresponding point in feature space (first element corresponds to x,
-   *                       second element corresponds to y)
+   * @param {number} x - x-coordinate in canvas
+   * @param {number} y - y-coordinate in canvas
+   * @return {Array.<number>} Corresponding point in feature space (first element corresponds to x,
+   *   second element corresponds to y)
    */
   convertCanvasCoordinatesToFeatures(x, y) {
     // Mouse x- and y-position on [0,1] interval
@@ -336,11 +301,11 @@ export default class Canvas {
 
   /**
    * Convert coordinates on a centered, double unit square (i.e., a square from (-1, -1) to (1, 1))
-   * to feature space
+   * to feature space.
    *
-   * @param float bx Input x-coordinate in input space
-   * @param float by Input y-coordinate in input space
-   * @return Array[double] Corresponding point in feature space (first element corresponds to x,
+   * @param {number} bx - Input x-coordinate in input space
+   * @param {number} by - Input y-coordinate in input space
+   * @return {Array.<number>} Corresponding point in feature space (first element corresponds to x,
    *   second element corresponds to y)
    */
   convertBoundaryCoordinatesToFeatures(bx, by) {
@@ -353,10 +318,10 @@ export default class Canvas {
   /**
    * Calculate canvas coordinates (origin at (0,0)) for a 2-dimensional data point's features
    *
-   * @param double f1 First feature
-   * @param double f2 Second feature
-   * @return Array[int] Corresponding point in the canvas (first element corresponds to x, second
-   *                    element corresponds to y)
+   * @param {number} f1 First feature
+   * @param {number} f2 Second feature
+   * @return {Array.<number>} Corresponding point in the canvas (first element corresponds to x, second
+   *   element corresponds to y)
    */
   convertFeaturesToCanvasCoordinates(f1, f2) {
     const x = (f1 - this.options.x1) / (this.options.x2 - this.options.x1);
@@ -450,12 +415,8 @@ export default class Canvas {
             context.fillStyle = this.getClassColor(classLabel);
             context.fillStyle = '#000';
             context.globalAlpha = 0.25;
-            // context.fillRect(xx - 1, yy - 1, 2, 2);
             context.globalAlpha = 1;
           }
-
-          // context.lineTo(x2, y2);
-          // context.strokeStyle = this.getClassColor(contours[i].k);
         });
 
         context.closePath();
@@ -468,15 +429,14 @@ export default class Canvas {
       context.globalAlpha = 0.5;
       context.fill();
       context.globalAlpha = 1;
-      // context.stroke();
     });
   }
 
   /**
-   * Get drawing color for a class index
+   * Get drawing color for a class index.
    *
-   * @param int classIndex Class index
-   * @return string Color in HEX with '#' prefix
+   * @param {number} classIndex - Class index
+   * @return {string} Color in HEX with '#' prefix
    */
   getClassColor(classIndex) {
     const colors = this.getColors();
@@ -484,9 +444,9 @@ export default class Canvas {
   }
 
   /**
-   * Get available drawing colors
+   * Get available drawing colors.
    *
-   * @return Array[string] Colors in HEX with '#' prefix; array keys are color names.
+   * @return <Array.{string}> Colors in HEX with '#' prefix; array keys are color names
    */
   getColors() {
     return {

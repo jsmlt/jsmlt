@@ -7,7 +7,8 @@
     "start": "webpack --watch --progress --watch",
     "compile": "babel -d distribution/ src/",
     "build": "webpack -p",
-    "prepublish": "npm run compile"
+    "prepublish": "npm run compile",
+    "build-documentation": "./node_modules/.bin/esdoc"
   },
   "author": "Jesper van Engelen <contact@jepps.nl> (https://jespervanengelen.com)",
   "license": "ISC",
@@ -31,6 +32,9 @@
     "babel-plugin-add-module-exports": "^0.2.1",
     "babel-plugin-transform-es2015-modules-commonjs": "^6.26.0",
     "csv": "^1.1.1",
+    "esdoc": "^1.0.3",
+    "esdoc-ecmascript-proposal-plugin": "^1.0.0",
+    "esdoc-standard-plugin": "^1.0.0",
     "json-loader": "^0.5.7",
     "marchingsquares": "^1.2.0",
     "request": "^2.83.0"

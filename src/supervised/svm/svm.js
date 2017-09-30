@@ -6,33 +6,32 @@ import * as Random from '../../util/random';
 import LinearKernel from '../../kernel/linear';
 
 /**
- * SVM learner for binary classification problem
+ * SVM learner for binary classification problem.
  */
 export class BinarySVM extends Classifier {
   /**
-   * Constructor
+   * Constructor. Initialize class members and store user-defined options.
    *
-   * @param dict optionsUser User-defined options for SVM. See method implementation for details
+   * @param {Object} [optionsUser] - User-defined options for SVM
+   * @param {number} [optionsUser.C = 100] - Regularization (i.e. penalty for slack variables)
+   * @param {Object} [optionsUser.kernel] - Kernel. Defaults to the linear kernel
+   * @param {number} [optionsUser.convergenceNumPasses = 10] - Number of passes without alphas
+   *   changing to treat the algorithm as converged
+   * @param {number} [optionsUser.numericalTolerance = 1e-6] - Numerical tolerance for a
+   *   value in the to be equal to another SMO algorithm to be equal to another value
+   * @param {boolean} [optionsUser.useKernelCache = true] - Whether to cache calculated kernel
+   *   values for training sample pairs. Enabling this option (which is the default) generally
+   *   improves the performance in terms of speed at the cost of memory
    */
   constructor(optionsUser = {}) {
     super();
 
     // Parse options
     const optionsDefault = {
-      // Regularization (i.e. penalty for slack variables)
       C: 100.0,
-
-      // Kernel. Defaults to null (which is checked to instantiate the linear kernel)
       kernel: null,
-
-      // Number of passes without alphas changing to treat the algorithm as converged
       convergenceNumPasses: 10,
-
-      // Numerical tolerance for a value in the to be equal to another SMO algorithm to be equal to
-      // another value
       numericalTolerance: 1e-6,
-
-      // Whether to cache calculated kernel values for training sample pairs
       useKernelCache: true,
     };
 
@@ -53,27 +52,27 @@ export class BinarySVM extends Classifier {
   }
 
   /**
-   * Get the signed value of the class index. Returns -1 for class index 0, 1 for class index 1
+   * Get the signed value of the class index. Returns -1 for class index 0, 1 for class index 1.
    *
-   * @param int classIndex Class index
-   * @return int Sign corresponding to class index
+   * @param {number} classIndex - Class index
+   * @return {number} Sign corresponding to class index
    */
   getClassIndexSign(classIndex) {
     return classIndex * 2 - 1;
   }
 
   /**
-   * Get the class index corresponding to a sign
+   * Get the class index corresponding to a sign.
    *
-   * @param int sign Sign
-   * @return int Class index corresponding to sign
+   * @param {number} sign - Sign
+   * @return {number} Class index corresponding to sign
    */
   getSignClassIndex(sign) {
     return (sign + 1) / 2;
   }
 
   /**
-   * @see jsmlt.supervised.base.Classifier::train()
+   * @see {@link Classifier#train}
    */
   train(X, y) {
     // Mark that the SVM is currently in the training procedure
@@ -196,10 +195,10 @@ export class BinarySVM extends Classifier {
   }
 
   /**
-   * Calculate the margin (distance to the decision boundary) for a single sample
+   * Calculate the margin (distance to the decision boundary) for a single sample.
    *
-   * @param Array[Number]|int sample Sample features array or training sample index
-   * @return double Distance to decision boundary
+   * @param {Array.<number>|number} sample - Sample features array or training sample index
+   * @return {number} Distance to decision boundary
    */
   sampleMargin(sample) {
     let rval = this.b;
@@ -227,11 +226,11 @@ export class BinarySVM extends Classifier {
    * corresponding training data points from cache, and computes and stores the result in cache if
    * it isn't found
    *
-   * @param Array[Number]|int x Feature vector or data point index for first data point. Arrays are
-   *                            treated as feature vectors, integers as training data point indices
-   * @param Array[Number]|int y Feature vector or data point index for second data point. Arrays are
-   *                            treated as feature vectors, integers as training data point indices
-   * @return Number Kernel result
+   * @param {Array.<number>|number} x - Feature vector or data point index for first data point.
+   *   Arrays are treated as feature vectors, integers as training data point indices
+   * @param {Array.<number>|number} y - Feature vector or data point index for second data point.
+   *   Arrays are treated as feature vectors, integers as training data point indices
+   * @return {number} Kernel result
    */
   applyKernel(x, y) {
     const fromCache = (this.useKernelCache && typeof x === 'number' && typeof y === 'number');
@@ -257,9 +256,9 @@ export class BinarySVM extends Classifier {
    * can be chosen to satisfy the linear equality constraint stemming from the fact that the sum of
    * all products y_i * a_i should equal 0.
    *
-   * @param int i Index of \alpha_i
-   * @param int j Index of \alpha_j
-   * @return [int, int] Lower and upper bound
+   * @param {number} i Index of \alpha_i
+   * @param {number} j Index of \alpha_j
+   * @return {Array.<number>} Two-dimensional array containing the lower and upper bound
    */
   calculateAlphaBounds(i, j) {
     let boundL;
@@ -282,23 +281,27 @@ export class BinarySVM extends Classifier {
   }
 
   /**
-   * Make a prediction for a data set
+   * Make a prediction for a data set.
    *
-   * @param Array[Array[mixed]] Features for each data point
-   * @param Object optionsUser Optional. Additional options:
-   *    @prop string output Output for predictions. Either "classLabels" (default, output predicted
-   *       class label), "raw" or "normalized" (both output margin (distance to decision boundary)
-   *       for each sample)
-   *
-   * @return Array[mixed] Predictions. Output dependent on options.output, defaults to class labels
+   * @param {Array.<Array.<mixed>>} features - Features for each data point. Each array element should be an
+   *   array containing the features of the data point
+   * @param {Object} [optionsUser] - Options for prediction
+   * @param {string} [optionsUser.output = 'classLabels'] - Output for predictions. Either
+   *   "classLabels" (default, output predicted class label), "raw" or "normalized" (both output
+   *   margin (distance to decision boundary) for each sample)
+   * @return {Array.<mixed>} Predictions. Output dependent on options.output, defaults to class
+   *   labels
    */
-  predict(features, optionsUser) {
+  predict(features, optionsUser = {}) {
     // Options
     const optionsDefault = {
       output: 'classLabels', // 'classLabels', 'normalized' or 'raw'
     };
 
-    const options = Object.assign({}, optionsDefault, optionsUser);
+    const options = {
+      ...optionsDefault,
+      ...optionsUser,
+    };
 
     return features.map((x) => {
       let output = this.sampleMargin(x);
@@ -317,16 +320,74 @@ export class BinarySVM extends Classifier {
 }
 
 /**
- * Perceptron learner for 2 or more classes. Uses 1-vs-all classification
+ * Support Vector Machine (SVM) classification model for 2 or more classes. The model is a
+ * one-vs-all classifier and uses the {@link BinarySVM} classifier as its base model. For training
+ * individual models, a simplified version of John Platt's
+ * [SMO algorithm](@link https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/tr-98-14.pdf)
+ * is used.
+ *
+ * ## Support Vector Machines (SVM)
+ * Support Vector Machines train a classifier by finding the decision boundary between the classes
+ * that maximizes the margin between the boundary and the data points on either side of it. It is a
+ * very intuitive approach to classification. The soft-margin SVM is a modification of this approach
+ * where samples are allowed to be misclasiffied, but at some cost. Furthermore, SVMs can implement
+ * the "kernel trick", where an implicit feature transformation is applied.
+ *
+ * This is all implemented in the SVM implementation in JSMLT. For more information about Support
+ * Vector Machines, you can start by checking out the [Wikipedia](https://en.wikipedia.org/wiki/Support_vector_machine)
+ * page on SVMs.
+ *
+ * ## Examples
+ * **Example 1:** Training a multiclass SVM on a well-known three-class dataset, the
+ * [Iris dataset](https://github.com/jsmlt/datasets-repository/tree/master/iris#readme).
+ *
+ * @example <caption>Example 1. SVM training on a multiclass classification task.</caption>
+ * // Import JSMLT
+ * var jsmlt = require('@jsmlt/jsmlt');
+ * 
+ * // Load the iris dataset. When loading is completed, process the data and run the classifier
+ * jsmlt.Datasets.loadIris((X, y_raw) => {
+ *   // Encode the labels (which are strings) into integers
+ *   var labelencoder = new jsmlt.Preprocessing.LabelEncoder();
+ *   var y = labelencoder.encode(y_raw);
+ * 
+ *   // Split the data into a training set and a test set
+ *   [X_train, y_train, X_test, y_test] = jsmlt.ModelSelection.trainTestSplit([X, y]);
+ * 
+ *   // Create and train classifier
+ *   var clf = new jsmlt.Supervised.SVM.SVM({
+ *     kernel: new jsmlt.Kernel.Gaussian(1),
+ *   });
+ *   clf.train(X_train, y_train);
+ * 
+ *   // Make predictions on test data
+ *   var predictions = clf.predict(X_test);
+ * 
+ *   // Evaluate and output the classifier's accuracy
+ *   var accuracy = jsmlt.Validation.Metrics.accuracy(predictions, y_test);
+ *   console.log(`Accuracy: ${accuracy}`);
+ * });
+ *
+ * @see {@link BinarySVM}
  */
 export default class SVM extends OneVsAllClassifier {
   /**
-   * Constructor
+   * Constructor. Initialize class members and store user-defined options.
    *
-   * @see BinarySVM.constructor()
+   * @see {@link BinarySVM#constructor}
    *
-   * @param dict optionsUser User-defined options for SVM. Options are passed to created BinarySVM
-   *   objects. See BinarySVM.constructor() for more details
+   * @param {Object} optionsUser User-defined options for SVM. Options are passed to created
+   *   BinarySVM objects. See BinarySVM.constructor() for more details
+   * @param {Object} [optionsUser] - User-defined options for SVM
+   * @param {number} [optionsUser.C = 100] - Regularization (i.e. penalty for slack variables)
+   * @param {Object} [optionsUser.kernel] - Kernel. Defaults to the linear kernel
+   * @param {number} [optionsUser.convergenceNumPasses = 10] - Number of passes without alphas
+   *   changing to treat the algorithm as converged
+   * @param {number} [optionsUser.numericalTolerance = 1e-6] - Numerical tolerance for a
+   *   value in the to be equal to another SMO algorithm to be equal to another value
+   * @param {boolean} [optionsUser.useKernelCache = true] - Whether to cache calculated kernel
+   *   values for training sample pairs. Enabling this option (which is the default) generally
+   *   improves the performance in terms of speed at the cost of memory
    */
   constructor(optionsUser = {}) {
     super();
@@ -334,7 +395,7 @@ export default class SVM extends OneVsAllClassifier {
     /**
      * Number of errors per iteration. Only used if accuracy tracking is enabled
      *
-     * @var bool
+     * @type {Array.<mixed>}
      */
     this.numErrors = null;
 
@@ -343,13 +404,14 @@ export default class SVM extends OneVsAllClassifier {
   }
 
   /**
-   * @see OneVsAll.createClassifier()
+   * @see {@link OneVsAll#createClassifier}
    */
   createClassifier() {
     return new BinarySVM(this.optionsUser);
   }
 
   /**
+   * @see {@link Estimator#train}
    */
   train(X, y) {
     this.training = { X, y };
