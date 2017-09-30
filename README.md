@@ -19,7 +19,7 @@ To install JSMLT into your npm project via npm, run
 $ npm install @jsmlt/jsmlt
 ```
 
-## Getting started
+## A simple example
 In this small example, we're going to train an SVM on a small example dataset. The code example below starts with loading JSMLT, creating some dummy training and test data, and running an SVM classifier on it. It's pretty simple!
 
 > If you want to run this example without having to set up anything by yourself, check out the [JSMLT examples repository](https://github.com/jsmlt/examples). It includes the example below, and requires no further setup: it's ready to run!
