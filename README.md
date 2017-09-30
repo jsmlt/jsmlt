@@ -60,16 +60,16 @@ Running this simple example will output the classification result `[1,1,0,0]`, m
 - JSMLT.Kernel.[GaussianKernel](http://visualml.io/jsmlt/docs/class/src/kernel/gaussian.js~GaussianKernel.html): Gaussian (RBF) kernel
 
 ### Preprocessing
-- JSMLT.Preprocessing.[LabelEncoder](http://visualml.io/jsmlt/docs/class/src/preprocessing/labelencoder.js~LabelEncoder.html)
+- JSMLT.Preprocessing.[LabelEncoder](http://visualml.io/jsmlt/docs/class/src/preprocessing/labelencoder.js~LabelEncoder.html): Encode string or other type of labels to integers
 
 ### Model selection
 - JSMLT.ModelSelection.[trainTestSplit](http://visualml.io/jsmlt/docs/function/index.html#static-function-trainTestSplit): Data set splitting
 
 ### Datasets
-- JSMLT.Datasets.loadIris(http://visualml.io/jsmlt/docs/function/index.html#static-function-loadIris): Iris dataset loading
+- JSMLT.Datasets.[loadIris](http://visualml.io/jsmlt/docs/function/index.html#static-function-loadIris): Iris dataset loading
 
 ### Validation
-- JSMLT.Validation.Metrics.[accuracy](http://visualml.io/jsmlt/docs/function/index.html#static-function-accuracy)
+- JSMLT.Validation.Metrics.[accuracy](http://visualml.io/jsmlt/docs/function/index.html#static-function-accuracy): Accuracy metric for validation
 
 ### Classification boundaries
 - JSMLT.Classification.[Boundaries](http://visualml.io/jsmlt/docs/class/src/classification/boundaries.js~Boundaries.html): Classification boundaries for trained classifier
