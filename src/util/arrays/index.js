@@ -1,5 +1,5 @@
 // Local imports
-import * as Random from './random';
+import * as Random from '../random';
 
 /**
  * Take a slice out of an array, but wrap around the beginning an end of the array. For example,
