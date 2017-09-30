@@ -185,48 +185,6 @@ export default class Boundaries {
     return contours;
   }
 
-  smoothContours(contours, degree = 5) {
-    const contoursSmoothed = JSON.parse(JSON.stringify(contours));
-
-    contours.keys().foreach((level) => {
-      const levelContours = contours[level];
-      const levelContoursSmoothed = JSON.parse(JSON.stringify(levelContours));
-
-      for (let i = 0; i < levelContours.length; i += 1) {
-        for (let j = 0; j < levelContours[i].length; j += 1) {
-          if (Math.abs(levelContours[i][j][0]) >= 1 || Math.abs(levelContours[i][j][1]) >= 1) {
-            continue;
-          }
-
-          let points = Arrays.wrapSlice(levelContours[i], j - degree, j + degree);
-
-          const half = (points.length - 1) / 2;
-          let cutoff = 0;
-
-          for (let k = 0; k < points.length; k += 1) {
-            if (Math.abs(points[k][0]) >= 1 || Math.abs(points[k][1]) >= 1) {
-              cutoff = Math.max(cutoff, half - Math.abs(k - half));
-            }
-          }
-
-          if (cutoff > 0) {
-            points = points.slice(cutoff, points.length + 1 - cutoff);
-          }
-
-          const pointsX = LinAlg.flatten(LinAlg.subBlock(points, [0, 0], [points.length, 1]));
-          const pointsY = LinAlg.flatten(LinAlg.subBlock(points, [0, 1], [points.length, 1]));
-
-          levelContoursSmoothed[i][j][0] = LinAlg.internalSum(pointsX) / pointsX.length;
-          levelContoursSmoothed[i][j][1] = LinAlg.internalSum(pointsY) / pointsY.length;
-        }
-      }
-
-      contoursSmoothed[level] = levelContoursSmoothed;
-    });
-
-    return contoursSmoothed;
-  }
-
   /**
    * Generate a list of features from a grid of points with linear spacing
    *
