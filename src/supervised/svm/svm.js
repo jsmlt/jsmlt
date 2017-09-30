@@ -283,8 +283,8 @@ export class BinarySVM extends Classifier {
   /**
    * Make a prediction for a data set.
    *
-   * @param {Array.<Array.<mixed>>} features - Features for each data point. Each array element should be an
-   *   array containing the features of the data point
+   * @param {Array.<Array.<mixed>>} features - Features for each data point. Each array element
+   *   should be an array containing the features of the data point
    * @param {Object} [optionsUser] - Options for prediction
    * @param {string} [optionsUser.output = 'classLabels'] - Output for predictions. Either
    *   "classLabels" (default, output predicted class label), "raw" or "normalized" (both output
@@ -344,25 +344,25 @@ export class BinarySVM extends Classifier {
  * @example <caption>Example 1. SVM training on a multiclass classification task.</caption>
  * // Import JSMLT
  * var jsmlt = require('@jsmlt/jsmlt');
- * 
+ *
  * // Load the iris dataset. When loading is completed, process the data and run the classifier
  * jsmlt.Datasets.loadIris((X, y_raw) => {
  *   // Encode the labels (which are strings) into integers
  *   var labelencoder = new jsmlt.Preprocessing.LabelEncoder();
  *   var y = labelencoder.encode(y_raw);
- * 
+ *
  *   // Split the data into a training set and a test set
  *   [X_train, y_train, X_test, y_test] = jsmlt.ModelSelection.trainTestSplit([X, y]);
- * 
+ *
  *   // Create and train classifier
  *   var clf = new jsmlt.Supervised.SVM.SVM({
  *     kernel: new jsmlt.Kernel.Gaussian(1),
  *   });
  *   clf.train(X_train, y_train);
- * 
+ *
  *   // Make predictions on test data
  *   var predictions = clf.predict(X_test);
- * 
+ *
  *   // Evaluate and output the classifier's accuracy
  *   var accuracy = jsmlt.Validation.Metrics.accuracy(predictions, y_test);
  *   console.log(`Accuracy: ${accuracy}`);

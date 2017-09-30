@@ -28,9 +28,9 @@ import * as Arrays from '../util/arrays';
  * @param {Array.<Array.<mixed>>} input - List of input arrays. The input arrays should have the
  *   same length (i.e., they should have the same first dimension size)
  * @param {Object} optionsUser - User-defined options. See method implementation for details
- * @param {number} [optionsUser.trainSize = 0.8] - Size of the training set. If int, this exact number of
- *   training samples is used. If float, the total number of elements times the float number is used
- *   as the number of training elements
+ * @param {number} [optionsUser.trainSize = 0.8] - Size of the training set. If int, this exact
+ *   number of training samples is used. If float, the total number of elements times the float
+ *   number is used as the number of training elements
  * @return {Array} List of output arrays. The number of elements is 2 times the number of input
  *   elements. For each input element, a pair of output elements is returned.
  */

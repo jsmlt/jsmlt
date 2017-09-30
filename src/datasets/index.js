@@ -6,30 +6,6 @@ import csv from 'csv';
 import * as LinAlg from '../math/linalg';
 
 /**
- * Load the iris dataset. This is an asynchronous function: when the Iris dataset is loaded, a
- * user-specified callback function is invoked, with the data set features array and the targets
- * array as the first and second parameter, respectively.
- *
- * For more information, see https://github.com/jsmlt/datasets/tree/master/iris
- *
- * @example <caption>Load the Iris dataset and run a Perceptron classifier on it</caption>
- * var datasets = require('@jsmlt/jsmlt/datasets');
- * var Perceptron = require('@jsmlt/jsmlt/supervised/linear/perceptron');
- *
- * datasets.loadIris(function(X, y) {
- *   var clf = new Perceptron();
- *   clf.train(X, y);
- * });
- * 
- *
- * @param {function(X: Array.<Array.<number>>, y: Array.<number>)} callback - Callback function with
- *   arguments X (features) and y (targets). Called when the dataset is successfully loaded
- */
-export function loadIris(callback) {
-  loadDatasetFromRemoteCSV('https://raw.githubusercontent.com/jsmlt/datasets/master/iris/data.csv', callback);
-}
-
-/**
  * Load a dataset (features and target) from some CSV input string. Extracts the data from the CSV
  * and uses all but the last column as the features and the last column as the target. This function
  * is asynchronous, and needs a user callback for when the file is successfully parsed.
@@ -66,4 +42,27 @@ export function loadDatasetFromRemoteCSV(url, callback) {
 
     loadDatasetFromCSV(body, callback);
   });
+}
+
+/**
+ * Load the iris dataset. This is an asynchronous function: when the Iris dataset is loaded, a
+ * user-specified callback function is invoked, with the data set features array and the targets
+ * array as the first and second parameter, respectively.
+ *
+ * For more information, see https://github.com/jsmlt/datasets/tree/master/iris
+ *
+ * @example <caption>Load the Iris dataset and run a Perceptron classifier on it</caption>
+ * var datasets = require('@jsmlt/jsmlt/datasets');
+ * var Perceptron = require('@jsmlt/jsmlt/supervised/linear/perceptron');
+ *
+ * datasets.loadIris(function(X, y) {
+ *   var clf = new Perceptron();
+ *   clf.train(X, y);
+ * });
+ *
+ * @param {function(X: Array.<Array.<number>>, y: Array.<number>)} callback - Callback function with
+ *   arguments X (features) and y (targets). Called when the dataset is successfully loaded
+ */
+export function loadIris(callback) {
+  loadDatasetFromRemoteCSV('https://raw.githubusercontent.com/jsmlt/datasets/master/iris/data.csv', callback);
 }

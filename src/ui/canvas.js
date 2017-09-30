@@ -41,7 +41,7 @@ export default class Canvas {
     this.options = {
       ...optionsDefault,
       ...optionsUser,
-    }
+    };
 
     // Settings for canvas
     this.canvas = {
@@ -320,8 +320,8 @@ export default class Canvas {
    *
    * @param {number} f1 First feature
    * @param {number} f2 Second feature
-   * @return {Array.<number>} Corresponding point in the canvas (first element corresponds to x, second
-   *   element corresponds to y)
+   * @return {Array.<number>} Corresponding point in the canvas (first element corresponds to x,
+   *   second element corresponds to y)
    */
   convertFeaturesToCanvasCoordinates(f1, f2) {
     const x = (f1 - this.options.x1) / (this.options.x2 - this.options.x1);

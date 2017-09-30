@@ -83,8 +83,8 @@ export function zeroVector(n) {
 /**
  * Initialize an n-dimensional array of zeros.
  *
- * @param {Array.<number>} shape - Array specifying the number of elements per dimension. n-th element
- *                corresponds to the number of elements in the n-th dimension.
+ * @param {Array.<number>} shape - Array specifying the number of elements per dimension. n-th
+ *   element corresponds to the number of elements in the n-th dimension.
  * @return {Array.<mixed>}  Array of the specified with zero in all entries
  */
 export function zeros(shape) {
@@ -455,8 +455,8 @@ export function subBlock(A, offset, shape) {
  * @param {Array.<number>} start -  Array specifying the starting index per dimension. n-th element
  *   corresponds to the number of elements to skip, before extracting the block, in the n-th
  *   dimension. Negative indices are supported.
- * @param {Array.<number>} stop - Array specifying the index to stop at (exclusive) per dimension. n-th
- *   element corresponds to the stopping index in the n-th dimension. Negative indices are
+ * @param {Array.<number>} stop - Array specifying the index to stop at (exclusive) per dimension.
+ *   n-th element corresponds to the stopping index in the n-th dimension. Negative indices are
  *   supported. Use null for unlimited offset.
  * @return {Array.<mixed>} Array slice extracted from input array
  */
