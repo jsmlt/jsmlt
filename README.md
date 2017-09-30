@@ -19,7 +19,7 @@ To install JSMLT into your npm project via npm, run
 $ npm install @jsmlt/jsmlt
 ```
 
-## Getting started
+## A simple example
 In this small example, we're going to train an SVM on a small example dataset. The code example below starts with loading JSMLT, creating some dummy training and test data, and running an SVM classifier on it. It's pretty simple!
 
 > If you want to run this example without having to set up anything by yourself, check out the [JSMLT examples repository](https://github.com/jsmlt/examples). It includes the example below, and requires no further setup: it's ready to run!
@@ -46,6 +46,33 @@ console.log(clf.predict(test_X));
 ```
 
 Running this simple example will output the classification result `[1,1,0,0]`, meaning it classified the first two points as 0, and the second two points as 1.
+
+# API
+> The entire API documentation can be found [here](http://visualml.io/jsmlt/docs/identifiers.html). You can also build the documentation locally by downloading and installing JSMLT and running `npm run-script build-documentation`: the documentation will then be available in the `docs` folder.
+
+### Supervised learning algorithms
+- JSMLT.Supervised.SVM.[SVM](http://visualml.io/jsmlt/docs/class/src/supervised/svm/svm.js~SVM.html): Support Vector Machine classifier
+- JSMLT.Supervised.Linear.[Perceptron](http://visualml.io/jsmlt/docs/class/src/supervised/linear/perceptron.js~Perceptron.html): Perceptron classifier
+- JSMLT.Supervised.Neighbors.[KNN](http://visualml.io/jsmlt/docs/class/src/supervised/neighbors/knn.js~KNN.html): k-nearest neighbors classifier
+
+### Kernels
+- JSMLT.Kernel.[LinearKernel](http://visualml.io/jsmlt/docs/class/src/kernel/linear.js~LinearKernel.html): Linear kernel
+- JSMLT.Kernel.[GaussianKernel](http://visualml.io/jsmlt/docs/class/src/kernel/gaussian.js~GaussianKernel.html): Gaussian (RBF) kernel
+
+### Preprocessing
+- JSMLT.Preprocessing.[LabelEncoder](http://visualml.io/jsmlt/docs/class/src/preprocessing/labelencoder.js~LabelEncoder.html): Encode string or other type of labels to integers
+
+### Model selection
+- JSMLT.ModelSelection.[trainTestSplit](http://visualml.io/jsmlt/docs/function/index.html#static-function-trainTestSplit): Data set splitting
+
+### Datasets
+- JSMLT.Datasets.[loadIris](http://visualml.io/jsmlt/docs/function/index.html#static-function-loadIris): Iris dataset loading
+
+### Validation
+- JSMLT.Validation.Metrics.[accuracy](http://visualml.io/jsmlt/docs/function/index.html#static-function-accuracy): Accuracy metric for validation
+
+### Classification boundaries
+- JSMLT.Classification.[Boundaries](http://visualml.io/jsmlt/docs/class/src/classification/boundaries.js~Boundaries.html): Classification boundaries for trained classifier
 
 # Development
 JSMLT is maintained by [Jesper van Engelen](https://github.com/engelen), and is in active development. It is currently not ready to be used in any production environments.
