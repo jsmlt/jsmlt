@@ -5,10 +5,33 @@ import * as MarchingSquaresJS from 'marchingsquares';
 import * as LinAlg from '../math/linalg';
 import * as Arrays from '../util/arrays';
 
+/**
+ * The decision boundary module calculates decision boundaries for a classifier on a 2-dimensional
+ * grid of points. It works by taking a classifier, predicting the output label for many points
+ * on a 2-D grid, and using the [Marching Squares](https://www.npmjs.com/package/marchingsquares)
+ * algorithm to calculate the decision boundaries.
+ */
 export default class Boundaries {
+  /**
+   * Constructor. Initializes boundary object properties
+   */
   constructor() {
+    /**
+     * Feature list of the grid points. n-by-2 array, where each row consists of the x- and
+     * y-coordinates of a point on the grid
+     *
+     * @type Array
+     */
     this.features = null;
+
+    /**
+     * Classifier predictions for each of the grid points. The nth prediction is the prediction for
+     * the nth point in the `features` property. n-dimensional array
+     *
+     * @type Array
+     */
     this.predictions = null;
+
     this.predictionsGrid = null;
   }
 
