@@ -164,7 +164,7 @@ export class BinaryPerceptron extends Classifier {
         output /= weightsMagnitude;
       } else {
         // Class label output
-        predictions.push(this.getSignClassIndex(output > 0 ? 1 : -1));
+        output = this.getSignClassIndex(output > 0 ? 1 : -1);
       }
 
       predictions.push(output);
