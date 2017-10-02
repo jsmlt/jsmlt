@@ -54,6 +54,7 @@ Running this simple example will output the classification result `[1,1,0,0]`, m
 - JSMLT.Supervised.SVM.[SVM](http://visualml.io/jsmlt/docs/class/src/supervised/svm/svm.js~SVM.html): Support Vector Machine classifier
 - JSMLT.Supervised.Linear.[Perceptron](http://visualml.io/jsmlt/docs/class/src/supervised/linear/perceptron.js~Perceptron.html): Perceptron classifier
 - JSMLT.Supervised.Neighbors.[KNN](http://visualml.io/jsmlt/docs/class/src/supervised/neighbors/knn.js~KNN.html): k-nearest neighbors classifier
+- JSMLT.Supervised.Neighbors.[LogisticRegression](http://visualml.io/jsmlt/docs/class/src/supervised/linear/logistic_regression.js~LogisticRegression.html): Logistic Regression classifier
 
 ### Kernels
 - JSMLT.Kernel.[LinearKernel](http://visualml.io/jsmlt/docs/class/src/kernel/linear.js~LinearKernel.html): Linear kernel
