@@ -1,6 +1,3 @@
-![VisualML Screenshot](https://raw.githubusercontent.com/jsmlt/visualml/master/assets/screenshot.png)
- _JSMLT in action (with [VisualML](https://github.com/jsmlt/visualml)). Live demo on [visualml.io](http://visualml.io)._
-
 # JSMLT
 [![npm](https://img.shields.io/npm/v/@jsmlt/jsmlt.svg?style=flat-square)](https://www.npmjs.com/package/@jsmlt/jsmlt)
 [![npm](https://img.shields.io/npm/dm/@jsmlt/jsmlt.svg?style=flat-square)](https://www.npmjs.com/package/@jsmlt/jsmlt)
