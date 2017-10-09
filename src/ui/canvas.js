@@ -194,6 +194,7 @@ export default class Canvas {
    *   mousemove event
    */
   click(x = -1, y = -1) {
+    // Get click coordinates
     let clickX = x;
     let clickY = y;
 
@@ -288,6 +289,9 @@ export default class Canvas {
    *   second element corresponds to y)
    */
   convertCanvasCoordinatesToFeatures(x, y) {
+    // Handle screen resizing for obtaining correct coordinates
+    this.resize();
+    
     // Mouse x- and y-position on [0,1] interval
     let f1 = x / this.canvas.width;
     let f2 = y / this.canvas.height;
