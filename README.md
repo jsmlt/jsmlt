@@ -1,12 +1,13 @@
-![VisualML Screenshot](https://raw.githubusercontent.com/jsmlt/visualml/master/assets/screenshot.png)
- _JSMLT in action (with [VisualML](https://github.com/jsmlt/visualml)). Live demo on [visualml.io](http://visualml.io)._
-
 # JSMLT
 [![npm](https://img.shields.io/npm/v/@jsmlt/jsmlt.svg?style=flat-square)](https://www.npmjs.com/package/@jsmlt/jsmlt)
 [![npm](https://img.shields.io/npm/dm/@jsmlt/jsmlt.svg?style=flat-square)](https://www.npmjs.com/package/@jsmlt/jsmlt)
 [![GitHub stars](https://img.shields.io/github/stars/jsmlt/jsmlt.svg?style=social&label=Star)](https://github.com/jsmlt/jsmlt)
-  
+
+[<img alt="JSMLT" src="https://avatars0.githubusercontent.com/u/31863813?v=4&s=160" height="160px" align="right"/>](https://github.com/jsmlt/jsmlt/)
+
 The JavaScript Machine Learning Toolkit, or JSMLT, is an open source JavaScript library for education in machine learning. It implements several well-known supervised learning algorithms in an understandable, modular and well-commented way. Furthermore, visualization examples are provided which allow you to explore the way different machine learning algorithms work. Ultimately, JSMLT is intended to provide students with a better learning experience when studying machine learning algorithms.
+
+If you want to explore a visualization of the machine learning algorithms in JSMLT, check out http://visualml.io. It provides an interactive environment for using JSMLT's algorithms.
 
 # Getting started
 This short guide will help you get started with JSMLT.
