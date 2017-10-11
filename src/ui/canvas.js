@@ -180,7 +180,7 @@ export default class Canvas {
   transformAbsolutePositionToRelativePosition(x, y) {
     // Handle screen resizing for obtaining correct coordinates
     this.resize();
-    
+
     // Properties used for calculating mouse position
     const el = this.canvas.element;
     const rect = el.getBoundingClientRect();
@@ -291,7 +291,7 @@ export default class Canvas {
    * @return {Array.<number>} Corresponding point in feature space (first element corresponds to x,
    *   second element corresponds to y)
    */
-  convertCanvasCoordinatesToFeatures(x, y) {    
+  convertCanvasCoordinatesToFeatures(x, y) {
     // Mouse x- and y-position on [0,1] interval
     let f1 = x / this.canvas.width;
     let f2 = y / this.canvas.height;
