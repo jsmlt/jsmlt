@@ -3,7 +3,6 @@ module.exports = {
   output: {
     path: __dirname + '/build',
     filename: 'bundle.js',
-    target: 'node',
   },
   module: {
     rules: [
