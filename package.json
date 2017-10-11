@@ -4,7 +4,7 @@
   "description": "JavaScript Machine Learning",
   "main": "distribution/index.js",
   "scripts": {
-    "start": "webpack --watch --progress --watch",
+    "start": "webpack --watch --progress",
     "compile": "babel -d distribution/ src/",
     "build": "webpack -p",
     "prepublish": "npm run compile",
