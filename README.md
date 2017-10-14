@@ -58,7 +58,7 @@ Running this simple example will output the classification result `[1,1,0,0]`, m
 - Logistic Regression: [`JSMLT.Supervised.Neighbors.LogisticRegression`](http://visualml.io/jsmlt/docs/class/src/supervised/linear/logistic_regression.js~LogisticRegression.html)
 
 ### Unsupervised learning algorithms (clustering)
-- k-meanns: [`JSMLT.Unsupervised.Neighbors.KMeans`](http://visualml.io/jsmlt/docs/class/src/unsupervised/neighbors/k-means.js~KMeans.html)
+- k-means: [`JSMLT.Unsupervised.Neighbors.KMeans`](http://visualml.io/jsmlt/docs/class/src/unsupervised/neighbors/k-means.js~KMeans.html)
 
 ### Kernels
 - Linear kernel: [`JSMLT.Kernel.LinearKernel`](http://visualml.io/jsmlt/docs/class/src/kernel/linear.js~LinearKernel.html)
