@@ -62,10 +62,6 @@ export default class Canvas {
     // Class boundaries
     this.classesBoundaries = {};
 
-    // Weights of classifiers
-    this.weights = null;
-    this.multiWeights = null;
-
     // Initialization
     this.handleMouseEvents();
 
@@ -265,10 +261,6 @@ export default class Canvas {
     });
 
     this.redraw();
-  }
-
-  setWeightVector(weights) {
-    this.weights = weights;
   }
 
   /**
