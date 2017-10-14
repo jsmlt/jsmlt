@@ -34,6 +34,14 @@ export class Estimator {
 export class Classifier extends Estimator {
 }
 
+/**
+ * Base class for multiclass classifiers using the one-vs-all classification method. For a training
+ * set with k unique class labels, the one-vs-all classifier creates k binary classifiers. Each of
+ * these classifiers is trained on the entire data set, where the i-th classifier treats all samples
+ * that do not come from the i-th class as being from the same class. In the prediction phase, the
+ * one-vs-all classifier runs all k binary classifiers on the test data point, and predicts the
+ * class that has the highest normalized prediction value
+ */
 export class OneVsAllClassifier extends Classifier {
   /**
    * Create a binary classifier for one of the classes.

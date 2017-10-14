@@ -1,3 +1,7 @@
+/**
+ * Datapoint in a dataset, with features and possibly a class index. Can be used as the model for
+ * UI data points.
+ */
 export default class Datapoint {
   /**
    * Constructor. Load data point features.

@@ -1,3 +1,6 @@
+/**
+ * Base class for kernels, which calculate some distance metric between two data points
+ */
 export default class Kernel {
   /**
    * Evaluate the kernel on a pair of data points

@@ -1,7 +1,13 @@
 // Internal dependencies
 import Datapoint from './datapoint';
 
+/**
+ * Container of data points for a single data set.
+ */
 export default class Dataset {
+  /**
+   * Initialize object properties.
+   */
   constructor() {
     this.numDimensions = 0;
     this.numDatapoints = 0;
