@@ -61,6 +61,27 @@ export function valueCounts(array) {
 }
 
 /**
+ * Filter an array and return the array indices where the filter was matched. Corresponds to
+ * JavaScript's native Array.filter(), but instead of returning the elements that match the filter
+ * criteria, it returns the indices of the elements matching the filter.
+ *
+ * @param {Array.<mixed>} array - Array to be filtered
+ * @param {function(element: mixed, !index: Number): boolean} callback - Callback function to be
+ *   used for filtering. This function takes an array element and possibly its index as its input
+ *   and should return true when the index should be used (filtered) and false when it shouldn't
+ * @return {Array.<Number>} Array of array indices in the original array where the array element
+ *   matches the filter
+ */
+export function filterGetIndex(array, callback) {
+  return zipWithIndex(array)
+    // Filter zipped elements + indices where the element matches the filter
+    .filter(x => callback(x[0], x[1]))
+
+    // Map the zipped elements to the indices
+    .map(x => x[1]);
+}
+
+/**
  * Get array key corresponding to largest element in the array.
  *
  * @param {Array.<number>} array Input array
@@ -98,4 +119,25 @@ export function sample(input, number) {
 
   // Return the sampled values
   return shuffledArray.slice(numElements - number);
+}
+
+/**
+ * Deep check whether two arrays are equal: sub-arrays will be traversed, and strong type checking
+ * is enabled.
+ *
+ * @param {Array.<mixed>|mixed} array1 - First array to check or array element to check
+ * @param {Array.<mixed>|mixed} array2 - Second array to check ot array element to check. Will be
+ *   checked against first array
+ * @return {boolean} Whether the two arrays are the same
+ */
+export function equal(array1, array2) {
+  if (!Array.isArray(array1) || !Array.isArray(array2)) {
+    return array1 === array2;
+  }
+
+  if (array1.length !== array2.length) {
+    return false;
+  }
+
+  return array1.reduce((r, a, i) => r && equal(a, array2[i]), true);
 }

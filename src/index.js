@@ -7,6 +7,7 @@ import * as ModelSelection from './model_selection/';
 import Preprocessing from './preprocessing/';
 import Supervised from './supervised/';
 import UI from './ui/';
+import Unsupervised from './unsupervised/';
 import Util from './util/';
 import Validation from './validation/';
 
@@ -20,6 +21,7 @@ export default {
   Preprocessing,
   Supervised,
   UI,
+  Unsupervised,
   Util,
   Validation,
 };

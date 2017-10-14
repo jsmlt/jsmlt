@@ -444,7 +444,7 @@ export default class Canvas {
    */
   getClassColor(classIndex) {
     const colors = this.getColors();
-    return colors[Object.keys(colors)[parseInt(classIndex, 10)]];
+    return classIndex === null ? '#DDDDDD' : colors[Object.keys(colors)[parseInt(classIndex, 10)]];
   }
 
   /**
