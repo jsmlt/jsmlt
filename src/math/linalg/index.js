@@ -63,6 +63,10 @@ export function valueVector(n, value) {
  * @return {Array.<mixed>} Array of the specified with zero in all entries
  */
 export function full(shape, value) {
+  if (!Array.isArray(shape)) {
+    return valueVector(shape, value);
+  }
+
   if (shape.length === 1) {
     return valueVector(shape[0], value);
   }
