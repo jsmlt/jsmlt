@@ -273,9 +273,9 @@ export function norm(x) {
 }
 
 /**
- * Calculate sum of two vectors. Vectors should have same size.
+ * Calculate elementwise sum of two or more vectors. Vectors should have same size.
  *
- * @param {...Array.<number>} x Vectors that should be summed
+ * @param {...Array.<number>} x - Vectors that should be summed
  * @return {Array.<number>} Sum of vectors
  */
 export function sum(...x) {
