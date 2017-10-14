@@ -51,30 +51,33 @@ Running this simple example will output the classification result `[1,1,0,0]`, m
 # API
 > The entire API documentation can be found [here](http://visualml.io/jsmlt/docs/identifiers.html). You can also build the documentation locally by downloading and installing JSMLT and running `npm run-script build-documentation`: the documentation will then be available in the `docs` folder.
 
-### Supervised learning algorithms
-- JSMLT.Supervised.SVM.[SVM](http://visualml.io/jsmlt/docs/class/src/supervised/svm/svm.js~SVM.html): Support Vector Machine classifier
-- JSMLT.Supervised.Linear.[Perceptron](http://visualml.io/jsmlt/docs/class/src/supervised/linear/perceptron.js~Perceptron.html): Perceptron classifier
-- JSMLT.Supervised.Neighbors.[KNN](http://visualml.io/jsmlt/docs/class/src/supervised/neighbors/knn.js~KNN.html): k-nearest neighbors classifier
-- JSMLT.Supervised.Neighbors.[LogisticRegression](http://visualml.io/jsmlt/docs/class/src/supervised/linear/logistic_regression.js~LogisticRegression.html): Logistic Regression classifier
+### Supervised learning algorithms (classifiers)
+- Support Vector Machine (SVM): [`JSMLT.Supervised.SVM.SVM`](http://visualml.io/jsmlt/docs/class/src/supervised/svm/svm.js~SVM.html)
+- Perceptron: [`JSMLT.Supervised.Linear.Perceptron`](http://visualml.io/jsmlt/docs/class/src/supervised/linear/perceptron.js~Perceptron.html)
+- k-nearest neighbors: [`JSMLT.Supervised.Neighbors.KNN`](http://visualml.io/jsmlt/docs/class/src/supervised/neighbors/knn.js~KNN.html)
+- Logistic Regression: [`JSMLT.Supervised.Neighbors.LogisticRegression`](http://visualml.io/jsmlt/docs/class/src/supervised/linear/logistic_regression.js~LogisticRegression.html)
+
+### Unsupervised learning algorithms (clustering)
+- k-meanns: [`JSMLT.Unsupervised.Neighbors.KMeans`](http://visualml.io/jsmlt/docs/class/src/unsupervised/neighbors/k-means.js~KMeans.html)
 
 ### Kernels
-- JSMLT.Kernel.[LinearKernel](http://visualml.io/jsmlt/docs/class/src/kernel/linear.js~LinearKernel.html): Linear kernel
-- JSMLT.Kernel.[GaussianKernel](http://visualml.io/jsmlt/docs/class/src/kernel/gaussian.js~GaussianKernel.html): Gaussian (RBF) kernel
+- Linear kernel: [`JSMLT.Kernel.LinearKernel`](http://visualml.io/jsmlt/docs/class/src/kernel/linear.js~LinearKernel.html)
+- Gaussian (RBF) kernel: [`JSMLT.Kernel.GaussianKernel`](http://visualml.io/jsmlt/docs/class/src/kernel/gaussian.js~GaussianKernel.html)
 
 ### Preprocessing
-- JSMLT.Preprocessing.[LabelEncoder](http://visualml.io/jsmlt/docs/class/src/preprocessing/labelencoder.js~LabelEncoder.html): Encode string or other type of labels to integers
+- Encode string or other type of labels to integers: [`JSMLT.Preprocessing.LabelEncoder`](http://visualml.io/jsmlt/docs/class/src/preprocessing/labelencoder.js~LabelEncoder.html)
 
 ### Model selection
-- JSMLT.ModelSelection.[trainTestSplit](http://visualml.io/jsmlt/docs/function/index.html#static-function-trainTestSplit): Data set splitting
+- Data set splitting: [`JSMLT.ModelSelection.trainTestSplit`](http://visualml.io/jsmlt/docs/function/index.html#static-function-trainTestSplit)
 
 ### Datasets
-- JSMLT.Datasets.[loadIris](http://visualml.io/jsmlt/docs/function/index.html#static-function-loadIris): Iris dataset loading
+- Iris dataset loading: [`JSMLT.Datasets.loadIris`](http://visualml.io/jsmlt/docs/function/index.html#static-function-loadIris)
 
 ### Validation
-- JSMLT.Validation.Metrics.[accuracy](http://visualml.io/jsmlt/docs/function/index.html#static-function-accuracy): Accuracy metric for validation
+- Accuracy metric for validation: [`JSMLT.Validation.Metrics.accuracy`](http://visualml.io/jsmlt/docs/function/index.html#static-function-accuracy)
 
 ### Classification boundaries
-- JSMLT.Classification.[Boundaries](http://visualml.io/jsmlt/docs/class/src/classification/boundaries.js~Boundaries.html): Classification boundaries for trained classifier
+- Classification boundaries for trained classifier: [`JSMLT.Classification.Boundaries`](http://visualml.io/jsmlt/docs/class/src/classification/boundaries.js~Boundaries.html)
 
 # Development
 JSMLT is maintained by [Jesper van Engelen](https://github.com/engelen), and is in active development. It is currently not ready to be used in any production environments.
