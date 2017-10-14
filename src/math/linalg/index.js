@@ -242,12 +242,11 @@ export function norm(x) {
 /**
  * Calculate sum of two vectors. Vectors should have same size.
  *
- * @param {Array.<number>} x - First vector
- * @param {Array.<number>} y - Second vector
+ * @param {...Array.<number>} x Vectors that should be summed
  * @return {Array.<number>} Sum of vectors
  */
-export function sum(x, y) {
-  return x.map((a, i) => a + y[i]);
+export function sum(...x) {
+  return x.reduce((r, a) => r.map((b, i) => b + a[i]));
 }
 
 /**
