@@ -5,7 +5,7 @@
   "main": "distribution/index.js",
   "scripts": {
     "start": "webpack --watch --progress",
-    "compile": "babel -d distribution/ src/",
+    "compile": "babel --watch -d distribution/ src/",
     "build": "webpack -p",
     "prepublish": "npm run compile",
     "build-documentation": "./node_modules/.bin/esdoc"
