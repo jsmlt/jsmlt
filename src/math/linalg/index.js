@@ -22,6 +22,39 @@ export function getShape(A) {
 }
 
 /**
+ * Get an arbitrary element from an array, using another array to determine the index inside the
+ * first array.
+ *
+ * @param {Array.<mixed>} A - Array to get an element from
+ * @param {Array.<number>} index - Indices to find array element. n-th element corresponds to index
+ *   in n-th dimension
+ * @return {mixed} Array element value at index
+ */
+export function getArrayElement(A, index) {
+  if (index.length === 1) {
+    return A[index];
+  }
+
+  return getArrayElement(A[index[0]], index.slice(1));
+}
+
+/**
+ * Set an arbitrary element in an array, using another array to determine the index inside the
+ * array.
+ *
+ * @param {Array.<mixed>} A - Array to set an element in
+ * @param {Array.<number>} index - Indices to find array element. n-th element corresponds to index
+ *   in n-th dimension
+ * @param {mixed} value New element value at index
+ */
+export function setArrayElement(A, index, value) {
+  const B = A.slice();
+
+  B[index[0]] = index.length === 1 ? value : setArrayElement(A[index[0]], index.slice(1), value);
+  return B;
+}
+
+/**
  * Generate n points on the interval (a,b), with intervals (b-a)/(n-1).
  *
  * @example
@@ -313,6 +346,45 @@ export function permuteRows(...S) {
 }
 
 /**
+ * Permute the axes of an input array. In other words, you can interchange the axes of an
+ * n-dimensional input array.
+ *
+ * @param {Array.<mixed>} A - Array of which the axes should be permuted
+ * @param {Array.<number>} newAxes - For the i-th element of this array, specify the index of the
+ *   axis in the original array that should be used
+ * @return {Array.<mixed>} Array with permuted axes
+ */
+export function permuteAxes(A, newAxes) {
+  // Shape of the input array
+  const oldShape = getShape(A);
+
+  // Initialize the output array as all-zeros
+  const newShape = newAxes.map(x => oldShape[x]);
+  let APermuted = zeros(newShape);
+
+  // Axes are permuted by, for all old array indices, copying the value at that position to the
+  // corresponding new position in the output array. This is a really naive algorithm, and could
+  // be optimized. The function below iterates over all indices in the i-th original array
+  // dimension, and is recursively called until the last dimension is reached
+  const permuteAxesStep = (index, step) => {
+    for (let i = 0; i < oldShape[step]; i += 1) {
+      const oldIndex = [...index, i];
+
+      if (step < oldShape.length - 1) {
+        permuteAxesStep(oldIndex, step + 1);
+      } else {
+        const newIndex = newAxes.map(axis => oldIndex[axis]);
+        APermuted = setArrayElement(APermuted, newIndex, getArrayElement(A, oldIndex));
+      }
+    }
+  };
+
+  permuteAxesStep([], 0);
+
+  return APermuted;
+}
+
+/**
  * Recursively flatten an array.
  *
  * @param {Array.<mixed>} A - Array to be flattened
@@ -360,22 +432,6 @@ export function meshGrid(x, y) {
   const gridY = repeat(1, x.length, y);
 
   return [gridX, gridY];
-}
-
-/**
- * Set an arbitrary element in an array, using another array to determine the index inside the
- * array.
- *
- * @param {Array.<mixed>} A - Array to set an element in
- * @param {Array.<number>} index - Indices to find array element. n-th element corresponds to index
- *   in n-th dimension
- * @param {mixed} value New element value at index
- */
-export function setArrayElement(A, index, value) {
-  const B = A.slice();
-
-  B[index[0]] = index.length === 1 ? value : setArrayElement(A[index[0]], index.slice(1), value);
-  return B;
 }
 
 /**
@@ -504,21 +560,4 @@ export function slice(A, start, stop) {
   }
 
   return subslice;
-}
-
-/**
- * Get an arbitrary element from an array, using another array to determine the index inside the
- * first array.
- *
- * @param {Array.<mixed>} A - Array to get an element from
- * @param {Array.<number>} index - Indices to find array element. n-th element corresponds to index
- *   in n-th dimension
- * @return {mixed} Array element value at index
- */
-export function getArrayElement(A, index) {
-  if (index.length === 1) {
-    return A[index];
-  }
-
-  return getArrayElement(A[index[0]], index.slice(1));
 }
