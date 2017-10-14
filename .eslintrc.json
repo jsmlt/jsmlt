@@ -18,6 +18,7 @@
     "class-methods-use-this": "off",
     "no-unused-vars": "off",
     "prefer-destructuring": "off",
-    "function-paren-newline": "off"
+    "function-paren-newline": "off",
+    "no-loop-func": "off"
   }
 }
