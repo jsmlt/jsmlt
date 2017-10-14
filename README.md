@@ -16,7 +16,7 @@ This short guide will help you get started with JSMLT.
 > We're assuming you've got Node.js and npm installed. If you haven't, you should: download and install it from [nodejs.org](https://nodejs.org/en/).
 
 To install JSMLT into your npm project via npm, run
-```bash
+```sh
 npm install @jsmlt/jsmlt
 ```
 
