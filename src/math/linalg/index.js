@@ -283,6 +283,24 @@ export function sum(...x) {
 }
 
 /**
+ * Raise all elements in an array to some power. The power to raise the elements to can either be
+ * the same number for all elements, in which case it should be passed as a number, or an individual
+ * number for all elements, in which case it should be passed as an array of the same shape as the
+ * input array.
+ *
+ * @param {Array.<number>} x - Input array
+ * @param {number|Array.<number>} y - The power to raise all elements to. Either a {number} (all
+ *   elements will be raised to this power) or an array (elements in the input array will be raised
+ *   to the power specified at the same position in the powers array)
+ * @return {Array.<number>} Array containing the input elements, raised to the specified power
+ */
+export function power(x, y) {
+  return Array.isArray(x)
+    ? x.map((a, i) => power(a, (Array.isArray(y) ? y[i] : y)))
+    : x ** y;
+}
+
+/**
  * Multiply a vector by a scalar (i.e. scale the vector).
  *
  * @param {Array.<number>} x - Vector

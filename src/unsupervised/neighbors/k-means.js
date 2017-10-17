@@ -13,7 +13,8 @@ export default class KMeans extends Clusterer {
    * @param {number} [optionsUser.numClusters = 8] - Number of clusters to assign in total
    * @param {string} [optionsUser.initialization = 'random'] - Initialization procedure for cluster
    *   centers. Either 'random', for randomly selecting (without replacement) a datapoint for each
-   *   cluster center
+   *   cluster center, or 'kmeans++', for initializing cluster centroids with the
+   *   [kmeans++ procedure](https://en.wikipedia.org/wiki/K-means%2B%2B)
    */
   constructor(optionsUser = {}) {
     super();
@@ -21,7 +22,7 @@ export default class KMeans extends Clusterer {
     // Parse options
     const optionsDefault = {
       numClusters: 2,
-      initialization: 'random',
+      initialization: 'kmeans++',
     };
 
     const options = {
@@ -32,6 +33,69 @@ export default class KMeans extends Clusterer {
     // Set options
     this.numClusters = options.numClusters;
     this.initialization = options.initialization;
+  }
+
+  /**
+   * Initialize the centroids of each of the clusters based on the user's settings
+   *
+   * @param {Array.<Array.<number>>} X - Features per data point
+   */
+  initializeCentroids(X) {
+    if (this.initialization === 'kmeans++') {
+      // Clear list of centroids
+      this.centroids = [];
+
+      // Get indices [0, ..., n-1] for n datapoints
+      let indices = [...Array(this.numSamples)].map((x, i) => i);
+
+      for (let i = 0; i < this.numClusters; i += 1) {
+        let weights;
+
+        if (this.centroids.length) {
+          // Step 1. Compute the distance of each sample to the nearest cluster centroid
+          const minDistances = indices.map(x =>
+            // Minimize distance to nearest centroid by maximizing negative squared distance
+            Math.min(
+              // Calculate negative squared distance from sample to each centroid
+              ...this.centroids.map(centroid =>
+                LinAlg.norm(LinAlg.sum(centroid, LinAlg.scale(X[x], -1)))
+              )
+            )
+          );
+
+          if (minDistances.filter(x => x > 0).length > 0) {
+            // Step 2a. Calculate squared distances, which will be used as the weights for sampling
+            // a data point for the new cluster centroid
+            weights = LinAlg.power(minDistances, 2);
+          } else {
+            // Step 2b. If all remaining samples have distance 0 to the nearest cluster centroid,
+            // there are (too many) samples with the exact same coordinates. This is a rare case.
+            // However, it can happen, for example when you have 3 clusters and 3 samples, and 2 of
+            // the samples have the same features
+            weights = 'uniform';
+          }
+        } else {
+          weights = 'uniform';
+        }
+
+        // Step 4. Choose a data point from the remaining data points at random, with the computed
+        // sample weights. Use it as the new cluster centroid, and remove it from the list of
+        // potential cluster centroids
+        const sampleIndex = Arrays.sample(indices, 1, false, weights)[0];
+        this.centroids.push(X[sampleIndex]);
+        indices = indices.filter(x => x !== sampleIndex);
+      }
+    } else {
+      // Random initialization. Each centroid is chosen randomly without replacement from the data
+      // points
+
+      // Get indices [0, ..., n-1] for n datapoints
+      const indices = [...Array(this.numSamples)].map((x, i) => i);
+
+      // Sample a random index (without replacement) for each cluster, and use its features as
+      // the initial centroid for that cluster
+      this.centroids = Arrays.sample(indices, this.numClusters).map(x => X[x]);
+    }
   }
 
   /**
@@ -50,15 +114,9 @@ export default class KMeans extends Clusterer {
     }
 
     // Initialize cluster centroids
-    if (this.initialization === 'random') {
-      // Get indices [0, ..., n-1] for n datapoints
-      const indices = [...Array(this.numSamples)].map((x, i) => i);
+    this.initializeCentroids(X);
 
-      // Sample a random index (without replacement) for each cluster, and use its features as
-      // the initial centroid for that cluster
-      this.centroids = Arrays.sample(indices, this.numClusters).map(x => X[x]);
-    }
-
+    // Keep track of current and last cluster assignments for all samples
     let assignments = [];
     let assignmentsPrevious;
 
