@@ -3,7 +3,7 @@ import Data from './data/';
 import * as Datasets from './datasets/';
 import Kernel from './kernel/';
 import Math from './math/';
-import * as ModelSelection from './model_selection/';
+import * as ModelSelection from './model-selection/';
 import Preprocessing from './preprocessing/';
 import Supervised from './supervised/';
 import UI from './ui/';

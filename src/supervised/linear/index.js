@@ -1,5 +1,5 @@
 import Perceptron, { BinaryPerceptron } from './perceptron';
-import LogisticRegression, { BinaryLogisticRegression } from './logistic_regression';
+import LogisticRegression, { BinaryLogisticRegression } from './logistic-regression';
 
 export default {
   Perceptron,
