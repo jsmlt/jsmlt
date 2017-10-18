@@ -7,7 +7,7 @@
 
 The JavaScript Machine Learning Toolkit, or JSMLT, is an open source JavaScript library for education in machine learning. It implements several well-known supervised learning algorithms in an understandable, modular and well-commented way. Furthermore, visualization examples are provided which allow you to explore the way different machine learning algorithms work. Ultimately, JSMLT is intended to provide students with a better learning experience when studying machine learning algorithms.
 
-If you want to explore a visualization of the machine learning algorithms in JSMLT, check out http://visualml.io. It provides an interactive environment for using JSMLT's algorithms.
+If you want to explore a visualization of the machine learning algorithms in JSMLT, check out [visualml.io](https://visualml.io). It provides an interactive environment for using JSMLT's algorithms.
 
 # Getting started
 This short guide will help you get started with JSMLT.
@@ -49,35 +49,35 @@ console.log(clf.predict(test_X));
 Running this simple example will output the classification result `[1,1,0,0]`, meaning it classified the first two points as 0, and the second two points as 1.
 
 # API
-> The entire API documentation can be found [here](http://visualml.io/jsmlt/docs/identifiers.html). You can also build the documentation locally by downloading and installing JSMLT and running `npm run-script build-documentation`: the documentation will then be available in the `docs` folder.
+> The entire API documentation can be found [here](https://visualml.io/jsmlt/docs/identifiers.html). You can also build the documentation locally by downloading and installing JSMLT and running `npm run-script build-documentation`: the documentation will then be available in the `docs` folder.
 
 ### Supervised learning algorithms (classifiers)
-- Support Vector Machine (SVM): [`JSMLT.Supervised.SVM.SVM`](http://visualml.io/jsmlt/docs/class/src/supervised/svm/svm.js~SVM.html)
-- Perceptron: [`JSMLT.Supervised.Linear.Perceptron`](http://visualml.io/jsmlt/docs/class/src/supervised/linear/perceptron.js~Perceptron.html)
-- k-nearest neighbors: [`JSMLT.Supervised.Neighbors.KNN`](http://visualml.io/jsmlt/docs/class/src/supervised/neighbors/knn.js~KNN.html)
-- Logistic Regression: [`JSMLT.Supervised.Neighbors.LogisticRegression`](http://visualml.io/jsmlt/docs/class/src/supervised/linear/logistic_regression.js~LogisticRegression.html)
+- Support Vector Machine (SVM): [`JSMLT.Supervised.SVM.SVM`](https://visualml.io/jsmlt/docs/class/src/supervised/svm/svm.js~SVM.html)
+- Perceptron: [`JSMLT.Supervised.Linear.Perceptron`](https://visualml.io/jsmlt/docs/class/src/supervised/linear/perceptron.js~Perceptron.html)
+- k-nearest neighbors: [`JSMLT.Supervised.Neighbors.KNN`](https://visualml.io/jsmlt/docs/class/src/supervised/neighbors/knn.js~KNN.html)
+- Logistic Regression: [`JSMLT.Supervised.Neighbors.LogisticRegression`](https://visualml.io/jsmlt/docs/class/src/supervised/linear/logistic_regression.js~LogisticRegression.html)
 
 ### Unsupervised learning algorithms (clustering)
-- k-means: [`JSMLT.Unsupervised.Neighbors.KMeans`](http://visualml.io/jsmlt/docs/class/src/unsupervised/neighbors/k-means.js~KMeans.html)
+- k-means: [`JSMLT.Unsupervised.Neighbors.KMeans`](https://visualml.io/jsmlt/docs/class/src/unsupervised/neighbors/k-means.js~KMeans.html)
 
 ### Kernels
-- Linear kernel: [`JSMLT.Kernel.LinearKernel`](http://visualml.io/jsmlt/docs/class/src/kernel/linear.js~LinearKernel.html)
-- Gaussian (RBF) kernel: [`JSMLT.Kernel.GaussianKernel`](http://visualml.io/jsmlt/docs/class/src/kernel/gaussian.js~GaussianKernel.html)
+- Linear kernel: [`JSMLT.Kernel.LinearKernel`](https://visualml.io/jsmlt/docs/class/src/kernel/linear.js~LinearKernel.html)
+- Gaussian (RBF) kernel: [`JSMLT.Kernel.GaussianKernel`](https://visualml.io/jsmlt/docs/class/src/kernel/gaussian.js~GaussianKernel.html)
 
 ### Preprocessing
-- Encode string or other type of labels to integers: [`JSMLT.Preprocessing.LabelEncoder`](http://visualml.io/jsmlt/docs/class/src/preprocessing/labelencoder.js~LabelEncoder.html)
+- Encode string or other type of labels to integers: [`JSMLT.Preprocessing.LabelEncoder`](https://visualml.io/jsmlt/docs/class/src/preprocessing/labelencoder.js~LabelEncoder.html)
 
 ### Model selection
-- Data set splitting: [`JSMLT.ModelSelection.trainTestSplit`](http://visualml.io/jsmlt/docs/function/index.html#static-function-trainTestSplit)
+- Data set splitting: [`JSMLT.ModelSelection.trainTestSplit`](https://visualml.io/jsmlt/docs/function/index.html#static-function-trainTestSplit)
 
 ### Datasets
-- Iris dataset loading: [`JSMLT.Datasets.loadIris`](http://visualml.io/jsmlt/docs/function/index.html#static-function-loadIris)
+- Iris dataset loading: [`JSMLT.Datasets.loadIris`](https://visualml.io/jsmlt/docs/function/index.html#static-function-loadIris)
 
 ### Validation
-- Accuracy metric for validation: [`JSMLT.Validation.Metrics.accuracy`](http://visualml.io/jsmlt/docs/function/index.html#static-function-accuracy)
+- Accuracy metric for validation: [`JSMLT.Validation.Metrics.accuracy`](https://visualml.io/jsmlt/docs/function/index.html#static-function-accuracy)
 
 ### Classification boundaries
-- Classification boundaries for trained classifier: [`JSMLT.Classification.Boundaries`](http://visualml.io/jsmlt/docs/class/src/classification/boundaries.js~Boundaries.html)
+- Classification boundaries for trained classifier: [`JSMLT.Classification.Boundaries`](https://visualml.io/jsmlt/docs/class/src/classification/boundaries.js~Boundaries.html)
 
 # Development
 JSMLT is maintained by [Jesper van Engelen](https://github.com/engelen), and is in active development. It is currently not ready to be used in any production environments.
