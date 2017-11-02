@@ -184,10 +184,13 @@ export default class DecisionTree extends Classifier {
     // Transpose features array to easily access all sample values for a given feature
     const XSubT = LinAlg.transpose(XSub);
 
+    // Randomly permute feature indices
+    const fIndices = LinAlg.permuteRows([...Array(shape[1])].map((x, i) => i))[0];
+
     // Calculate best split by looping over all features and considering the split quality for
     // all of each feature's values. The best split is the feature value at which to split such
     // that the impurity is minimized
-    for (let fInd = 0; fInd < shape[1]; fInd += 1) {
+    fIndices.forEach((fInd) => {
       // Extract unique, sorted sample values for this feature
       const sampleValues = [...new Set(XSubT[fInd])];
       sampleValues.sort((a, b) => (a > b) * 2 - 1);
@@ -220,7 +223,7 @@ export default class DecisionTree extends Classifier {
           bestSplitGroups = groups;
         }
       });
-    }
+    });
 
     return {
       feature: bestSplitFeature,
