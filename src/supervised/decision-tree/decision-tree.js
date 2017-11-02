@@ -23,9 +23,7 @@ import * as Arrays from '../../util/arrays';
 /**
  * Decision tree node. Holds properties of a single tree node.
  */
-export class DecisionTreeNode {
-
-}
+export class DecisionTreeNode {}
 
 /**
  * k-nearest neighbours learner. Classifies points based on the (possibly weighted) vote
@@ -36,8 +34,8 @@ export default class DecisionTree extends Classifier {
    * Constructor. Initialize class members and store user-defined options.
    *
    * @param {Object} [optionsUser] - User-defined options for KNN
-   * @param {string} [optionsUser.criterion = 'gini'] - Splitting criterion. Currently, only 'gini'
-   *   is supported
+   * @param {string} [optionsUser.criterion = 'gini'] - Splitting criterion. Either 'gini', for the
+   *   Gini coefficient, or 'entropy' for the Shannon entropy
    */
   constructor(optionsUser = {}) {
     super();
@@ -65,21 +63,25 @@ export default class DecisionTree extends Classifier {
    */
   calculateImpurity(groups) {
     if (this.criterion === 'gini') {
-      return this.gini(groups);
+      return this.calculateWeightedImpurity(groups, this.gini);
+    } else if (this.criterion === 'entropy') {
+      return this.calculateWeightedImpurity(groups, this.entropy);
     }
 
     return null;
   }
 
   /**
-   * Calculate the Gini coefficient for multiple groups of labels. The returned impurity is
-   * calculated as the weighted sum of the Gini impurities of the individual groups, where the
+   * Calculate the weighted impurity for multiple groups of labels. The returned impurity is
+   * calculated as the weighted sum of the impurities of the individual groups, where the
    * weights are determined by the number of samples in the group.
    *
    * @param {Array.<Array.<mixed>>} groups - Groups of labels. Each group is an array of labels
-   * @return {number} Gini impurity for the provided groups
+   * @param {function(labels: Array.<number>): number} callback - Callback function taking an array
+   *   of labels as its first and only argument
+   * @return {number} Weighted impurity for the provided groups
    */
-  gini(groups) {
+  calculateWeightedImpurity(groups, impurityCallback) {
     // Impurity per group
     const impurities = [];
 
@@ -88,13 +90,7 @@ export default class DecisionTree extends Classifier {
 
     // Loop over the groups and calculate the group's impurity
     for (const group of groups) {
-      const uniqueLabels = [...new Set(group)];
-      const impurity = uniqueLabels.reduce((r, label) => {
-        const frac = group.filter(x => x === label).length / group.length;
-        return r + frac * (1 - frac);
-      }, 0);
-
-      impurities.push(impurity);
+      impurities.push(impurityCallback(group));
       numElements += group.length;
     }
 
@@ -102,6 +98,34 @@ export default class DecisionTree extends Classifier {
     return impurities.reduce((r, a, i) =>
       r + a * groups[i].length / numElements
     , 0);
+  }
+
+  /**
+   * Calculate the Gini coefficient a set of labels.
+   *
+   * @param {Array.<mixed>} labels - Array of predicted labels
+   * @return {number} Gini impurity
+   */
+  gini(labels) {
+    const uniqueLabels = [...new Set(labels)];
+    return uniqueLabels.reduce((r, label) => {
+      const frac = labels.filter(x => x === label).length / labels.length;
+      return r + frac * (1 - frac);
+    }, 0);
+  }
+
+  /**
+   * Calculate the Shannon entropy a set of labels.
+   *
+   * @param {Array.<mixed>} labels - Array of predicted labels
+   * @return {number} Shannon entropy
+   */
+  entropy(labels) {
+    const uniqueLabels = [...new Set(labels)];
+    return uniqueLabels.reduce((r, label) => {
+      const frac = labels.filter(x => x === label).length / labels.length;
+      return r - frac * Math.log(frac);
+    }, 0);
   }
 
   /**
