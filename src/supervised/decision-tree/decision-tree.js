@@ -144,14 +144,15 @@ export default class DecisionTree extends Classifier {
    *
    * @param {Array.<Array.<number>>} XSub - Features of samples to find the split for
    * @param {Array.<mixed>} ySub - Labels of samples
+   * @param {number} baseImpurity - Impurity of parent node
    * @return {DataSplit}
    */
-  findSplit(XSub, ySub) {
+  findSplit(XSub, ySub, baseImpurity) {
     // Extract information from training data
     const shape = LinAlg.getShape(XSub);
 
     // Best split found
-    let bestSplitImpurity = Infinity;
+    let bestSplitGain = - Infinity;
     let bestSplitFeature;
     let bestSplitFeatureValue;
     let bestSplitGroups;
@@ -182,13 +183,14 @@ export default class DecisionTree extends Classifier {
         // and right parts of the split, respectively
         const groups = this.splitSamples(XSub, ySub, fInd, splitValue);
 
-        // Calculate impurity
+        // Calculate impurity and impurity gain
         const impurity = this.calculateImpurity(groups.labels);
+        const gain = baseImpurity - impurity;
 
         // Check whether this split is better than the current best split
-        if (impurity < bestSplitImpurity && groups.features[0].length > 0
+        if (gain > bestSplitGain && groups.features[0].length > 0
           && groups.features[1].length > 0) {
-          bestSplitImpurity = impurity;
+          bestSplitGain = gain;
           bestSplitFeature = fInd;
           bestSplitFeatureValue = splitValue;
           bestSplitGroups = groups;
@@ -215,14 +217,18 @@ export default class DecisionTree extends Classifier {
     // Create tree node
     const node = new DecisionTreeNode();
 
-    if (this.calculateImpurity([ySub]) === 0) {
+    // Calculate node impurity
+    const impurity = this.calculateImpurity([ySub]);
+    node.impurity = impurity;
+
+    if (impurity === 0) {
       node.type = 'leaf';
       node.prediction = ySub[0];
 
       return node;
     }
 
-    const { feature, featureValue, groups } = this.findSplit(XSub, ySub);
+    const { feature, featureValue, groups } = this.findSplit(XSub, ySub, impurity);
 
     // Fill node details
     node.type = 'node';
