@@ -117,16 +117,14 @@ export function sample(input, number, withReplacement = true, weights = 'uniform
     }
 
     if (!withReplacement && number > weights.filter(x => x > 0).length) {
-      throw new Error(`Invalid sampling quantity specified: sampling with replacement cannot sample
-        more elements than the number of non-zero weights in the weights array.`);
+      throw new Error('Invalid sampling quantity specified: sampling without replacement cannot sample more elements than the number of non-zero weights in the weights array.');
     }
   } else if (weights !== 'uniform') {
     throw new Error('Invalid value specified for "weights".');
   }
 
   if (!withReplacement && number > input.length) {
-    throw new Error(`Invalid sampling quantity specified: sampling with replacement cannot sample
-      more elements than the number of input elements.`);
+    throw new Error('Invalid sampling quantity specified: sampling without replacement cannot sample more elements than the number of input elements.');
   }
 
   // Initialize uniform weights if no weights were specified

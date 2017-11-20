@@ -26,8 +26,8 @@ import * as Arrays from '../../util/arrays';
 export class DecisionTreeNode {}
 
 /**
- * k-nearest neighbours learner. Classifies points based on the (possibly weighted) vote
- * of its k nearest neighbours (euclidian distance).
+ * Decision tree learner. Builds a decision tree by greedily splitting samples on one feature
+ * hierarchically.
  */
 export default class DecisionTree extends Classifier {
   /**
@@ -36,6 +36,11 @@ export default class DecisionTree extends Classifier {
    * @param {Object} [optionsUser] - User-defined options for KNN
    * @param {string} [optionsUser.criterion = 'gini'] - Splitting criterion. Either 'gini', for the
    *   Gini coefficient, or 'entropy' for the Shannon entropy
+   * @param {number|string} [optionsUser.numFeatures = 1.0] - Number of features to subsample at
+   *   each node. Either a number (float), in which case the input fraction of features is used
+   *   (e.g., 1.0 for all features), or a string. If string, 'sqrt' and 'log2' are supported,
+   *   causing the algorithm to use sqrt(n) and log2(n) features, respectively (where n is the
+   *   total number of features)
    */
   constructor(optionsUser = {}) {
     super();
@@ -43,6 +48,7 @@ export default class DecisionTree extends Classifier {
     // Parse options
     const optionsDefault = {
       criterion: 'gini',
+      numFeatures: 1.0,
     };
 
     const options = {
@@ -52,6 +58,7 @@ export default class DecisionTree extends Classifier {
 
     // Set options
     this.criterion = options.criterion;
+    this.numFeatures = options.numFeatures;
   }
 
   /**
@@ -176,7 +183,7 @@ export default class DecisionTree extends Classifier {
     const shape = LinAlg.getShape(XSub);
 
     // Best split found
-    let bestSplitGain = - Infinity;
+    let bestSplitGain = -Infinity;
     let bestSplitFeature;
     let bestSplitFeatureValue;
     let bestSplitGroups;
@@ -184,8 +191,9 @@ export default class DecisionTree extends Classifier {
     // Transpose features array to easily access all sample values for a given feature
     const XSubT = LinAlg.transpose(XSub);
 
-    // Randomly permute feature indices
-    const fIndices = LinAlg.permuteRows([...Array(shape[1])].map((x, i) => i))[0];
+    // Randomly sample features to consider
+    const possibleIndices = [...Array(shape[1])].map((x, i) => i);
+    const fIndices = Arrays.sample(possibleIndices, this.numFeaturesInt, false);
 
     // Calculate best split by looping over all features and considering the split quality for
     // all of each feature's values. The best split is the feature value at which to split such
@@ -275,6 +283,19 @@ export default class DecisionTree extends Classifier {
       throw new Error('Number of data points should match number of labels.');
     }
 
+    // Process training options
+    const shape = LinAlg.getShape(X);
+
+    if (this.numFeatures === 'sqrt') {
+      this.numFeaturesInt = Math.floor(Math.sqrt(shape[1]));
+    } else if (this.numFeatures === 'log2') {
+      this.numFeaturesInt = Math.floor(Math.log2(shape[1]));
+    } else {
+      this.numFeaturesInt = Math.max(1, Math.min(this.numFeatures,
+        Math.floor(this.numFeatures * shape[1])));
+    }
+
+    // Construct decision tree
     this.tree = this.buildTree(X, y);
   }
 
