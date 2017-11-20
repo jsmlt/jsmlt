@@ -291,8 +291,10 @@ export default class DecisionTree extends Classifier {
     } else if (this.numFeatures === 'log2') {
       this.numFeaturesInt = Math.floor(Math.log2(shape[1]));
     } else {
-      this.numFeaturesInt = Math.max(1, Math.min(this.numFeatures,
-        Math.floor(this.numFeatures * shape[1])));
+      this.numFeaturesInt = Math.max(1, Math.min(
+        shape[1],
+        Math.floor(this.numFeatures * shape[1])
+      ));
     }
 
     // Construct decision tree
