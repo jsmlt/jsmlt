@@ -1,11 +1,11 @@
-import DecisionTree from './decision-tree';
 import Linear from './linear';
 import Neighbors from './neighbors';
 import SVM from './svm';
+import Trees from './trees';
 
 export default {
-  DecisionTree,
   Linear,
   Neighbors,
   SVM,
+  Trees,
 };
