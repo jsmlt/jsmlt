@@ -98,6 +98,52 @@ export function argMax(array) {
 }
 
 /**
+ * Take a random sample without replacement from an array. Uses the Fisher-Yates shuffling,
+ * algorithm, modified to accomodate sampling.
+ *
+ * @param {Array.<mixed>} input Input array
+ * @param {number} number Number of elements to sample from the input array
+ * @return {Array.<mixed>} Array of length {number} with values sampled from the input array
+ */
+export function sampleFisherYates(input, number) {
+  // Copy input array
+  const shuffledArray = input.slice(0);
+
+  // Number of elements in the input array
+  const numElements = input.length;
+
+  for (let i = numElements - 1; i >= numElements - number; i -= 1) {
+    const index = Random.randint(0, i + 1);
+    const tmp = shuffledArray[index];
+    shuffledArray[index] = shuffledArray[i];
+    shuffledArray[i] = tmp;
+  }
+
+  // Return the sampled values
+  return shuffledArray.slice(numElements - number);
+}
+
+/**
+ * Take a random sample with or without replacement from an array with uniform weights.
+ *
+ * @param {Array.<mixed>} input - Input array
+ * @param {number} number - Number of elements to sample from the input array
+ * @param {boolean} [withReplacement=true] - Whether to sample with (set to true) or without
+ *   replacement (false)
+ * @return {Array.<mixed>} Array of length {number} with values sampled from the input array
+ */
+function sampleUniform(input, number, withReplacement = true) {
+  // If sampling without replacement, use Fisher-Yates sampling
+  if (!withReplacement) {
+    return sampleFisherYates(input, number);
+  }
+
+  // If sampling with replacement, choose a random element each time
+  const indices = Random.randint(0, input.length, number);
+  return indices.map(x => input[x]);
+}
+
+/**
  * Take a random sample with or without replacement from an array. Supports using sampling weights,
  * governing the probability of an item in the input array being selected.
  *
@@ -127,9 +173,13 @@ export function sample(input, number, withReplacement = true, weights = 'uniform
     throw new Error('Invalid sampling quantity specified: sampling without replacement cannot sample more elements than the number of input elements.');
   }
 
-  // Initialize uniform weights if no weights were specified
-  const useWeights = (weights === 'uniform') ? LinAlg.valueVector(input.length, 1)
-    : weights.slice();
+  // Use the uniform sampling method if the user has specified uniform weights
+  if (weights === 'uniform') {
+    return sampleUniform(input, number, withReplacement);
+  }
+
+  // Copy weights vector
+  const useWeights = weights.slice();
 
   const calculateCumWeights = localWeights =>
     localWeights.reduce((r, a, i) => ([

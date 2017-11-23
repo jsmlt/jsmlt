@@ -33,7 +33,7 @@ export default class DecisionTree extends Classifier {
   /**
    * Constructor. Initialize class members and store user-defined options.
    *
-   * @param {Object} [optionsUser] - User-defined options for KNN
+   * @param {Object} [optionsUser] - User-defined options for decision tree
    * @param {string} [optionsUser.criterion = 'gini'] - Splitting criterion. Either 'gini', for the
    *   Gini coefficient, or 'entropy' for the Shannon entropy
    * @param {number|string} [optionsUser.numFeatures = 1.0] - Number of features to subsample at
@@ -84,8 +84,8 @@ export default class DecisionTree extends Classifier {
    * weights are determined by the number of samples in the group.
    *
    * @param {Array.<Array.<mixed>>} groups - Groups of labels. Each group is an array of labels
-   * @param {function(labels: Array.<number>): number} callback - Callback function taking an array
-   *   of labels as its first and only argument
+   * @param {function(labels: Array.<number>): number} impurityCallback - Callback function taking
+   *   an array of labels as its first and only argument
    * @return {number} Weighted impurity for the provided groups
    */
   calculateWeightedImpurity(groups, impurityCallback) {
