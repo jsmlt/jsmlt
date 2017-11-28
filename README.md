@@ -52,6 +52,8 @@ Running this simple example will output the classification result `[1,1,0,0]`, m
 > The entire API documentation can be found [here](https://visualml.io/jsmlt/docs/identifiers.html). You can also build the documentation locally by downloading and installing JSMLT and running `npm run-script build-documentation`: the documentation will then be available in the `docs` folder.
 
 ### Supervised learning algorithms (classifiers)
+- Random Forest: [`JSMLT.Supervised.Trees.RandomForest`](https://visualml.io/jsmlt/docs/class/src/supervised/trees/random-forest.js~RandomForest.html)
+- Decision Tree: [`JSMLT.Supervised.Trees.DecisionTree`](https://visualml.io/jsmlt/docs/class/src/supervised/trees/decision-tree.js~DecisionTree.html)
 - Support Vector Machine (SVM): [`JSMLT.Supervised.SVM.SVM`](https://visualml.io/jsmlt/docs/class/src/supervised/svm/svm.js~SVM.html)
 - Perceptron: [`JSMLT.Supervised.Linear.Perceptron`](https://visualml.io/jsmlt/docs/class/src/supervised/linear/perceptron.js~Perceptron.html)
 - k-nearest neighbors: [`JSMLT.Supervised.Neighbors.KNN`](https://visualml.io/jsmlt/docs/class/src/supervised/neighbors/knn.js~KNN.html)
