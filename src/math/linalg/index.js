@@ -273,13 +273,17 @@ export function norm(x) {
 }
 
 /**
- * Calculate elementwise sum of two or more vectors. Vectors should have same size.
+ * Calculate elementwise sum of two or more arrays. Arrays should have the same shape.
  *
- * @param {...Array.<number>} x - Vectors that should be summed
- * @return {Array.<number>} Sum of vectors
+ * @param {...Array.<mixed>} S - Arrays to concatenate. They must have the same shape
+ * @return {Array.<mixed>} Sum of arrays
  */
-export function sum(...x) {
-  return x.reduce((r, a) => r.map((b, i) => b + a[i]));
+export function sum(...S) {
+  return S.reduce((r, a) =>
+    r.map((b, i) =>
+      Array.isArray(b) ? sum(b, a[i]) : b + a[i]
+    )
+  );
 }
 
 /**
