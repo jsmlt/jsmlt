@@ -107,6 +107,6 @@ export default class RandomForest extends Classifier {
     const predictionCounts = Arrays.valueCounts(predictions);
 
     // Predict the class with the most predictions
-    return predictionCounts.reduce((r, x) => (x[1] > r[1] ? x : r))[0];
+    return predictionCounts.reduce((r, x) => (x[1] > r[1] ? x : r), [-1, -1])[0];
   }
 }
