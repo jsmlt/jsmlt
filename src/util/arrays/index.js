@@ -74,10 +74,38 @@ export function valueCounts(array) {
  * @return {Array.<Number>} Array of array indices in the original array where the array element
  *   matches the filter
  */
-export function filterGetIndex(array, callback) {
+export function argFilter(array, callback) {
   return zipWithIndex(array)
     // Filter zipped elements + indices where the element matches the filter
     .filter(x => callback(x[0], x[1]))
+
+    // Map the zipped elements to the indices
+    .map(x => x[1]);
+}
+/**
+ * Sort an array and return the array indices of the sorted elements. Corresponds to JavaScript's
+ * native Array.sort(), but instead of returning the sorted elements, it returns the indices of the
+ * sorted elements.
+ *
+ * @param {Array.<mixed>} array - Array to be sorted
+ * @param {function(a: mixed, b: mixed): Number} [compareFunction = null] - Callback function be
+ *   used for sorting. This function takes two array elements and returns an integer indicating
+ *   sort order of the two elements a and b:
+ *     < 0  : a before b
+ *     == 0 : leave order of a and b unchanged with respect to each other
+ *     > 0  : b after a
+ *   Defaults to numeric sorting.
+ * @return {Array.<Number>} Array of array indices such that the elements corresponding with these
+ *   indices in the original array are sorted
+ */
+export function argSort(array, callback) {
+  const useCallback = typeof callback === 'function'
+    ? callback
+    : ((a, b) => a - b);
+
+  return zipWithIndex(array)
+    // Sort zipped elements + indices by element value
+    .sort((a, b) => useCallback(a[0], b[0]))
 
     // Map the zipped elements to the indices
     .map(x => x[1]);
