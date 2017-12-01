@@ -74,6 +74,17 @@ export class OneVsAllClassifier extends Classifier {
   }
 
   /**
+   * Get the class labels corresponding with each internal class label. Can be used to determine
+   * which predictino is for which class in predictProba.
+   *
+   * @return {Array.<number>} The n-th element in this array contains the class label of what is
+   *   internally class n
+   */
+  getClasses() {
+    return this.classifiers.map((x, i) => x);
+  }
+
+  /**
    * Train all binary classifiers one-by-one
    *
    * @param {Array.<Array.<number>>} X - Features per data point
@@ -132,5 +143,33 @@ export class OneVsAllClassifier extends Classifier {
 
     // Form final prediction by taking index of maximum normalized classifier output
     return datapointsPredictions.map(x => Arrays.argMax(x));
+  }
+
+  /**
+   * Make a probabilistic prediction for a data set.
+   *
+   * @param {Array.Array.<number>} features - Features for each data point
+   * @return {Array.Array.<number>} Probability predictions. Each array element contains the
+   *   probability of that particular class. The array elements are ordered in the order the classes
+   *   appear in the training data (i.e., if class "A" occurs first in the labels list in the
+   *   training, procedure, its probability is returned in the first array element of each
+   *   sub-array)
+   */
+  predictProba(X) {
+    if (typeof this.classifiers[0].classifier.predictProba !== 'function') {
+      throw new Error('Base classifier does not implement the predictProba method, which was attempted to be called from the one-vs-all classifier.');
+    }
+
+    // Get probability predictions from all classifiers for all data points by predicting all data
+    // points with each classifier (getting an array of predictions for each classifier) and
+    // transposing
+    const predictions = LinAlg.transpose(
+      this.classifiers.map(classifier =>
+        classifier.classifier.predictProba(X).map(probs => probs[1])
+      )
+    );
+
+    // Scale all predictions to yield valid probabilities
+    return predictions.map(x => LinAlg.scale(x, 1 / LinAlg.internalSum(x)));
   }
 }

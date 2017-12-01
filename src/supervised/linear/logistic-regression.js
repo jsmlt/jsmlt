@@ -98,9 +98,8 @@ export class BinaryLogisticRegression extends Classifier {
    * @param {Array.Array.<number>} features - Features for each data point
    * @param {Object} [optionsUser] User-defined options
    * @param {string} [optionsUser.output = 'classLabels'] Output for predictions. Either
-   *   "classLabels" (default, output predicted class label), "raw" (dot product of weights vector
-   *   with augmented features vector) or "normalized" (dot product from "raw" but with unit-length
-   *   weights)
+   *   "classLabels" (default, output predicted class label), "raw", or "normalized" (both returning
+   *   the sigmoid of the dot product of the feature vector and unit-length weights)
    * @return {Array.<number>} Predictions. Output dependent on options.output, defaults to class
    *   labels
    */
@@ -115,6 +114,33 @@ export class BinaryLogisticRegression extends Classifier {
       ...optionsUser,
     };
 
+    // Probabilistic predictions
+    const predictionsProba = this.predictProba(features);
+
+    if (options.output === 'raw' || options.output === 'normalized') {
+      // Probability of positive class is the raw output
+      return predictionsProba.map(x => x[1]);
+    }
+
+    // Calculate binary predictions
+    const predictions = [];
+
+    for (let i = 0; i < predictionsProba.length; i += 1) {
+      predictions.push(predictionsProba[i][1] >= 0.5 ? 1 : 0);
+    }
+
+    return predictions;
+  }
+
+  /**
+   * Make a probabilistic prediction for a data set.
+   *
+   * @param {Array.Array.<number>} features - Features for each data point
+   * @return {Array.Array.<number>} Probability predictions. Each array element contains the
+   *   probability of the negative (0) class in the first element, and the probability of the
+   *   positive (1) class in the second element
+   */
+  predictProba(features) {
     // Predictions
     const predictions = [];
 
@@ -130,22 +156,12 @@ export class BinaryLogisticRegression extends Classifier {
       // bias weight
       augmentedFeatures.unshift(1);
 
-      // Calculate output
-      let output = LinAlg.dot(augmentedFeatures, this.weights);
+      // Calculate probability of positive class
+      const output = LinAlg.dot(augmentedFeatures, this.weights);
+      const posProb = sigmoid(output / weightsMagnitude);
 
-      // Store prediction
-      if (options.output === 'raw') {
-        // Raw output: do nothing
-        output = sigmoid(output);
-      } else if (options.output === 'normalized') {
-        // Normalized output
-        output = sigmoid(output / weightsMagnitude);
-      } else {
-        // Class label output
-        output = sigmoid(output) > 0.5 ? 1 : 0;
-      }
-
-      predictions.push(output);
+      // Add pair of probabilities to list
+      predictions.push([1 - posProb, posProb]);
     }
 
     return predictions;
