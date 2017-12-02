@@ -5,6 +5,190 @@
  */
 
 /**
+ * Find the shape of an array, i.e. the number of elements per dimension of the array.
+ *
+ * @param {Array.<mixed>} A - Arbitrarily nested array to find shape of.
+ * @return {Array.<number>} Array specifying the number of elements per dimension. n-th
+ *   element corresponds to the number of elements in the n-th dimension.
+ */
+export function getShape(A) {
+  if (!Array.isArray(A)) {
+    return [];
+  }
+
+  const B = getShape(A[0]);
+  B.unshift(A.length);
+
+  return B;
+}
+
+/**
+ * Deep check whether two arrays are equal: sub-arrays will be traversed, and strong type checking
+ * is enabled.
+ *
+ * @param {Array.<mixed>|mixed} array1 - First array to check or array element to check
+ * @param {Array.<mixed>|mixed} array2 - Second array to check ot array element to check. Will be
+ *   checked against first array
+ * @return {boolean} Whether the two arrays are the same
+ */
+export function equal(array1, array2) {
+  if (!Array.isArray(array1) || !Array.isArray(array2)) {
+    return array1 === array2;
+  }
+
+  if (array1.length !== array2.length) {
+    return false;
+  }
+
+  return array1.reduce((r, a, i) => r && equal(a, array2[i]), true);
+}
+
+
+// Array indexing
+// -----
+
+/**
+ * Get an arbitrary element from an array, using another array to determine the index inside the
+ * first array.
+ *
+ * @param {Array.<mixed>} A - Array to get an element from
+ * @param {Array.<number>} index - Indices to find array element. n-th element corresponds to index
+ *   in n-th dimension
+ * @return {mixed} Array element value at index
+ */
+export function getArrayElement(A, index) {
+  if (index.length === 1) {
+    return A[index];
+  }
+
+  return getArrayElement(A[index[0]], index.slice(1));
+}
+
+/**
+ * Take a slice out of an input array. Negative indices can be used in both the starting indices and
+ * the stopping indices. Negative indices: the negative stopping index is used as the negative
+ * offset relative to the last index in the particular dimension.
+ *
+ * @param {Array.<mixed>} A - Array to extract block from
+ * @param {Array.<number>} start -  Array specifying the starting index per dimension. n-th element
+ *   corresponds to the number of elements to skip, before extracting the block, in the n-th
+ *   dimension. Negative indices are supported.
+ * @param {Array.<number>} stop - Array specifying the index to stop at (exclusive) per dimension.
+ *   n-th element corresponds to the stopping index in the n-th dimension. Negative indices are
+ *   supported. Use null for unlimited offset.
+ * @return {Array.<mixed>} Array slice extracted from input array
+ */
+export function slice(A, start, stop) {
+  // Check whether the same number of start and stop indices is supplied
+  if (start.length !== stop.length) {
+    throw new Error('"start" and "stop" must contain the same number of indices.');
+  }
+
+  // Check whether the number of dimensions to slice on does not exceed the number of dimensions of
+  // the array
+  if (start.length > getShape(A).length) {
+    throw new Error('The number of start and stop indices must not exceed the number of input array dimensions');
+  }
+
+  // Parse start and end indices for highest dimension
+  const parseIndex = (index, allowNull) => {
+    if (allowNull && index === null) {
+      return A.length;
+    }
+
+    if (index < 0) {
+      return A.length + index;
+    }
+
+    return index;
+  };
+
+  const parsedStart = parseIndex(start[0], false);
+  const parsedStop = parseIndex(stop[0], true);
+
+  // If this is the deepest dimension where we should slice, simply slice the array
+  if (start.length === 1) {
+    return A.slice(parsedStart, parsedStop);
+  }
+
+  // If it isn't the deepest dimension to slice, slice in the sub-array
+  const subslice = [];
+
+  for (let i = parsedStart; i < parsedStop; i += 1) {
+    subslice.push(slice(A[i], start.slice(1), stop.slice(1)));
+  }
+
+  return subslice;
+}
+
+/**
+ * Extract a sub-block of a matrix of a particular shape at a particular position.
+ *
+ * @deprecated Use slice() instead
+ *
+ * @param {Array.<mixed>} A - Array to extract block from
+ * @param {Array.<number>} offset -  Array specifying the offset per dimension. n-th element
+ *   corresponds to the number of elements to skip, before extracting the block, in the n-th
+ *   dimension.
+ * @param {Array.<number>} shape - Array specifying the number of elements per dimension. n-th
+ *   element corresponds to the number of elements in the n-th dimension.
+ * @return {Array.<mixed>} Sub-block extracted from array
+ */
+export function subBlock(A, offset, shape) {
+  if (offset.length === 1) {
+    return A.slice(offset[0], offset[0] + shape[0]);
+  }
+
+  const subblock = [];
+
+  for (let i = offset[0]; i < offset[0] + shape[0]; i += 1) {
+    subblock.push(subBlock(A[i], offset.slice(1), shape.slice(1)));
+  }
+
+  return subblock;
+}
+
+/**
+ * Take a slice out of an array, but wrap around the beginning an end of the array. For example,
+ * if `begin` is -1, the last element of the input array is used as the first output element.
+ *
+ * @param {Array.<mixed>} array - Input array
+ * @param {number} begin Index of first array element
+ * @param {number} end Index of end of slice range (element with this index will itself not be
+ *   included in output)
+ * @return {Array.<mixed>} Sliced array
+ */
+export function wrapSlice(array, begin, end) {
+  const result = [];
+
+  for (let i = begin; i <= end; i += 1) {
+    const index = ((i % array.length) + array.length) % array.length;
+    result.push(array[index]);
+  }
+
+  return result;
+}
+
+/**
+ * Set an arbitrary element in an array, using another array to determine the index inside the
+ * array.
+ *
+ * @param {Array.<mixed>} A - Array to set an element in
+ * @param {Array.<number>} index - Indices to find array element. n-th element corresponds to index
+ *   in n-th dimension
+ * @param {mixed} value New element value at index
+ */
+export function setArrayElement(A, index, value) {
+  const B = A.slice();
+
+  B[index[0]] = index.length === 1 ? value : setArrayElement(A[index[0]], index.slice(1), value);
+  return B;
+}
+
+// Array construction
+// -----
+
+/**
  * Initialize a vector of a certain length with a specific value in each entry.
  *
  * @param {number} n - Number of elements in the vector
@@ -59,87 +243,29 @@ export function fill(A, value) {
 }
 
 /**
- * Get the transpose of a matrix or vector.
+ * Generate n points on the interval (a,b), with intervals (b-a)/(n-1).
  *
- * @param {Array.<Array.<number>>} A - Matrix or vector
- * @return {Array.<Array.<number>>} Transpose of the matrix
+ * @example
+ * var list = linspace(1, 3, 0.5);
+ * // list now contains [1, 1.5, 2, 2.5, 3]
+ *
+ * @param {number} a - Starting point
+ * @param {number} b - Ending point
+ * @param {number} n - Number of points
+ * @return {Array.<number>} Array of evenly spaced points on the interval (a,b)
  */
-export function transpose(A) {
-  const ATranspose = zeros([A[0].length, A.length]);
+export function linspace(a, b, n) {
+  const r = [];
 
-  for (let i = 0; i < A.length; i += 1) {
-    for (let j = 0; j < A[0].length; j += 1) {
-      ATranspose[j][i] = A[i][j];
-    }
+  for (let i = 0; i < n; i += 1) {
+    r.push(a + i * ((b - a) / (n - 1)));
   }
 
-  return ATranspose;
+  return r;
 }
 
-/**
- * Calculate dot product of two vectors. Vectors should have same size.
- *
- * @param {Array.<number>} x - First vector
- * @param {Array.<number>} y - Second vector
- * @return {number} Dot product scalar result
- */
-export function dot(x, y) {
-  return x.reduce((r, a, i) => r + a * y[i], 0);
-}
-
-/**
- * Calculate the Euclidian norm of a vector.
- *
- * @param {Array.<number>} x - Vector of which to calculate the norm
- */
-export function norm(x) {
-  return Math.sqrt(dot(x, x));
-}
-
-/**
- * Multiply each element of an array by a scalar (i.e. scale the array).
- *
- * @param {Array.<mixed>} A - Array to scale
- * @param {number} c - Scalar
- * @return {Array.<mixed>} Scaled array
- */
-export function scale(A, c) {
-  return Array.isArray(A)
-    ? A.map(B => scale(B, c))
-    : A * c;
-}
-
-/**
- * Raise all elements in an array to some power. The power to raise the elements to can either be
- * the same number for all elements, in which case it should be passed as a number, or an individual
- * number for all elements, in which case it should be passed as an array of the same shape as the
- * input array.
- *
- * @param {Array.<number>} x - Input array
- * @param {number|Array.<number>} y - The power to raise all elements to. Either a {number} (all
- *   elements will be raised to this power) or an array (elements in the input array will be raised
- *   to the power specified at the same position in the powers array)
- * @return {Array.<number>} Array containing the input elements, raised to the specified power
- */
-export function power(A, y) {
-  return Array.isArray(A)
-    ? A.map((a, i) => power(a, (Array.isArray(y) ? y[i] : y)))
-    : A ** y;
-}
-
-/**
- * Calculate elementwise sum of two or more arrays. Arrays should have the same shape.
- *
- * @param {...Array.<mixed>} S - Arrays to concatenate. They must have the same shape
- * @return {Array.<mixed>} Sum of arrays
- */
-export function sum(...S) {
-  return S.reduce((r, a) =>
-    r.map((b, i) =>
-      (Array.isArray(b) ? sum(b, a[i]) : b + a[i])
-    )
-  );
-}
+// Array combination
+// -----
 
 /**
  * Concatenate two or more n-dimensional arrays.
@@ -182,48 +308,320 @@ export function repeat(axis, numRepeats, A) {
   return R;
 }
 
-/**
- * Generate a mesh grid, i.e. two m-by-n arrays where m=|y| and n=|x|, from two vectors. The mesh
- * grid generates two grids, where the first grid repeats x row-wise m times, and the second grid
- * repeats y column-wise n times. Can be used to generate coordinate grids.
- *
- * Example input: x=[0, 1, 2], y=[2, 4, 6, 8]
- * Corresponding output:
- *   matrix 1: [[0, 1, 2], [0, 1, 2], [0, 1, 2], [0, 1, 2]]
- *   matrix 2: [[2, 2, 2], [4, 4, 4], [6, 6, 6], [8, 8, 8]]
- *
- * @param {Array.<number>} x - Vector of x-coordinates
- * @param {Array.<number>} y - Vector of y-coordinates
- * @return {Array.<Array.<Array.<number>>>} Two-dimensional array containing the x-grid as the first
- *   element, and the y-grid as the second element
- */
-export function meshGrid(x, y) {
-  const gridX = transpose(repeat(1, y.length, x));
-  const gridY = repeat(1, x.length, y);
+// Elementary vector calculations
+// -----
 
-  return [gridX, gridY];
+/**
+ * Calculate dot product of two vectors. Vectors should have same size.
+ *
+ * @param {Array.<number>} x - First vector
+ * @param {Array.<number>} y - Second vector
+ * @return {number} Dot product scalar result
+ */
+export function dot(x, y) {
+  return x.reduce((r, a, i) => r + a * y[i], 0);
 }
 
 /**
- * Take a slice out of an array, but wrap around the beginning an end of the array. For example,
- * if `begin` is -1, the last element of the input array is used as the first output element.
+ * Calculate the Euclidian norm of a vector.
  *
- * @param {Array.<mixed>} array - Input array
- * @param {number} begin Index of first array element
- * @param {number} end Index of end of slice range (element with this index will itself not be
- *   included in output)
- * @return {Array.<mixed>} Sliced array
+ * @param {Array.<number>} x - Vector of which to calculate the norm
  */
-export function wrapSlice(array, begin, end) {
-  const result = [];
+export function norm(x) {
+  return Math.sqrt(dot(x, x));
+}
 
-  for (let i = begin; i <= end; i += 1) {
-    const index = ((i % array.length) + array.length) % array.length;
-    result.push(array[index]);
+// Element-wise array manipulation
+// -----
+
+/**
+ * Multiply each element of an array by a scalar (i.e. scale the array).
+ *
+ * @param {Array.<mixed>} A - Array to scale
+ * @param {number} c - Scalar
+ * @return {Array.<mixed>} Scaled array
+ */
+export function scale(A, c) {
+  return Array.isArray(A)
+    ? A.map(B => scale(B, c))
+    : A * c;
+}
+
+/**
+ * Raise all elements in an array to some power. The power to raise the elements to can either be
+ * the same number for all elements, in which case it should be passed as a number, or an individual
+ * number for all elements, in which case it should be passed as an array of the same shape as the
+ * input array.
+ *
+ * @param {Array.<number>} x - Input array
+ * @param {number|Array.<number>} y - The power to raise all elements to. Either a {number} (all
+ *   elements will be raised to this power) or an array (elements in the input array will be raised
+ *   to the power specified at the same position in the powers array)
+ * @return {Array.<number>} Array containing the input elements, raised to the specified power
+ */
+export function power(A, y) {
+  return Array.isArray(A)
+    ? A.map((a, i) => power(a, (Array.isArray(y) ? y[i] : y)))
+    : A ** y;
+}
+
+/**
+ * Get a copy of an array with absolute values of the original array entries.
+ *
+ * @param {Array.<mixed>} A Array to get absolute values array from
+ * @return {Array.<mixed>} Array with absolute values
+ */
+export function abs(A) {
+  return A.map(B => (Array.isArray(B) ? abs(B) : Math.abs(B)));
+}
+
+/**
+ * Calculate element-wise sum of two or more arrays. Arrays should have the same shape.
+ *
+ * @param {...Array.<mixed>} S - Arrays to concatenate. They must have the same shape
+ * @return {Array.<mixed>} Sum of arrays
+ */
+export function sum(...S) {
+  return S.reduce((r, a) =>
+    r.map((b, i) =>
+      (Array.isArray(b) ? sum(b, a[i]) : b + a[i])
+    )
+  );
+}
+
+// Array calculations
+// -----
+
+/**
+ * Sum all elements of an array.
+ *
+ * @param {Array.<number>} A - Array
+ * @return {number} Sum of all vector elements
+ */
+export function internalSum(A) {
+  return A.reduce((r, B) => r + (Array.isArray(B) ? internalSum(B) : B), 0);
+}
+
+// Array shape manipulation
+// -----
+
+/**
+ * Randomly permute the rows of a matrix.
+ *
+ * @param {Array.<Array.<mixed>>} S Matrix
+ * @param {Array.<Array.<mixed>>} ... Other matrices to permute in the same way
+ * @return {Array.<Array.<mixed>>} Permuted matrix
+ */
+export function permuteRows(...S) {
+  // Copy matrices
+  const SPermutated = S.map(A => A.slice());
+
+  // Number of remaining rows
+  let remainingRows = SPermutated[0].length;
+
+  while (remainingRows > 0) {
+    // Select a random element from the remaining rows and swap it with the first element that has
+    // not yet been assigned
+    const swapIndex = Math.floor(Math.random() * remainingRows);
+
+    for (let i = 0; i < SPermutated.length; i += 1) {
+      const tmpRow = SPermutated[i][remainingRows - 1];
+
+      SPermutated[i][remainingRows - 1] = SPermutated[i][swapIndex];
+      SPermutated[i][swapIndex] = tmpRow;
+    }
+
+    remainingRows -= 1;
   }
 
-  return result;
+  return SPermutated;
 }
+
+/**
+ * Pad an array along one or multiple axes.
+ *
+ * @param {Array.<mixed>} A - Array to be padded
+ * @param {Array.<number> | Array.<Array.<number>>} paddingLengths - Amount of padding for each axis
+ *   that should be padded. Each element in this array should be a two-dimensional array, where the
+ *   first element specifies the padding at the start (front) of the axis, and the second element
+ *   specifies the padding at the end (back) of the axis. The nth element of `paddingLength`
+ *   specifies the front and back padding of the nth axis in the `axes` parameter
+ * @param {Array.<number> | Array.<Array.<number>>} paddingValues - The values to pad each axis
+ *   with. See the specification of the `paddingLenghts` parameter for the expected structure
+ * @param {Array.<number>} [axes] - Indices of axes to be padded. Defaults to the first n axes,
+ *   where n is the number of elements in `paddingLengths`
+ * @return {Array.<mixed>} Padded array
+ */
+export function pad(A, paddingLengths, paddingValues, axes = []) {
+  let B = A.slice();
+
+  // Use default axes to padded (first n axes where n is the number of axes used in paddingLenghts
+  // and paddingValues)
+  if (!axes.length) {
+    for (let i = 0; i < paddingLengths.length; i += 1) {
+      axes.push(i);
+    }
+  }
+
+  // Pad all specified axes
+  for (let i = 0; i < axes.length; i += 1) {
+    const axis = axes[i];
+    const currentShape = getShape(B);
+
+    // Determine padding lengths
+    let lengthFront = 0;
+    let lengthBack = 0;
+
+    if (Array.isArray(paddingLengths[i])) {
+      lengthFront = paddingLengths[i][0];
+      lengthBack = paddingLengths[i][1];
+    } else {
+      lengthFront = paddingLengths[i];
+      lengthBack = paddingLengths[i];
+    }
+
+    // Determine padding values
+    let valueFront = 0;
+    let valueBack = 0;
+
+    if (Array.isArray(paddingValues[i])) {
+      valueFront = paddingValues[i][0];
+      valueBack = paddingValues[i][1];
+    } else {
+      valueFront = paddingValues[i];
+      valueBack = paddingValues[i];
+    }
+
+    // Shape of padding for front and back
+    const shapeFront = currentShape.slice();
+    const shapeBack = currentShape.slice();
+
+    shapeFront[axis] = lengthFront;
+    shapeBack[axis] = lengthBack;
+
+    // Create padding blocks
+    const paddingFront = full(shapeFront, valueFront);
+    const paddingBack = full(shapeBack, valueBack);
+
+    B = concatenate(axis, paddingFront, B, paddingBack);
+  }
+
+  return B;
+}
+
+/**
+ * Permute the axes of an input array. In other words, you can interchange the axes of an
+ * n-dimensional input array.
+ *
+ * @param {Array.<mixed>} A - Array of which the axes should be permuted
+ * @param {Array.<number>} newAxes - For the i-th element of this array, specify the index of the
+ *   axis in the original array that should be used
+ * @return {Array.<mixed>} Array with permuted axes
+ */
+export function permuteAxes(A, newAxes) {
+  // Shape of the input array
+  const oldShape = getShape(A);
+
+  // Initialize the output array as all-zeros
+  const newShape = newAxes.map(x => oldShape[x]);
+  let APermuted = zeros(newShape);
+
+  // Axes are permuted by, for all old array indices, copying the value at that position to the
+  // corresponding new position in the output array. This is a really naive algorithm, and could
+  // be optimized. The function below iterates over all indices in the i-th original array
+  // dimension, and is recursively called until the last dimension is reached
+  const permuteAxesStep = (index, step) => {
+    for (let i = 0; i < oldShape[step]; i += 1) {
+      const oldIndex = [...index, i];
+
+      if (step < oldShape.length - 1) {
+        permuteAxesStep(oldIndex, step + 1);
+      } else {
+        const newIndex = newAxes.map(axis => oldIndex[axis]);
+        APermuted = setArrayElement(APermuted, newIndex, getArrayElement(A, oldIndex));
+      }
+    }
+  };
+
+  permuteAxesStep([], 0);
+
+  return APermuted;
+}
+
+/**
+ * Recursively flatten an array.
+ *
+ * @param {Array.<mixed>} A - Array to be flattened
+ * @return {Array.<mixed>} Flattened array
+ */
+export function flatten(A) {
+  return [].concat(...A.map(x => (Array.isArray(x) ? flatten(x) : x)));
+}
+
+/**
+ * Reshape an array into a different shape.
+ *
+ * @param {Array.<mixed>} A - Array to reshape
+ * @param {Array.<number>} shape - Array specifying the number of elements per dimension. n-th
+ *   element corresponds to the number of elements in the n-th dimension.
+ * @return {Array.<mixed>} Reshaped array
+ */
+export function reshape(A, shape) {
+  const AValues = flatten(A);
+
+  let B = zeros(shape);
+
+  const counters = zeros(shape.length);
+  let counterIndex = counters.length - 1;
+
+  let counterTotal = 0;
+
+  let done = false;
+
+  while (!done) {
+    B = setArrayElement(B, counters, AValues[counterTotal]);
+
+    // Increment current counter
+    counterIndex = counters.length - 1;
+    counters[counterIndex] += 1;
+    counterTotal += 1;
+
+    // If the end of the current counter is reached, move to the next counter...
+    while (counters[counterIndex] === shape[counterIndex]) {
+      // ...unless we have reached the end of all counters. In that case, we are done
+      if (counterIndex === 0) {
+        done = true;
+      }
+
+      counters[counterIndex - 1] += 1;
+      counters[counterIndex] = 0;
+      counterIndex -= 1;
+    }
+  }
+
+  return B;
+}
+
+/**
+ * Get the transpose of a matrix or vector.
+ *
+ * @param {Array.<Array.<number>>} A - Matrix or vector
+ * @return {Array.<Array.<number>>} Transpose of the matrix
+ */
+export function transpose(A) {
+  const ATranspose = zeros([A[0].length, A.length]);
+
+  for (let i = 0; i < A.length; i += 1) {
+    for (let j = 0; j < A[0].length; j += 1) {
+      ATranspose[j][i] = A[i][j];
+    }
+  }
+
+  return ATranspose;
+}
+
+// Traditional array functionality
+// -----
 
 /**
  * From an input array, create a new array where each element is comprised of a 2-dimensional array
@@ -327,387 +725,28 @@ export function argMax(array) {
   return zipWithIndex(array).reduce((r, x) => (x[0] > r[0] ? x : r))[1];
 }
 
-/**
- * Find the shape of an array, i.e. the number of elements per dimension of the array.
- *
- * @param {Array.<mixed>} A - Arbitrarily nested array to find shape of.
- * @return {Array.<number>} Array specifying the number of elements per dimension. n-th
- *   element corresponds to the number of elements in the n-th dimension.
- */
-export function getShape(A) {
-  if (!Array.isArray(A)) {
-    return [];
-  }
-
-  const B = getShape(A[0]);
-  B.unshift(A.length);
-
-  return B;
-}
+// Miscellaneous
+// -----
 
 /**
- * Get an arbitrary element from an array, using another array to determine the index inside the
- * first array.
+ * Generate a mesh grid, i.e. two m-by-n arrays where m=|y| and n=|x|, from two vectors. The mesh
+ * grid generates two grids, where the first grid repeats x row-wise m times, and the second grid
+ * repeats y column-wise n times. Can be used to generate coordinate grids.
  *
- * @param {Array.<mixed>} A - Array to get an element from
- * @param {Array.<number>} index - Indices to find array element. n-th element corresponds to index
- *   in n-th dimension
- * @return {mixed} Array element value at index
+ * Example input: x=[0, 1, 2], y=[2, 4, 6, 8]
+ * Corresponding output:
+ *   matrix 1: [[0, 1, 2], [0, 1, 2], [0, 1, 2], [0, 1, 2]]
+ *   matrix 2: [[2, 2, 2], [4, 4, 4], [6, 6, 6], [8, 8, 8]]
+ *
+ * @param {Array.<number>} x - Vector of x-coordinates
+ * @param {Array.<number>} y - Vector of y-coordinates
+ * @return {Array.<Array.<Array.<number>>>} Two-dimensional array containing the x-grid as the first
+ *   element, and the y-grid as the second element
  */
-export function getArrayElement(A, index) {
-  if (index.length === 1) {
-    return A[index];
-  }
+export function meshGrid(x, y) {
+  const gridX = transpose(repeat(1, y.length, x));
+  const gridY = repeat(1, x.length, y);
 
-  return getArrayElement(A[index[0]], index.slice(1));
+  return [gridX, gridY];
 }
 
-/**
- * Set an arbitrary element in an array, using another array to determine the index inside the
- * array.
- *
- * @param {Array.<mixed>} A - Array to set an element in
- * @param {Array.<number>} index - Indices to find array element. n-th element corresponds to index
- *   in n-th dimension
- * @param {mixed} value New element value at index
- */
-export function setArrayElement(A, index, value) {
-  const B = A.slice();
-
-  B[index[0]] = index.length === 1 ? value : setArrayElement(A[index[0]], index.slice(1), value);
-  return B;
-}
-
-/**
- * Pad an array along one or multiple axes.
- *
- * @param {Array.<mixed>} A - Array to be padded
- * @param {Array.<number> | Array.<Array.<number>>} paddingLengths - Amount of padding for each axis
- *   that should be padded. Each element in this array should be a two-dimensional array, where the
- *   first element specifies the padding at the start (front) of the axis, and the second element
- *   specifies the padding at the end (back) of the axis. The nth element of `paddingLength`
- *   specifies the front and back padding of the nth axis in the `axes` parameter
- * @param {Array.<number> | Array.<Array.<number>>} paddingValues - The values to pad each axis
- *   with. See the specification of the `paddingLenghts` parameter for the expected structure
- * @param {Array.<number>} [axes] - Indices of axes to be padded. Defaults to the first n axes,
- *   where n is the number of elements in `paddingLengths`
- * @return {Array.<mixed>} Padded array
- */
-export function pad(A, paddingLengths, paddingValues, axes = []) {
-  let B = A.slice();
-
-  // Use default axes to padded (first n axes where n is the number of axes used in paddingLenghts
-  // and paddingValues)
-  if (!axes.length) {
-    for (let i = 0; i < paddingLengths.length; i += 1) {
-      axes.push(i);
-    }
-  }
-
-  // Pad all specified axes
-  for (let i = 0; i < axes.length; i += 1) {
-    const axis = axes[i];
-    const currentShape = getShape(B);
-
-    // Determine padding lengths
-    let lengthFront = 0;
-    let lengthBack = 0;
-
-    if (Array.isArray(paddingLengths[i])) {
-      lengthFront = paddingLengths[i][0];
-      lengthBack = paddingLengths[i][1];
-    } else {
-      lengthFront = paddingLengths[i];
-      lengthBack = paddingLengths[i];
-    }
-
-    // Determine padding values
-    let valueFront = 0;
-    let valueBack = 0;
-
-    if (Array.isArray(paddingValues[i])) {
-      valueFront = paddingValues[i][0];
-      valueBack = paddingValues[i][1];
-    } else {
-      valueFront = paddingValues[i];
-      valueBack = paddingValues[i];
-    }
-
-    // Shape of padding for front and back
-    const shapeFront = currentShape.slice();
-    const shapeBack = currentShape.slice();
-
-    shapeFront[axis] = lengthFront;
-    shapeBack[axis] = lengthBack;
-
-    // Create padding blocks
-    const paddingFront = full(shapeFront, valueFront);
-    const paddingBack = full(shapeBack, valueBack);
-
-    B = concatenate(axis, paddingFront, B, paddingBack);
-  }
-
-  return B;
-}
-
-/**
- * Sum all elements of an array.
- *
- * @param {Array.<number>} A - Array
- * @return {number} Sum of all vector elements
- */
-export function internalSum(A) {
-  return A.reduce((r, B) => r + (Array.isArray(B) ? internalSum(B) : B), 0);
-}
-
-/**
- * Randomly permute the rows of a matrix.
- *
- * @param {Array.<Array.<mixed>>} S Matrix
- * @param {Array.<Array.<mixed>>} ... Other matrices to permute in the same way
- * @return {Array.<Array.<mixed>>} Permuted matrix
- */
-export function permuteRows(...S) {
-  // Copy matrices
-  const SPermutated = S.map(A => A.slice());
-
-  // Number of remaining rows
-  let remainingRows = SPermutated[0].length;
-
-  while (remainingRows > 0) {
-    // Select a random element from the remaining rows and swap it with the first element that has
-    // not yet been assigned
-    const swapIndex = Math.floor(Math.random() * remainingRows);
-
-    for (let i = 0; i < SPermutated.length; i += 1) {
-      const tmpRow = SPermutated[i][remainingRows - 1];
-
-      SPermutated[i][remainingRows - 1] = SPermutated[i][swapIndex];
-      SPermutated[i][swapIndex] = tmpRow;
-    }
-
-    remainingRows -= 1;
-  }
-
-  return SPermutated;
-}
-
-/**
- * Permute the axes of an input array. In other words, you can interchange the axes of an
- * n-dimensional input array.
- *
- * @param {Array.<mixed>} A - Array of which the axes should be permuted
- * @param {Array.<number>} newAxes - For the i-th element of this array, specify the index of the
- *   axis in the original array that should be used
- * @return {Array.<mixed>} Array with permuted axes
- */
-export function permuteAxes(A, newAxes) {
-  // Shape of the input array
-  const oldShape = getShape(A);
-
-  // Initialize the output array as all-zeros
-  const newShape = newAxes.map(x => oldShape[x]);
-  let APermuted = zeros(newShape);
-
-  // Axes are permuted by, for all old array indices, copying the value at that position to the
-  // corresponding new position in the output array. This is a really naive algorithm, and could
-  // be optimized. The function below iterates over all indices in the i-th original array
-  // dimension, and is recursively called until the last dimension is reached
-  const permuteAxesStep = (index, step) => {
-    for (let i = 0; i < oldShape[step]; i += 1) {
-      const oldIndex = [...index, i];
-
-      if (step < oldShape.length - 1) {
-        permuteAxesStep(oldIndex, step + 1);
-      } else {
-        const newIndex = newAxes.map(axis => oldIndex[axis]);
-        APermuted = setArrayElement(APermuted, newIndex, getArrayElement(A, oldIndex));
-      }
-    }
-  };
-
-  permuteAxesStep([], 0);
-
-  return APermuted;
-}
-
-/**
- * Recursively flatten an array.
- *
- * @param {Array.<mixed>} A - Array to be flattened
- * @return {Array.<mixed>} Flattened array
- */
-export function flatten(A) {
-  return [].concat(...A.map(x => (Array.isArray(x) ? flatten(x) : x)));
-}
-
-/**
- * Reshape an array into a different shape.
- *
- * @param {Array.<mixed>} A - Array to reshape
- * @param {Array.<number>} shape - Array specifying the number of elements per dimension. n-th
- *   element corresponds to the number of elements in the n-th dimension.
- * @return {Array.<mixed>} Reshaped array
- */
-export function reshape(A, shape) {
-  const AValues = flatten(A);
-
-  let B = zeros(shape);
-
-  const counters = zeros(shape.length);
-  let counterIndex = counters.length - 1;
-
-  let counterTotal = 0;
-
-  let done = false;
-
-  while (!done) {
-    B = setArrayElement(B, counters, AValues[counterTotal]);
-
-    // Increment current counter
-    counterIndex = counters.length - 1;
-    counters[counterIndex] += 1;
-    counterTotal += 1;
-
-    // If the end of the current counter is reached, move to the next counter...
-    while (counters[counterIndex] === shape[counterIndex]) {
-      // ...unless we have reached the end of all counters. In that case, we are done
-      if (counterIndex === 0) {
-        done = true;
-      }
-
-      counters[counterIndex - 1] += 1;
-      counters[counterIndex] = 0;
-      counterIndex -= 1;
-    }
-  }
-
-  return B;
-}
-
-/**
- * Extract a sub-block of a matrix of a particular shape at a particular position.
- *
- * @deprecated Use slice() instead
- *
- * @param {Array.<mixed>} A - Array to extract block from
- * @param {Array.<number>} offset -  Array specifying the offset per dimension. n-th element
- *   corresponds to the number of elements to skip, before extracting the block, in the n-th
- *   dimension.
- * @param {Array.<number>} shape - Array specifying the number of elements per dimension. n-th
- *   element corresponds to the number of elements in the n-th dimension.
- * @return {Array.<mixed>} Sub-block extracted from array
- */
-export function subBlock(A, offset, shape) {
-  if (offset.length === 1) {
-    return A.slice(offset[0], offset[0] + shape[0]);
-  }
-
-  const subblock = [];
-
-  for (let i = offset[0]; i < offset[0] + shape[0]; i += 1) {
-    subblock.push(subBlock(A[i], offset.slice(1), shape.slice(1)));
-  }
-
-  return subblock;
-}
-
-/**
- * Take a slice out of an input array. Negative indices can be used in both the starting indices and
- * the stopping indices. Negative indices: the negative stopping index is used as the negative
- * offset relative to the last index in the particular dimension.
- *
- * @param {Array.<mixed>} A - Array to extract block from
- * @param {Array.<number>} start -  Array specifying the starting index per dimension. n-th element
- *   corresponds to the number of elements to skip, before extracting the block, in the n-th
- *   dimension. Negative indices are supported.
- * @param {Array.<number>} stop - Array specifying the index to stop at (exclusive) per dimension.
- *   n-th element corresponds to the stopping index in the n-th dimension. Negative indices are
- *   supported. Use null for unlimited offset.
- * @return {Array.<mixed>} Array slice extracted from input array
- */
-export function slice(A, start, stop) {
-  // Check whether the same number of start and stop indices is supplied
-  if (start.length !== stop.length) {
-    throw new Error('"start" and "stop" must contain the same number of indices.');
-  }
-
-  // Check whether the number of dimensions to slice on does not exceed the number of dimensions of
-  // the array
-  if (start.length > getShape(A).length) {
-    throw new Error('The number of start and stop indices must not exceed the number of input array dimensions');
-  }
-
-  // Parse start and end indices for highest dimension
-  const parseIndex = (index, allowNull) => {
-    if (allowNull && index === null) {
-      return A.length;
-    }
-
-    if (index < 0) {
-      return A.length + index;
-    }
-
-    return index;
-  };
-
-  const parsedStart = parseIndex(start[0], false);
-  const parsedStop = parseIndex(stop[0], true);
-
-  // If this is the deepest dimension where we should slice, simply slice the array
-  if (start.length === 1) {
-    return A.slice(parsedStart, parsedStop);
-  }
-
-  // If it isn't the deepest dimension to slice, slice in the sub-array
-  const subslice = [];
-
-  for (let i = parsedStart; i < parsedStop; i += 1) {
-    subslice.push(slice(A[i], start.slice(1), stop.slice(1)));
-  }
-
-  return subslice;
-}
-
-/**
- * Deep check whether two arrays are equal: sub-arrays will be traversed, and strong type checking
- * is enabled.
- *
- * @param {Array.<mixed>|mixed} array1 - First array to check or array element to check
- * @param {Array.<mixed>|mixed} array2 - Second array to check ot array element to check. Will be
- *   checked against first array
- * @return {boolean} Whether the two arrays are the same
- */
-export function equal(array1, array2) {
-  if (!Array.isArray(array1) || !Array.isArray(array2)) {
-    return array1 === array2;
-  }
-
-  if (array1.length !== array2.length) {
-    return false;
-  }
-
-  return array1.reduce((r, a, i) => r && equal(a, array2[i]), true);
-}
-
-/**
- * Generate n points on the interval (a,b), with intervals (b-a)/(n-1).
- *
- * @example
- * var list = linspace(1, 3, 0.5);
- * // list now contains [1, 1.5, 2, 2.5, 3]
- *
- * @param {number} a - Starting point
- * @param {number} b - Ending point
- * @param {number} n - Number of points
- * @return {Array.<number>} Array of evenly spaced points on the interval (a,b)
- */
-export function linspace(a, b, n) {
-  const r = [];
-
-  for (let i = 0; i < n; i += 1) {
-    r.push(a + i * ((b - a) / (n - 1)));
-  }
-
-  return r;
-}
