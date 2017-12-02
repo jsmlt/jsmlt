@@ -1,8 +1,8 @@
 // Internal dependencies
 import { Classifier } from '../base';
 import DecisionTree from './decision-tree';
-import * as LinAlg from '../../math/linalg';
-import * as Arrays from '../../util/arrays';
+import * as Arrays from '../../arrays';
+import * as Random from '../../random';
 
 /**
  * Random forest learner. Builds multiple decision trees with a random subsample of the samples,
@@ -66,7 +66,7 @@ export default class RandomForest extends Classifier {
       });
 
       // Bootstrap the input samples
-      const treeSamples = Arrays.sample(sampleIndices, X.length, true);
+      const treeSamples = Random.sample(sampleIndices, X.length, true);
 
       const treeX = treeSamples.map(sampleIndex => X[sampleIndex]);
       const treeY = treeSamples.map(sampleIndex => y[sampleIndex]);

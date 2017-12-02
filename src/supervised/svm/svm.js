@@ -1,9 +1,8 @@
 // Internal dependencies
 import { OneVsAllClassifier, Classifier } from '../base';
-import * as LinAlg from '../../math/linalg';
-import * as Arrays from '../../util/arrays';
-import * as Random from '../../util/random';
 import LinearKernel from '../../kernel/linear';
+import * as Arrays from '../../arrays';
+import * as Random from '../../random';
 
 /**
  * SVM learner for binary classification problem.
@@ -82,14 +81,14 @@ export class BinarySVM extends Classifier {
     const numSamples = X.length;
 
     // Alphas (Lagrange multipliers)
-    this.alphas = LinAlg.zeroVector(numSamples);
+    this.alphas = Arrays.zeroVector(numSamples);
 
     // Bias term
     this.b = 0.0;
 
     // Kernel cache
-    this.kernelCache = LinAlg.full([numSamples, numSamples], 0.0);
-    this.kernelCacheStatus = LinAlg.full([numSamples, numSamples], false);
+    this.kernelCache = Arrays.full([numSamples, numSamples], 0.0);
+    this.kernelCacheStatus = Arrays.full([numSamples, numSamples], false);
 
     // Number of passes of the algorithm without any alphas changing
     let numPasses = 0;

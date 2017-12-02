@@ -1,7 +1,6 @@
 // Internal dependencies
 import Neighbors from './base';
-import * as LinAlg from '../../math/linalg';
-import * as Arrays from '../../util/arrays';
+import * as Arrays from '../../arrays';
 
 /**
  * k-nearest neighbours learner. Classifies points based on the (possibly weighted) vote
@@ -72,7 +71,7 @@ export default class KNN extends Neighbors {
     // Calculate distances to all other data points
     const distances = Arrays.zipWithIndex(
       this.training.X.map(
-        x => LinAlg.norm(LinAlg.sum(sampleFeatures, LinAlg.scale(x, -1)))
+        x => Arrays.norm(Arrays.sum(sampleFeatures, Arrays.scale(x, -1)))
       )
     );
 

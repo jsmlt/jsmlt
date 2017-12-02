@@ -2,8 +2,7 @@
 import * as MarchingSquaresJS from 'marchingsquares';
 
 // Internal dependencies
-import * as LinAlg from '../math/linalg';
-import * as Arrays from '../util/arrays';
+import * as Arrays from '../arrays';
 
 /**
  * The decision boundary module calculates decision boundaries for a trained classifier on a
@@ -100,7 +99,7 @@ export default class Boundaries {
 
     // Predict labels for all grid points
     const predictions = classifier.predict(features);
-    const predictionsGrid = LinAlg.reshape(predictions, [resolutionX, resolutionY]);
+    const predictionsGrid = Arrays.reshape(predictions, [resolutionX, resolutionY]);
 
     // Determine decision boundaries for grid
     this.features = features;
@@ -152,7 +151,7 @@ export default class Boundaries {
    */
   getGridDecisionBoundaries(grid) {
     // Get unique prediction values
-    const levels = Array.from(new Set(LinAlg.flatten(grid)));
+    const levels = Array.from(new Set(Arrays.flatten(grid)));
 
     // Contours per level
     const contours = {};
@@ -198,7 +197,7 @@ export default class Boundaries {
 
     if (pad) {
       // Add padding to the grid
-      gridLocal = LinAlg.pad(gridLocal, [1, 1], [-1, -1]);
+      gridLocal = Arrays.pad(gridLocal, [1, 1], [-1, -1]);
     }
 
     // Calculate contours
@@ -237,17 +236,17 @@ export default class Boundaries {
    */
   generateFeaturesFromLinSpaceGrid(pointsX, pointsY, boundsX, boundsY) {
     // Generate vectors with linear spacing
-    const linspaceX = LinAlg.linspace(boundsX[0], boundsX[1], pointsX);
-    const linspaceY = LinAlg.linspace(boundsY[0], boundsY[1], pointsY);
+    const linspaceX = Arrays.linspace(boundsX[0], boundsX[1], pointsX);
+    const linspaceY = Arrays.linspace(boundsY[0], boundsY[1], pointsY);
 
     // Create mesh grid with coordinates for each point in the grid
-    const [gridX, gridY] = LinAlg.meshGrid(linspaceX, linspaceY);
+    const [gridX, gridY] = Arrays.meshGrid(linspaceX, linspaceY);
 
     // Generate corresponding vectors of coordinate components
-    const gridXVec = LinAlg.flatten(gridX);
-    const gridYVec = LinAlg.flatten(gridY);
+    const gridXVec = Arrays.flatten(gridX);
+    const gridYVec = Arrays.flatten(gridY);
 
     // Join coordinate components per data point, yielding the feature vector
-    return LinAlg.concatenate(1, gridXVec, gridYVec);
+    return Arrays.concatenate(1, gridXVec, gridYVec);
   }
 }

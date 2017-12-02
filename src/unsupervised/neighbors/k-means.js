@@ -1,7 +1,8 @@
 // Internal dependencies
 import Clusterer from '../base';
-import * as LinAlg from '../../math/linalg';
-import * as Arrays from '../../util/arrays';
+import * as Arrays from '../../arrays';
+import * as Random from '../../random';
+
 /**
  * k-means clusterer.
  */
@@ -58,7 +59,7 @@ export default class KMeans extends Clusterer {
             Math.min(
               // Calculate negative squared distance from sample to each centroid
               ...this.centroids.map(centroid =>
-                LinAlg.norm(LinAlg.sum(centroid, LinAlg.scale(X[x], -1)))
+                Arrays.norm(Arrays.sum(centroid, Arrays.scale(X[x], -1)))
               )
             )
           );
@@ -66,7 +67,7 @@ export default class KMeans extends Clusterer {
           if (minDistances.filter(x => x > 0).length > 0) {
             // Step 2a. Calculate squared distances, which will be used as the weights for sampling
             // a data point for the new cluster centroid
-            weights = LinAlg.power(minDistances, 2);
+            weights = Arrays.power(minDistances, 2);
           } else {
             // Step 2b. If all remaining samples have distance 0 to the nearest cluster centroid,
             // there are (too many) samples with the exact same coordinates. This is a rare case.
@@ -81,7 +82,7 @@ export default class KMeans extends Clusterer {
         // Step 4. Choose a data point from the remaining data points at random, with the computed
         // sample weights. Use it as the new cluster centroid, and remove it from the list of
         // potential cluster centroids
-        const sampleIndex = Arrays.sample(indices, 1, false, weights)[0];
+        const sampleIndex = Random.sample(indices, 1, false, weights)[0];
         this.centroids.push(X[sampleIndex]);
         indices = indices.filter(x => x !== sampleIndex);
       }
@@ -94,7 +95,7 @@ export default class KMeans extends Clusterer {
 
       // Sample a random index (without replacement) for each cluster, and use its features as
       // the initial centroid for that cluster
-      this.centroids = Arrays.sample(indices, this.numClusters).map(x => X[x]);
+      this.centroids = Random.sample(indices, this.numClusters).map(x => X[x]);
     }
   }
 
@@ -103,8 +104,8 @@ export default class KMeans extends Clusterer {
    */
   train(X) {
     // Number of features per sample
-    this.numSamples = LinAlg.getShape(X)[0];
-    this.numFeatures = LinAlg.getShape(X)[1];
+    this.numSamples = Arrays.getShape(X)[0];
+    this.numFeatures = Arrays.getShape(X)[1];
 
     // Check whether there aren't more clusters than samples
     if (this.numSamples < this.numClusters) {
@@ -137,9 +138,9 @@ export default class KMeans extends Clusterer {
           }
 
           // The new cluster centroid is the mean of all samples assigned this cluster
-          return LinAlg.scale(
+          return Arrays.scale(
             // Sum of all assigned samples
-            LinAlg.sum(
+            Arrays.sum(
               ...(X.filter((x, i) => assignments[i] === clusterId))
             ),
 
@@ -166,7 +167,7 @@ export default class KMeans extends Clusterer {
       // Minimize distance to centroid by maximizing negative squared distance
       Arrays.argMax(
         // Calculate negative squared distance from sample to centroid
-        this.centroids.map(centroid => -LinAlg.norm(LinAlg.sum(centroid, LinAlg.scale(x, -1))))
+        this.centroids.map(centroid => -Arrays.norm(Arrays.sum(centroid, Arrays.scale(x, -1))))
       )
     );
   }

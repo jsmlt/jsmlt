@@ -1,6 +1,5 @@
 // Standard imports
-import * as LinAlg from '../math/linalg';
-import * as Arrays from '../util/arrays';
+import * as Arrays from '../arrays';
 
 /**
  * Base class for supervised estimators (classifiers or regression models).
@@ -139,7 +138,7 @@ export class OneVsAllClassifier extends Classifier {
   predict(X) {
     // Get predictions from all classifiers for all data points by predicting all data points with
     // each classifier (getting an array of predictions for each classifier) and transposing
-    const datapointsPredictions = LinAlg.transpose(this.classifiers.map(classifier => classifier.classifier.predict(X, { output: 'normalized' })));
+    const datapointsPredictions = Arrays.transpose(this.classifiers.map(classifier => classifier.classifier.predict(X, { output: 'normalized' })));
 
     // Form final prediction by taking index of maximum normalized classifier output
     return datapointsPredictions.map(x => Arrays.argMax(x));
@@ -163,13 +162,13 @@ export class OneVsAllClassifier extends Classifier {
     // Get probability predictions from all classifiers for all data points by predicting all data
     // points with each classifier (getting an array of predictions for each classifier) and
     // transposing
-    const predictions = LinAlg.transpose(
+    const predictions = Arrays.transpose(
       this.classifiers.map(classifier =>
         classifier.classifier.predictProba(X).map(probs => probs[1])
       )
     );
 
     // Scale all predictions to yield valid probabilities
-    return predictions.map(x => LinAlg.scale(x, 1 / LinAlg.internalSum(x)));
+    return predictions.map(x => Arrays.scale(x, 1 / Arrays.internalSum(x)));
   }
 }

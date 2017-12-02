@@ -1,9 +1,9 @@
-// Standard imports
+// External dependencies
 import request from 'request';
 import csv from 'csv';
 
-// Local imports
-import * as LinAlg from '../math/linalg';
+// Internal dependencies
+import * as Arrays from '../arrays';
 
 /**
  * Load a dataset (features and target) from some CSV input string. Extracts the data from the CSV
@@ -17,8 +17,8 @@ import * as LinAlg from '../math/linalg';
 export function loadDatasetFromCSV(input, callback) {
   csv.parse(input, { auto_parse: true }, (err, output) => {
     // Extract the feature and target columns
-    const X = LinAlg.slice(output, [0, 0], [null, -1]);
-    const y = LinAlg.flatten(LinAlg.slice(output, [0, -1], [null, null]));
+    const X = Arrays.slice(output, [0, 0], [null, -1]);
+    const y = Arrays.flatten(Arrays.slice(output, [0, -1], [null, null]));
 
     // Call user-provided callback
     callback(X, y);

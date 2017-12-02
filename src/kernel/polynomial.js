@@ -1,6 +1,6 @@
 // Internal dependencies
 import Kernel from './base';
-import * as LinAlg from '../math/linalg';
+import * as Arrays from '../arrays';
 
 /**
  * The Polynomial kernel. The formula of this kernel is as follows:
@@ -41,6 +41,6 @@ export default class PolynomialKernel extends Kernel {
    * @see {@link Kernel#apply}
    */
   apply(x, y) {
-    return (this.gamma * LinAlg.dot(x, y) + this.coef0) ** this.degree;
+    return (this.gamma * Arrays.dot(x, y) + this.coef0) ** this.degree;
   }
 }

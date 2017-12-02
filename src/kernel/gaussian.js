@@ -1,6 +1,6 @@
 // Internal dependencies
 import Kernel from './base';
-import * as LinAlg from '../math/linalg';
+import * as Arrays from '../arrays';
 
 /**
  * The Gaussian kernel, also known as the radial basis function (RBF) kernel
@@ -27,7 +27,7 @@ export default class GaussianKernel extends Kernel {
    */
   apply(x, y) {
     // Gaussian
-    const diff = LinAlg.sum(x, LinAlg.scale(y, -1));
-    return Math.exp(-LinAlg.dot(diff, diff) / (2 * this.sigmaSquared));
+    const diff = Arrays.sum(x, Arrays.scale(y, -1));
+    return Math.exp(-Arrays.dot(diff, diff) / (2 * this.sigmaSquared));
   }
 }

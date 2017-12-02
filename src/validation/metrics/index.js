@@ -1,6 +1,5 @@
 // Standard imports
-import * as Arrays from '../../util/arrays';
-import * as LinAlg from '../../math/linalg';
+import * as Arrays from '../../arrays';
 
 /**
  * Evaluate the accuracy of a set of predictions.
@@ -72,13 +71,13 @@ export function auroc(yTrue, yPred) {
   // follow each other on the x-axis. For each pair of points, the area under the trapezoid spanned
   // by the points and the corresponding points on the x-axis is used as the area.
 
-  const fprsDiff = LinAlg.sum(
+  const fprsDiff = Arrays.sum(
     fprs.slice(0, -1),
-    LinAlg.scale(fprs.slice(1), -1),
+    Arrays.scale(fprs.slice(1), -1),
   );
 
-  const tprsMean = LinAlg.scale(
-    LinAlg.sum(
+  const tprsMean = Arrays.scale(
+    Arrays.sum(
       tprs.slice(0, -1),
       tprs.slice(1),
     ),

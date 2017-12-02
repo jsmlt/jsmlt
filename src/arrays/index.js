@@ -1,7 +1,307 @@
 /**
- * Linear Algebra toolkit for manipulating vectors and matrices. Mainly works using plain
- * JavaScript arrays.
+ * JavaScript array manipulation toolkit. Supports both vectors (1-dimensional array), matrices
+ * (2-dimensional array) and higher-dimensional arrays. The toolkit implements many elementary
+ * array manipulation algorithms, and several algorithms in the domain of linear algebra.
  */
+
+/**
+ * Initialize a vector of a certain length with a specific value in each entry.
+ *
+ * @param {number} n - Number of elements in the vector
+ * @param {mixed} value - Value to initialize entries at
+ * @return Array Vector of n elements of the specified value
+ */
+export function valueVector(n, value) {
+  return [...Array(n)].map(() => value);
+}
+
+/**
+ * Initialize a zero vector of a certain length.
+ *
+ * @param {number} n - Number of elements in the vector
+ * @return {Array} Vector of n elements of value 0
+ */
+export function zeroVector(n) {
+  return valueVector(n, 0);
+}
+
+/**
+ * Initialize an n-dimensional array of a certain value.
+ *
+ * @param {Array.<number>} shape - Array specifying the number of elements per dimension. n-th
+ *   element corresponds to the number of elements in the n-th dimension.
+ * @param {mixed} value - Value to fill the array with
+ * @return {Array.<mixed>} Array of the specified with zero in all entries
+ */
+export function full(shape, value) {
+  if (!Array.isArray(shape)) {
+    return valueVector(shape, value);
+  }
+
+  if (shape.length === 1) {
+    return valueVector(shape[0], value);
+  }
+
+  return [...Array(shape[0])].map(() => full(shape.slice(1), value));
+}
+
+/**
+ * Initialize an n-dimensional array of zeros.
+ *
+ * @param {Array.<number>} shape - Array specifying the number of elements per dimension. n-th
+ *   element corresponds to the number of elements in the n-th dimension.
+ * @return {Array.<mixed>}  Array of the specified with zero in all entries
+ */
+export function zeros(shape) {
+  return full(shape, 0);
+}
+
+/**
+ * Set all entries in an array to a specific value and return the resulting array. Original array
+ * is not modified.
+ *
+ * @param {Array.<mixed>} A - Array of which entries should be changed
+ * @param {mixed} value - Value the array entries should be changed to
+ * @return {Array.<mixed>} Array with modified entries
+ */
+export function fill(A, value) {
+  return A.map(B => (Array.isArray(B) ? fill(B, value) : value));
+}
+
+/**
+ * Get the transpose of a matrix or vector.
+ *
+ * @param {Array.<Array.<number>>} A - Matrix or vector
+ * @return {Array.<Array.<number>>} Transpose of the matrix
+ */
+export function transpose(A) {
+  const ATranspose = zeros([A[0].length, A.length]);
+
+  for (let i = 0; i < A.length; i += 1) {
+    for (let j = 0; j < A[0].length; j += 1) {
+      ATranspose[j][i] = A[i][j];
+    }
+  }
+
+  return ATranspose;
+}
+
+/**
+ * Calculate dot product of two vectors. Vectors should have same size.
+ *
+ * @param {Array.<number>} x - First vector
+ * @param {Array.<number>} y - Second vector
+ * @return {number} Dot product scalar result
+ */
+export function dot(x, y) {
+  return x.reduce((r, a, i) => r + a * y[i], 0);
+}
+
+/**
+ * Calculate the Euclidian norm of a vector.
+ *
+ * @param {Array.<number>} x - Vector of which to calculate the norm
+ */
+export function norm(x) {
+  return Math.sqrt(dot(x, x));
+}
+
+/**
+ * Multiply a vector by a scalar (i.e. scale the vector).
+ *
+ * @param {Array.<number>} x - Vector
+ * @param {number} c - Scalar
+ * @return {Array.<number>} Scaled vector
+ */
+export function scale(x, c) {
+  return x.map(a => c * a);
+}
+
+/**
+ * Concatenate two or more n-dimensional arrays.
+ *
+ * @param {number} axis - Axis to perform concatenation on
+ * @param {...Array.<mixed>} S - Arrays to concatenate. They must have the same shape, except in
+ *   the dimension corresponding to axis (the first, by default)
+ * @return {Array} Concatenated array
+ */
+export function concatenate(axis, ...S) {
+  if (axis === 0) {
+    return [].concat(...S);
+  }
+
+  const A = [];
+
+  for (let i = 0; i < S[0].length; i += 1) {
+    A.push(concatenate(axis - 1, ...S.map(APrime => APrime[i])));
+  }
+
+  return A;
+}
+
+/**
+ * Repeat an array multiple times along an axis. This is essentially one or more concatenations of
+ * an array with itself.
+ *
+ * @param {number} axis - Axis to perform repetition on
+ * @param {number} numRepeats - Number of times to repeat the array
+ * @param {Array.<mixed>} A - Array to repeat
+ * @return {Array.<mixed>} Specified array repeated numRepeats times
+ */
+export function repeat(axis, numRepeats, A) {
+  let R = A.slice();
+
+  for (let i = 0; i < numRepeats - 1; i += 1) {
+    R = concatenate(axis, R, A);
+  }
+
+  return R;
+}
+
+/**
+ * Generate a mesh grid, i.e. two m-by-n arrays where m=|y| and n=|x|, from two vectors. The mesh
+ * grid generates two grids, where the first grid repeats x row-wise m times, and the second grid
+ * repeats y column-wise n times. Can be used to generate coordinate grids.
+ *
+ * Example input: x=[0, 1, 2], y=[2, 4, 6, 8]
+ * Corresponding output:
+ *   matrix 1: [[0, 1, 2], [0, 1, 2], [0, 1, 2], [0, 1, 2]]
+ *   matrix 2: [[2, 2, 2], [4, 4, 4], [6, 6, 6], [8, 8, 8]]
+ *
+ * @param {Array.<number>} x - Vector of x-coordinates
+ * @param {Array.<number>} y - Vector of y-coordinates
+ * @return {Array.<Array.<Array.<number>>>} Two-dimensional array containing the x-grid as the first
+ *   element, and the y-grid as the second element
+ */
+export function meshGrid(x, y) {
+  const gridX = transpose(repeat(1, y.length, x));
+  const gridY = repeat(1, x.length, y);
+
+  return [gridX, gridY];
+}
+
+/**
+ * Take a slice out of an array, but wrap around the beginning an end of the array. For example,
+ * if `begin` is -1, the last element of the input array is used as the first output element.
+ *
+ * @param {Array.<mixed>} array - Input array
+ * @param {number} begin Index of first array element
+ * @param {number} end Index of end of slice range (element with this index will itself not be
+ *   included in output)
+ * @return {Array.<mixed>} Sliced array
+ */
+export function wrapSlice(array, begin, end) {
+  const result = [];
+
+  for (let i = begin; i <= end; i += 1) {
+    const index = ((i % array.length) + array.length) % array.length;
+    result.push(array[index]);
+  }
+
+  return result;
+}
+
+/**
+ * From an input array, create a new array where each element is comprised of a 2-dimensional array
+ * where the first element is the original array entry and the second element is its index
+ *
+ * @param {Array.<mixed>} array Input array
+ * @return {Array.<Array.<mixed>>} Output array
+ */
+export function zipWithIndex(array) {
+  return array.map((x, i) => [x, i]);
+}
+
+/**
+ * Count the occurrences of the unique values in an array
+ *
+ * @param {Array.<mixed>} array Input array
+ * @return {Array.<Array.<mixed>>} Array where each element is a 2-dimensional array. In these 2D
+ *   arrays, the first element corresponds to the unique array value, and the second elements
+ *   corresponds to the number of times this value occurs in the original array
+ */
+export function valueCounts(array) {
+  // Create map of counts per array value
+  const counts = [];
+  const valuesIndex = {};
+  let numUniqueValues = 0;
+
+  array.forEach((x) => {
+    if (typeof valuesIndex[x] === 'undefined') {
+      valuesIndex[x] = numUniqueValues;
+      counts.push([x, 0]);
+      numUniqueValues += 1;
+    }
+
+    counts[valuesIndex[x]][1] += 1;
+  });
+
+  return counts;
+}
+
+/**
+ * Filter an array and return the array indices where the filter was matched. Corresponds to
+ * JavaScript's native Array.filter(), but instead of returning the elements that match the filter
+ * criteria, it returns the indices of the elements matching the filter.
+ *
+ * @param {Array.<mixed>} array - Array to be filtered
+ * @param {function(element: mixed, !index: Number): boolean} callback - Callback function to be
+ *   used for filtering. This function takes an array element and possibly its index as its input
+ *   and should return true when the index should be used (filtered) and false when it shouldn't
+ * @return {Array.<Number>} Array of array indices in the original array where the array element
+ *   matches the filter
+ */
+export function argFilter(array, callback) {
+  return zipWithIndex(array)
+    // Filter zipped elements + indices where the element matches the filter
+    .filter(x => callback(x[0], x[1]))
+
+    // Map the zipped elements to the indices
+    .map(x => x[1]);
+}
+
+/**
+ * Sort an array and return the array indices of the sorted elements. Corresponds to JavaScript's
+ * native Array.sort(), but instead of returning the sorted elements, it returns the indices of the
+ * sorted elements.
+ *
+ * @param {Array.<mixed>} array - Array to be sorted
+ * @param {function(a: mixed, b: mixed): Number} [compareFunction = null] - Callback function be
+ *   used for sorting. This function takes two array elements and returns an integer indicating
+ *   sort order of the two elements a and b:
+ *     < 0  : a before b
+ *     == 0 : leave order of a and b unchanged with respect to each other
+ *     > 0  : b after a
+ *   Defaults to numeric sorting.
+ * @return {Array.<Number>} Array of array indices such that the elements corresponding with these
+ *   indices in the original array are sorted
+ */
+export function argSort(array, callback) {
+  const useCallback = typeof callback === 'function'
+    ? callback
+    : ((a, b) => a - b);
+
+  return zipWithIndex(array)
+    // Sort zipped elements + indices by element value
+    .sort((a, b) => useCallback(a[0], b[0]))
+
+    // Map the zipped elements to the indices
+    .map(x => x[1]);
+}
+
+/**
+ * Get array key corresponding to largest element in the array.
+ *
+ * @param {Array.<number>} array Input array
+ * @return {number} Index of array element with largest value
+ */
+export function argMax(array) {
+  if (array.length === 0) {
+    return null;
+  }
+
+  return zipWithIndex(array).reduce((r, x) => (x[0] > r[0] ? x : r))[1];
+}
 
 /**
  * Find the shape of an array, i.e. the number of elements per dimension of the array.
@@ -52,132 +352,6 @@ export function setArrayElement(A, index, value) {
 
   B[index[0]] = index.length === 1 ? value : setArrayElement(A[index[0]], index.slice(1), value);
   return B;
-}
-
-/**
- * Generate n points on the interval (a,b), with intervals (b-a)/(n-1).
- *
- * @example
- * var list = linspace(1, 3, 0.5);
- * // list now contains [1, 1.5, 2, 2.5, 3]
- *
- * @param {number} a - Starting point
- * @param {number} b - Ending point
- * @param {number} n - Number of points
- * @return {Array.<number>} Array of evenly spaced points on the interval (a,b)
- */
-export function linspace(a, b, n) {
-  const r = [];
-
-  for (let i = 0; i < n; i += 1) {
-    r.push(a + i * ((b - a) / (n - 1)));
-  }
-
-  return r;
-}
-
-/**
- * Initialize a vector of a certain length with a specific value in each entry.
- *
- * @param {number} n - Number of elements in the vector
- * @param {mixed} value - Value to initialize entries at
- * @return Array Vector of n elements of the specified value
- */
-export function valueVector(n, value) {
-  return [...Array(n)].map(() => value);
-}
-
-/**
- * Initialize an n-dimensional array of a certain value.
- *
- * @param {Array.<number>} shape - Array specifying the number of elements per dimension. n-th
- *   element corresponds to the number of elements in the n-th dimension.
- * @param {mixed} value - Value to fill the array with
- * @return {Array.<mixed>} Array of the specified with zero in all entries
- */
-export function full(shape, value) {
-  if (!Array.isArray(shape)) {
-    return valueVector(shape, value);
-  }
-
-  if (shape.length === 1) {
-    return valueVector(shape[0], value);
-  }
-
-  return [...Array(shape[0])].map(() => full(shape.slice(1), value));
-}
-
-/**
- * Initialize a zero vector of a certain length.
- *
- * @param {number} n - Number of elements in the vector
- * @return {Array} Vector of n elements of value 0
- */
-export function zeroVector(n) {
-  return valueVector(n, 0);
-}
-
-/**
- * Initialize an n-dimensional array of zeros.
- *
- * @param {Array.<number>} shape - Array specifying the number of elements per dimension. n-th
- *   element corresponds to the number of elements in the n-th dimension.
- * @return {Array.<mixed>}  Array of the specified with zero in all entries
- */
-export function zeros(shape) {
-  return full(shape, 0);
-}
-
-/**
- * Set all entries in an array to a specific value.
- *
- * @param {Array.<mixed>} A - Array of which entries should be changed
- * @param {mixed} value - Value the array entries should be changed to
- * @return {Array.<mixed>} Array with modified entries
- */
-export function fill(A, value) {
-  return A.map(B => (Array.isArray(B) ? fill(B, value) : value));
-}
-
-/**
- * Concatenate two or more n-dimensional arrays.
- *
- * @param {number} axis - Axis to perform concatenation on
- * @param {...Array.<mixed>} S - Arrays to concatenate. They must have the same shape, except in
- *   the dimension corresponding to axis (the first, by default)
- * @return {Array} Concatenated array
- */
-export function concatenate(axis, ...S) {
-  if (axis === 0) {
-    return [].concat(...S);
-  }
-
-  const A = [];
-
-  for (let i = 0; i < S[0].length; i += 1) {
-    A.push(concatenate(axis - 1, ...S.map(APrime => APrime[i])));
-  }
-
-  return A;
-}
-
-/**
- * Repeat an array multiple times along an axis. This is essentially one or more concatenations of
- * an array with itself.
- *
- * @param {number} axis - Axis to perform repetition on
- * @param {number} numRepeats - Number of times to repeat the array
- * @param {Array.<mixed>} A - Array to repeat
- * @return {Array.<mixed>} Specified array repeated numRepeats times
- */
-export function repeat(axis, numRepeats, A) {
-  let R = A.slice();
-
-  for (let i = 0; i < numRepeats - 1; i += 1) {
-    R = concatenate(axis, R, A);
-  }
-
-  return R;
 }
 
 /**
@@ -253,23 +427,13 @@ export function pad(A, paddingLengths, paddingValues, axes = []) {
 }
 
 /**
- * Calculate dot product of two vectors. Vectors should have same size.
+ * Sum all elements of an array.
  *
- * @param {Array.<number>} x - First vector
- * @param {Array.<number>} y - Second vector
- * @return {number} Dot product scalar result
+ * @param {Array.<number>} A - Array
+ * @return {number} Sum of all vector elements
  */
-export function dot(x, y) {
-  return x.reduce((r, a, i) => r + a * y[i], 0);
-}
-
-/**
- * Calculate the Euclidian norm of a vector.
- *
- * @param {Array.<number>} x - Vector of which to calculate the norm
- */
-export function norm(x) {
-  return Math.sqrt(dot(x, x));
+export function internalSum(A) {
+  return A.reduce((r, B) => r + (Array.isArray(B) ? internalSum(B) : B), 0);
 }
 
 /**
@@ -281,7 +445,7 @@ export function norm(x) {
 export function sum(...S) {
   return S.reduce((r, a) =>
     r.map((b, i) =>
-      Array.isArray(b) ? sum(b, a[i]) : b + a[i]
+      (Array.isArray(b) ? sum(b, a[i]) : b + a[i])
     )
   );
 }
@@ -302,27 +466,6 @@ export function power(x, y) {
   return Array.isArray(x)
     ? x.map((a, i) => power(a, (Array.isArray(y) ? y[i] : y)))
     : x ** y;
-}
-
-/**
- * Multiply a vector by a scalar (i.e. scale the vector).
- *
- * @param {Array.<number>} x - Vector
- * @param {number} c - Scalar
- * @return {Array.<number>} Scaled vector
- */
-export function scale(x, c) {
-  return x.map(a => c * a);
-}
-
-/**
- * Sum all elements of an array.
- *
- * @param {Array.<number>} A - Array
- * @return {number} Sum of all vector elements
- */
-export function internalSum(A) {
-  return A.reduce((r, B) => r + (Array.isArray(B) ? internalSum(B) : B), 0);
 }
 
 /**
@@ -414,46 +557,6 @@ export function permuteAxes(A, newAxes) {
  */
 export function flatten(A) {
   return [].concat(...A.map(x => (Array.isArray(x) ? flatten(x) : x)));
-}
-
-/**
- * Get the transpose of a matrix or vector.
- *
- * @param {Array.<Array.<number>>} A - Matrix or vector
- * @return {Array.<Array.<number>>} Transpose of the matrix
- */
-export function transpose(A) {
-  const ATranspose = zeros([A[0].length, A.length]);
-
-  for (let i = 0; i < A.length; i += 1) {
-    for (let j = 0; j < A[0].length; j += 1) {
-      ATranspose[j][i] = A[i][j];
-    }
-  }
-
-  return ATranspose;
-}
-
-/**
- * Generate a mesh grid, i.e. two m-by-n arrays where m=|y| and n=|x|, from two vectors. The mesh
- * grid generates two grids, where the first grid repeats x row-wise m times, and the second grid
- * repeats y column-wise n times. Can be used to generate coordinate grids.
- *
- * Example input: x=[0, 1, 2], y=[2, 4, 6, 8]
- * Corresponding output:
- *   matrix 1: [[0, 1, 2], [0, 1, 2], [0, 1, 2], [0, 1, 2]]
- *   matrix 2: [[2, 2, 2], [4, 4, 4], [6, 6, 6], [8, 8, 8]]
- *
- * @param {Array.<number>} x - Vector of x-coordinates
- * @param {Array.<number>} y - Vector of y-coordinates
- * @return {Array.<Array.<Array.<number>>>} Two-dimensional array containing the x-grid as the first
- *   element, and the y-grid as the second element
- */
-export function meshGrid(x, y) {
-  const gridX = transpose(repeat(1, y.length, x));
-  const gridY = repeat(1, x.length, y);
-
-  return [gridX, gridY];
 }
 
 /**
@@ -582,4 +685,47 @@ export function slice(A, start, stop) {
   }
 
   return subslice;
+}
+
+/**
+ * Deep check whether two arrays are equal: sub-arrays will be traversed, and strong type checking
+ * is enabled.
+ *
+ * @param {Array.<mixed>|mixed} array1 - First array to check or array element to check
+ * @param {Array.<mixed>|mixed} array2 - Second array to check ot array element to check. Will be
+ *   checked against first array
+ * @return {boolean} Whether the two arrays are the same
+ */
+export function equal(array1, array2) {
+  if (!Array.isArray(array1) || !Array.isArray(array2)) {
+    return array1 === array2;
+  }
+
+  if (array1.length !== array2.length) {
+    return false;
+  }
+
+  return array1.reduce((r, a, i) => r && equal(a, array2[i]), true);
+}
+
+/**
+ * Generate n points on the interval (a,b), with intervals (b-a)/(n-1).
+ *
+ * @example
+ * var list = linspace(1, 3, 0.5);
+ * // list now contains [1, 1.5, 2, 2.5, 3]
+ *
+ * @param {number} a - Starting point
+ * @param {number} b - Ending point
+ * @param {number} n - Number of points
+ * @return {Array.<number>} Array of evenly spaced points on the interval (a,b)
+ */
+export function linspace(a, b, n) {
+  const r = [];
+
+  for (let i = 0; i < n; i += 1) {
+    r.push(a + i * ((b - a) / (n - 1)));
+  }
+
+  return r;
 }

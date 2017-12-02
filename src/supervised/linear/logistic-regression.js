@@ -1,6 +1,6 @@
 // Internal dependencies
 import { OneVsAllClassifier, Classifier } from '../base';
-import * as LinAlg from '../../math/linalg';
+import * as Arrays from '../../arrays';
 
 /**
  * Calculate the logit function for an input
@@ -25,7 +25,7 @@ export class BinaryLogisticRegression extends Classifier {
 
     // Initialize weights vector to zero. Here, the number of weights equals one plus the number of
     // features, where the first weight (w0) is the weight used for the bias.
-    this.weights = LinAlg.zeroVector(1 + X[0].length);
+    this.weights = Arrays.zeroVector(1 + X[0].length);
 
     // Iteration index
     let epoch = 0;
@@ -52,10 +52,10 @@ export class BinaryLogisticRegression extends Classifier {
   trainIteration(X, y) {
     // Initialize the weights increment vector, which is used to increment the weights in each
     // iteration after the calculations are done.
-    let weightsIncrement = LinAlg.zeroVector(this.weights.length);
+    let weightsIncrement = Arrays.zeroVector(this.weights.length);
 
     // Shuffle data points
-    const [XUse, yUse] = LinAlg.permuteRows(X, y);
+    const [XUse, yUse] = Arrays.permuteRows(X, y);
 
     // Loop over all datapoints
     for (let i = 0; i < XUse.length; i += 1) {
@@ -67,18 +67,18 @@ export class BinaryLogisticRegression extends Classifier {
       augmentedFeatures.unshift(1);
 
       // Calculate weights increment
-      weightsIncrement = LinAlg.sum(
+      weightsIncrement = Arrays.sum(
         weightsIncrement,
-        LinAlg.scale(
+        Arrays.scale(
           augmentedFeatures,
-          yUse[i] - sigmoid(LinAlg.dot(this.weights, augmentedFeatures))
+          yUse[i] - sigmoid(Arrays.dot(this.weights, augmentedFeatures))
         )
       );
     }
 
     // Take average of all weight increments
-    this.weightsIncrement = LinAlg.scale(weightsIncrement, 0.5);
-    this.weights = LinAlg.sum(this.weights, this.weightsIncrement);
+    this.weightsIncrement = Arrays.scale(weightsIncrement, 0.5);
+    this.weights = Arrays.sum(this.weights, this.weightsIncrement);
 
     return weightsIncrement;
   }
@@ -89,7 +89,7 @@ export class BinaryLogisticRegression extends Classifier {
    * @return {boolean} Whether the algorithm has converged
    */
   checkConvergence() {
-    return LinAlg.internalSum(LinAlg.abs(this.weightsIncrement)) < 0.0001;
+    return Arrays.internalSum(Arrays.abs(this.weightsIncrement)) < 0.0001;
   }
 
   /**
@@ -145,7 +145,7 @@ export class BinaryLogisticRegression extends Classifier {
     const predictions = [];
 
     // Normalization factor for normalized output
-    const weightsMagnitude = Math.sqrt(LinAlg.dot(this.weights, this.weights));
+    const weightsMagnitude = Math.sqrt(Arrays.dot(this.weights, this.weights));
 
     // Loop over all datapoints
     for (let i = 0; i < features.length; i += 1) {
@@ -157,7 +157,7 @@ export class BinaryLogisticRegression extends Classifier {
       augmentedFeatures.unshift(1);
 
       // Calculate probability of positive class
-      const output = LinAlg.dot(augmentedFeatures, this.weights);
+      const output = Arrays.dot(augmentedFeatures, this.weights);
       const posProb = sigmoid(output / weightsMagnitude);
 
       // Add pair of probabilities to list

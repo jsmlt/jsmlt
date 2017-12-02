@@ -1,6 +1,6 @@
 // Internal dependencies
 import { OneVsAllClassifier, Classifier } from '../base';
-import * as LinAlg from '../../math/linalg';
+import * as Arrays from '../../arrays';
 
 /**
  * Perceptron learner for binary classification problem.
@@ -35,7 +35,7 @@ export class BinaryPerceptron extends Classifier {
 
     // Initialize weights vector to zero. Here, the number of weights equals one plus the number of
     // features, where the first weight (w0) is the weight used for the bias.
-    this.weights = LinAlg.zeroVector(1 + X[0].length);
+    this.weights = Arrays.zeroVector(1 + X[0].length);
 
     // Store historic errors
     const epochNumErrors = [];
@@ -66,13 +66,13 @@ export class BinaryPerceptron extends Classifier {
   trainIteration(X, y) {
     // Initialize the weights increment vector, which is used to increment the weights in each
     // iteration after the calculations are done.
-    let weightsIncrement = LinAlg.zeroVector(this.weights.length);
+    let weightsIncrement = Arrays.zeroVector(this.weights.length);
 
     // Initialize number of misclassified points
     let numErrors = 0;
 
     // Shuffle data points
-    const [XUse, yUse] = LinAlg.permuteRows(X, y);
+    const [XUse, yUse] = Arrays.permuteRows(X, y);
 
     // Loop over all datapoints
     for (let i = 0; i < XUse.length; i += 1) {
@@ -87,7 +87,7 @@ export class BinaryPerceptron extends Classifier {
       augmentedFeatures.unshift(1);
 
       // Calculate output
-      const output = LinAlg.dot(augmentedFeatures, this.weights);
+      const output = Arrays.dot(augmentedFeatures, this.weights);
 
       // Check whether the point was correctly classified
       if (classSign * output <= 0) {
@@ -95,13 +95,13 @@ export class BinaryPerceptron extends Classifier {
         numErrors += 1;
 
         // Update the weights change to be used at the end of this epoch
-        weightsIncrement = LinAlg.sum(weightsIncrement, LinAlg.scale(augmentedFeatures, classSign));
+        weightsIncrement = Arrays.sum(weightsIncrement, Arrays.scale(augmentedFeatures, classSign));
       }
     }
 
     // Take average of all weight increments
-    this.weightsIncrement = LinAlg.scale(weightsIncrement, 0.01 / XUse.length);
-    this.weights = LinAlg.sum(this.weights, this.weightsIncrement);
+    this.weightsIncrement = Arrays.scale(weightsIncrement, 0.01 / XUse.length);
+    this.weights = Arrays.sum(this.weights, this.weightsIncrement);
 
     return [numErrors, weightsIncrement];
   }
@@ -112,7 +112,7 @@ export class BinaryPerceptron extends Classifier {
    * @return {boolean} Whether the algorithm has converged
    */
   checkConvergence() {
-    return LinAlg.internalSum(LinAlg.abs(this.weightsIncrement)) < 0.0001;
+    return Arrays.internalSum(Arrays.abs(this.weightsIncrement)) < 0.0001;
   }
 
   /**
@@ -142,7 +142,7 @@ export class BinaryPerceptron extends Classifier {
     const predictions = [];
 
     // Normalization factor for normalized output
-    const weightsMagnitude = Math.sqrt(LinAlg.dot(this.weights, this.weights));
+    const weightsMagnitude = Math.sqrt(Arrays.dot(this.weights, this.weights));
 
     // Loop over all datapoints
     for (let i = 0; i < features.length; i += 1) {
@@ -154,7 +154,7 @@ export class BinaryPerceptron extends Classifier {
       augmentedFeatures.unshift(1);
 
       // Calculate output
-      let output = LinAlg.dot(augmentedFeatures, this.weights);
+      let output = Arrays.dot(augmentedFeatures, this.weights);
 
       // Store prediction
       if (options.output === 'raw') {

@@ -1,7 +1,7 @@
 /* eslint import/prefer-default-export: "off" */
 
-// Local imports
-import * as Arrays from '../util/arrays';
+// Internal dependencies
+import * as Random from '../random';
 
 /**
  * Split a dataset into a training and a test set.
@@ -62,7 +62,7 @@ export function trainTestSplit(input, optionsUser = {}) {
 
   // Take a random sample from the list of possible indices, which are then used as the indices
   // of the elements to use for the training data
-  const trainIndices = Arrays.sample(indices, numTrainElements);
+  const trainIndices = Random.sample(indices, numTrainElements);
 
   // Create resulting training and test sets
   const trainArrays = input

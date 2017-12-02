@@ -1,7 +1,7 @@
 // Internal dependencies
 import { Classifier } from '../base';
-import * as LinAlg from '../../math/linalg';
-import * as Arrays from '../../util/arrays';
+import * as Arrays from '../../arrays';
+import * as Random from '../../random';
 
 /**
  * @typedef {Object} DataSplitGroups
@@ -180,7 +180,7 @@ export default class DecisionTree extends Classifier {
    */
   findSplit(XSub, ySub, baseImpurity) {
     // Extract information from training data
-    const shape = LinAlg.getShape(XSub);
+    const shape = Arrays.getShape(XSub);
 
     // Best split found
     let bestSplitGain = -Infinity;
@@ -189,11 +189,11 @@ export default class DecisionTree extends Classifier {
     let bestSplitGroups;
 
     // Transpose features array to easily access all sample values for a given feature
-    const XSubT = LinAlg.transpose(XSub);
+    const XSubT = Arrays.transpose(XSub);
 
     // Randomly sample features to consider
     const possibleIndices = [...Array(shape[1])].map((x, i) => i);
-    const fIndices = Arrays.sample(possibleIndices, this.numFeaturesInt, false);
+    const fIndices = Random.sample(possibleIndices, this.numFeaturesInt, false);
 
     // Calculate best split by looping over all features and considering the split quality for
     // all of each feature's values. The best split is the feature value at which to split such
@@ -204,8 +204,8 @@ export default class DecisionTree extends Classifier {
       sampleValues.sort((a, b) => (a > b) * 2 - 1);
 
       // Find split values as the average value between all sorted unique values
-      const splitValues = LinAlg.scale(
-        LinAlg.sum(
+      const splitValues = Arrays.scale(
+        Arrays.sum(
           sampleValues.slice(1),
           sampleValues.slice(0, -1)
         ),
@@ -284,7 +284,7 @@ export default class DecisionTree extends Classifier {
     }
 
     // Process training options
-    const shape = LinAlg.getShape(X);
+    const shape = Arrays.getShape(X);
 
     if (this.numFeatures === 'sqrt') {
       this.numFeaturesInt = Math.floor(Math.sqrt(shape[1]));
