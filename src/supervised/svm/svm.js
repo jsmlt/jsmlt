@@ -81,7 +81,7 @@ export class BinarySVM extends Classifier {
     const numSamples = X.length;
 
     // Alphas (Lagrange multipliers)
-    this.alphas = Arrays.zeroVector(numSamples);
+    this.alphas = Arrays.zeros(numSamples);
 
     // Bias term
     this.b = 0.0;

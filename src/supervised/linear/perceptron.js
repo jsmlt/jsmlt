@@ -35,7 +35,7 @@ export class BinaryPerceptron extends Classifier {
 
     // Initialize weights vector to zero. Here, the number of weights equals one plus the number of
     // features, where the first weight (w0) is the weight used for the bias.
-    this.weights = Arrays.zeroVector(1 + X[0].length);
+    this.weights = Arrays.zeros(1 + X[0].length);
 
     // Store historic errors
     const epochNumErrors = [];
@@ -66,7 +66,7 @@ export class BinaryPerceptron extends Classifier {
   trainIteration(X, y) {
     // Initialize the weights increment vector, which is used to increment the weights in each
     // iteration after the calculations are done.
-    let weightsIncrement = Arrays.zeroVector(this.weights.length);
+    let weightsIncrement = Arrays.zeros(this.weights.length);
 
     // Initialize number of misclassified points
     let numErrors = 0;

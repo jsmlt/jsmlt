@@ -16,16 +16,6 @@ export function valueVector(n, value) {
 }
 
 /**
- * Initialize a zero vector of a certain length.
- *
- * @param {number} n - Number of elements in the vector
- * @return {Array} Vector of n elements of value 0
- */
-export function zeroVector(n) {
-  return valueVector(n, 0);
-}
-
-/**
  * Initialize an n-dimensional array of a certain value.
  *
  * @param {Array.<number>} shape - Array specifying the number of elements per dimension. n-th
@@ -107,14 +97,48 @@ export function norm(x) {
 }
 
 /**
- * Multiply a vector by a scalar (i.e. scale the vector).
+ * Multiply each element of an array by a scalar (i.e. scale the array).
  *
- * @param {Array.<number>} x - Vector
+ * @param {Array.<mixed>} A - Array to scale
  * @param {number} c - Scalar
- * @return {Array.<number>} Scaled vector
+ * @return {Array.<mixed>} Scaled array
  */
-export function scale(x, c) {
-  return x.map(a => c * a);
+export function scale(A, c) {
+  return Array.isArray(A)
+    ? A.map(B => scale(B, c))
+    : A * c;
+}
+
+/**
+ * Raise all elements in an array to some power. The power to raise the elements to can either be
+ * the same number for all elements, in which case it should be passed as a number, or an individual
+ * number for all elements, in which case it should be passed as an array of the same shape as the
+ * input array.
+ *
+ * @param {Array.<number>} x - Input array
+ * @param {number|Array.<number>} y - The power to raise all elements to. Either a {number} (all
+ *   elements will be raised to this power) or an array (elements in the input array will be raised
+ *   to the power specified at the same position in the powers array)
+ * @return {Array.<number>} Array containing the input elements, raised to the specified power
+ */
+export function power(A, y) {
+  return Array.isArray(A)
+    ? A.map((a, i) => power(a, (Array.isArray(y) ? y[i] : y)))
+    : A ** y;
+}
+
+/**
+ * Calculate elementwise sum of two or more arrays. Arrays should have the same shape.
+ *
+ * @param {...Array.<mixed>} S - Arrays to concatenate. They must have the same shape
+ * @return {Array.<mixed>} Sum of arrays
+ */
+export function sum(...S) {
+  return S.reduce((r, a) =>
+    r.map((b, i) =>
+      (Array.isArray(b) ? sum(b, a[i]) : b + a[i])
+    )
+  );
 }
 
 /**
@@ -437,48 +461,6 @@ export function internalSum(A) {
 }
 
 /**
- * Calculate elementwise sum of two or more arrays. Arrays should have the same shape.
- *
- * @param {...Array.<mixed>} S - Arrays to concatenate. They must have the same shape
- * @return {Array.<mixed>} Sum of arrays
- */
-export function sum(...S) {
-  return S.reduce((r, a) =>
-    r.map((b, i) =>
-      (Array.isArray(b) ? sum(b, a[i]) : b + a[i])
-    )
-  );
-}
-
-/**
- * Raise all elements in an array to some power. The power to raise the elements to can either be
- * the same number for all elements, in which case it should be passed as a number, or an individual
- * number for all elements, in which case it should be passed as an array of the same shape as the
- * input array.
- *
- * @param {Array.<number>} x - Input array
- * @param {number|Array.<number>} y - The power to raise all elements to. Either a {number} (all
- *   elements will be raised to this power) or an array (elements in the input array will be raised
- *   to the power specified at the same position in the powers array)
- * @return {Array.<number>} Array containing the input elements, raised to the specified power
- */
-export function power(x, y) {
-  return Array.isArray(x)
-    ? x.map((a, i) => power(a, (Array.isArray(y) ? y[i] : y)))
-    : x ** y;
-}
-
-/**
- * Get a copy of an array with absolute values of the original array entries.
- *
- * @param {Array.<mixed>} A Array to get absolute values array from
- * @return {Array.<mixed>} Array with absolute values
- */
-export function abs(A) {
-  return A.map(B => (Array.isArray(B) ? abs(B) : Math.abs(B)));
-}
-
-/**
  * Randomly permute the rows of a matrix.
  *
  * @param {Array.<Array.<mixed>>} S Matrix
@@ -572,7 +554,7 @@ export function reshape(A, shape) {
 
   let B = zeros(shape);
 
-  const counters = zeroVector(shape.length);
+  const counters = zeros(shape.length);
   let counterIndex = counters.length - 1;
 
   let counterTotal = 0;

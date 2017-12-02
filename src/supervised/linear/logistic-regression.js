@@ -25,7 +25,7 @@ export class BinaryLogisticRegression extends Classifier {
 
     // Initialize weights vector to zero. Here, the number of weights equals one plus the number of
     // features, where the first weight (w0) is the weight used for the bias.
-    this.weights = Arrays.zeroVector(1 + X[0].length);
+    this.weights = Arrays.zeros(1 + X[0].length);
 
     // Iteration index
     let epoch = 0;
@@ -52,7 +52,7 @@ export class BinaryLogisticRegression extends Classifier {
   trainIteration(X, y) {
     // Initialize the weights increment vector, which is used to increment the weights in each
     // iteration after the calculations are done.
-    let weightsIncrement = Arrays.zeroVector(this.weights.length);
+    let weightsIncrement = Arrays.zeros(this.weights.length);
 
     // Shuffle data points
     const [XUse, yUse] = Arrays.permuteRows(X, y);
