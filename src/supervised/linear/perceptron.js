@@ -72,7 +72,7 @@ export class BinaryPerceptron extends Classifier {
     let numErrors = 0;
 
     // Shuffle data points
-    const [XUse, yUse] = Arrays.permuteRows(X, y);
+    const [XUse, yUse] = Arrays.shuffle(X, y);
 
     // Loop over all datapoints
     for (let i = 0; i < XUse.length; i += 1) {

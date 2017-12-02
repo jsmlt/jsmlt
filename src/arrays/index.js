@@ -406,35 +406,75 @@ export function internalSum(A) {
 // -----
 
 /**
- * Randomly permute the rows of a matrix.
+ * Recursively flatten an array.
  *
- * @param {Array.<Array.<mixed>>} S Matrix
- * @param {Array.<Array.<mixed>>} ... Other matrices to permute in the same way
- * @return {Array.<Array.<mixed>>} Permuted matrix
+ * @param {Array.<mixed>} A - Array to be flattened
+ * @return {Array.<mixed>} Flattened array
  */
-export function permuteRows(...S) {
-  // Copy matrices
-  const SPermutated = S.map(A => A.slice());
+export function flatten(A) {
+  return [].concat(...A.map(x => (Array.isArray(x) ? flatten(x) : x)));
+}
 
-  // Number of remaining rows
-  let remainingRows = SPermutated[0].length;
+/**
+ * Reshape an array into a different shape.
+ *
+ * @param {Array.<mixed>} A - Array to reshape
+ * @param {Array.<number>} shape - Array specifying the number of elements per dimension. n-th
+ *   element corresponds to the number of elements in the n-th dimension.
+ * @return {Array.<mixed>} Reshaped array
+ */
+export function reshape(A, shape) {
+  const AValues = flatten(A);
 
-  while (remainingRows > 0) {
-    // Select a random element from the remaining rows and swap it with the first element that has
-    // not yet been assigned
-    const swapIndex = Math.floor(Math.random() * remainingRows);
+  let B = zeros(shape);
 
-    for (let i = 0; i < SPermutated.length; i += 1) {
-      const tmpRow = SPermutated[i][remainingRows - 1];
+  const counters = zeros(shape.length);
+  let counterIndex = counters.length - 1;
 
-      SPermutated[i][remainingRows - 1] = SPermutated[i][swapIndex];
-      SPermutated[i][swapIndex] = tmpRow;
+  let counterTotal = 0;
+
+  let done = false;
+
+  while (!done) {
+    B = setArrayElement(B, counters, AValues[counterTotal]);
+
+    // Increment current counter
+    counterIndex = counters.length - 1;
+    counters[counterIndex] += 1;
+    counterTotal += 1;
+
+    // If the end of the current counter is reached, move to the next counter...
+    while (counters[counterIndex] === shape[counterIndex]) {
+      // ...unless we have reached the end of all counters. In that case, we are done
+      if (counterIndex === 0) {
+        done = true;
+      }
+
+      counters[counterIndex - 1] += 1;
+      counters[counterIndex] = 0;
+      counterIndex -= 1;
     }
-
-    remainingRows -= 1;
   }
 
-  return SPermutated;
+  return B;
+}
+
+/**
+ * Get the transpose of a matrix or vector.
+ *
+ * @param {Array.<Array.<number>>} A - Matrix or vector
+ * @return {Array.<Array.<number>>} Transpose of the matrix
+ */
+export function transpose(A) {
+  const ATranspose = zeros([A[0].length, A.length]);
+
+  for (let i = 0; i < A.length; i += 1) {
+    for (let j = 0; j < A[0].length; j += 1) {
+      ATranspose[j][i] = A[i][j];
+    }
+  }
+
+  return ATranspose;
 }
 
 /**
@@ -510,6 +550,39 @@ export function pad(A, paddingLengths, paddingValues, axes = []) {
 }
 
 /**
+ * Randomly shuffle multiple arrays in the primary (first) axis. All input arrays are shuffled
+ * simultaneously, i.e., if an element with index i is moved to index j for the first array, the
+ * the same happens for the second (and third, etc.) array.
+ *
+ * @param {...Array.<mixed>} S - Arrays to shuffle. They must have the same size in the primary axis
+ * @return {Array.<Array.<mixed>>} Shuffled matrices
+ */
+export function shuffle(...S) {
+  // Copy matrices
+  const SPermutated = S.map(A => A.slice());
+
+  // Number of remaining rows
+  let remainingRows = SPermutated[0].length;
+
+  while (remainingRows > 0) {
+    // Select a random element from the remaining rows and swap it with the first element that has
+    // not yet been assigned
+    const swapIndex = Math.floor(Math.random() * remainingRows);
+
+    for (let i = 0; i < SPermutated.length; i += 1) {
+      const tmpRow = SPermutated[i][remainingRows - 1];
+
+      SPermutated[i][remainingRows - 1] = SPermutated[i][swapIndex];
+      SPermutated[i][swapIndex] = tmpRow;
+    }
+
+    remainingRows -= 1;
+  }
+
+  return SPermutated;
+}
+
+/**
  * Permute the axes of an input array. In other words, you can interchange the axes of an
  * n-dimensional input array.
  *
@@ -546,78 +619,6 @@ export function permuteAxes(A, newAxes) {
   permuteAxesStep([], 0);
 
   return APermuted;
-}
-
-/**
- * Recursively flatten an array.
- *
- * @param {Array.<mixed>} A - Array to be flattened
- * @return {Array.<mixed>} Flattened array
- */
-export function flatten(A) {
-  return [].concat(...A.map(x => (Array.isArray(x) ? flatten(x) : x)));
-}
-
-/**
- * Reshape an array into a different shape.
- *
- * @param {Array.<mixed>} A - Array to reshape
- * @param {Array.<number>} shape - Array specifying the number of elements per dimension. n-th
- *   element corresponds to the number of elements in the n-th dimension.
- * @return {Array.<mixed>} Reshaped array
- */
-export function reshape(A, shape) {
-  const AValues = flatten(A);
-
-  let B = zeros(shape);
-
-  const counters = zeros(shape.length);
-  let counterIndex = counters.length - 1;
-
-  let counterTotal = 0;
-
-  let done = false;
-
-  while (!done) {
-    B = setArrayElement(B, counters, AValues[counterTotal]);
-
-    // Increment current counter
-    counterIndex = counters.length - 1;
-    counters[counterIndex] += 1;
-    counterTotal += 1;
-
-    // If the end of the current counter is reached, move to the next counter...
-    while (counters[counterIndex] === shape[counterIndex]) {
-      // ...unless we have reached the end of all counters. In that case, we are done
-      if (counterIndex === 0) {
-        done = true;
-      }
-
-      counters[counterIndex - 1] += 1;
-      counters[counterIndex] = 0;
-      counterIndex -= 1;
-    }
-  }
-
-  return B;
-}
-
-/**
- * Get the transpose of a matrix or vector.
- *
- * @param {Array.<Array.<number>>} A - Matrix or vector
- * @return {Array.<Array.<number>>} Transpose of the matrix
- */
-export function transpose(A) {
-  const ATranspose = zeros([A[0].length, A.length]);
-
-  for (let i = 0; i < A.length; i += 1) {
-    for (let j = 0; j < A[0].length; j += 1) {
-      ATranspose[j][i] = A[i][j];
-    }
-  }
-
-  return ATranspose;
 }
 
 // Traditional array functionality

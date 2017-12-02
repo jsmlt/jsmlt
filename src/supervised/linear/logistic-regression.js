@@ -55,7 +55,7 @@ export class BinaryLogisticRegression extends Classifier {
     let weightsIncrement = Arrays.zeros(this.weights.length);
 
     // Shuffle data points
-    const [XUse, yUse] = Arrays.permuteRows(X, y);
+    const [XUse, yUse] = Arrays.shuffle(X, y);
 
     // Loop over all datapoints
     for (let i = 0; i < XUse.length; i += 1) {
