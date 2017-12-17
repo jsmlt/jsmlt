@@ -72,7 +72,8 @@ export default class RandomForest extends Classifier {
 
       // Select the input samples. If bootstrapping is disabled, use all samples. If it is enabled,
       // use a bootstrapped sample of all samples
-      let treeX, treeY;
+      let treeX;
+      let treeY;
 
       if (this.bootstrap) {
         const treeSamples = Random.sample(sampleIndices, X.length, true);
