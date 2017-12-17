@@ -14,7 +14,7 @@ export class BinarySVM extends Classifier {
    * @param {Object} [optionsUser] - User-defined options for SVM
    * @param {number} [optionsUser.C = 100] - Regularization (i.e. penalty for slack variables)
    * @param {Object} [optionsUser.kernel] - Kernel. Defaults to the linear kernel
-   * @param {number} [optionsUser.convergenceNumPasses = 10] - Number of passes without alphas
+   * @param {number} [optionsUser.convergenceNumPasses = 20] - Number of passes without alphas
    *   changing to treat the algorithm as converged
    * @param {number} [optionsUser.numericalTolerance = 1e-6] - Numerical tolerance for a
    *   value in the to be equal to another SMO algorithm to be equal to another value
@@ -29,7 +29,7 @@ export class BinarySVM extends Classifier {
     const optionsDefault = {
       C: 100.0,
       kernel: null,
-      convergenceNumPasses: 10,
+      convergenceNumPasses: 20,
       numericalTolerance: 1e-6,
       useKernelCache: true,
     };
@@ -184,7 +184,7 @@ export class BinarySVM extends Classifier {
 
     // Store indices of support vectors (where alpha > 0, or, in this case, where alpha is greater
     // than some numerical tolerance)
-    this.supportVectors = Arrays.argFilter(this.alphas, x => x > 1e-6);
+    this.supportVectors = Arrays.argFilter(this.alphas, x => x > 1e-3);
 
     // Mark that training has completed
     this.isTraining = false;
