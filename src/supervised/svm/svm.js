@@ -184,10 +184,7 @@ export class BinarySVM extends Classifier {
 
     // Store indices of support vectors (where alpha > 0, or, in this case, where alpha is greater
     // than some numerical tolerance)
-    this.supportVectors = Arrays
-      .zipWithIndex(this.alphas)
-      .filter(x => x[0] > 1e-6)
-      .map(x => x[1]);
+    this.supportVectors = Arrays.argFilter(this.alphas, x => x > 1e-6);
 
     // Mark that training has completed
     this.isTraining = false;
