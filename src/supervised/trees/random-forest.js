@@ -21,6 +21,9 @@ export default class RandomForest extends Classifier {
    *   (e.g., 1.0 for all features), or a string. If string, 'sqrt' and 'log2' are supported,
    *   causing the algorithm to use sqrt(n) and log2(n) features, respectively (where n is the
    *   total number of features)
+   * @param {boolean} [bootstrap = true] - Whether to select samples for each tree by bootstrapping.
+   *   If false, all samples are used for each tree. If true, n samples are drawn with replacement
+   *   from the full set of samples for each tree (where n is the total number of samples)
    * @param {number} [optionsUser.numTrees = 10] - Number of trees to construct
    */
   constructor(optionsUser = {}) {
@@ -31,6 +34,7 @@ export default class RandomForest extends Classifier {
       criterion: 'gini',
       numFeatures: 1.0,
       numTrees: 10,
+      bootstrap: true,
     };
 
     const options = {
@@ -42,6 +46,7 @@ export default class RandomForest extends Classifier {
     this.criterion = options.criterion;
     this.numFeatures = options.numFeatures;
     this.numTrees = options.numTrees;
+    this.bootstrap = options.bootstrap;
   }
 
   /**
@@ -65,11 +70,18 @@ export default class RandomForest extends Classifier {
         numFeatures: this.numFeatures,
       });
 
-      // Bootstrap the input samples
-      const treeSamples = Random.sample(sampleIndices, X.length, true);
+      // Select the input samples. If bootstrapping is disabled, use all samples. If it is enabled,
+      // use a bootstrapped sample of all samples
+      let treeX, treeY;
 
-      const treeX = treeSamples.map(sampleIndex => X[sampleIndex]);
-      const treeY = treeSamples.map(sampleIndex => y[sampleIndex]);
+      if (this.bootstrap) {
+        const treeSamples = Random.sample(sampleIndices, X.length, true);
+        treeX = treeSamples.map(sampleIndex => X[sampleIndex]);
+        treeY = treeSamples.map(sampleIndex => y[sampleIndex]);
+      } else {
+        treeX = X;
+        treeY = y;
+      }
 
       // Train the tree
       tree.train(treeX, treeY);
