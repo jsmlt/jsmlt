@@ -313,6 +313,15 @@ export class BinarySVM extends Classifier {
       return output;
     });
   }
+
+  /**
+   * Retrieve the indices of the support vector samples.
+   *
+   * @return {Array.<number>} List of sample indices of the support vectors
+   */
+  getSupportVectors() {
+    return this.supportVectors;
+  }
 }
 
 /**
@@ -414,5 +423,17 @@ export default class SVM extends OneVsAllClassifier {
 
     this.createClassifiers(y);
     this.trainBatch(X, y);
+  }
+
+  /**
+   * Retrieve the indices of the support vector samples.
+   *
+   * @return {Array.<number>} List of sample indices of the support vectors
+   */
+  getSupportVectors() {
+    const classifiersSupportVectors = this.getClassifiers().map(
+      x => x.classifier.getSupportVectors()
+    );
+    return Array.from(new Set(Array.prototype.concat(...classifiersSupportVectors)));
   }
 }

@@ -171,4 +171,14 @@ export class OneVsAllClassifier extends Classifier {
     // Scale all predictions to yield valid probabilities
     return predictions.map(x => Arrays.scale(x, 1 / Arrays.internalSum(x)));
   }
+
+  /**
+   * Retrieve the individual binary one-vs-all classifiers.
+   *
+   * @return {Array.<Classifier>} List of binary one-vs-all classifiers used as the base classifiers
+   *   for this multiclass classifier
+   */
+  getClassifiers() {
+    return this.classifiers;
+  }
 }
