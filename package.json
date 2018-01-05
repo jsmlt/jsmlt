@@ -14,7 +14,7 @@
   "license": "ISC",
   "devDependencies": {
     "babel-core": "^6.26.0",
-    "babel-eslint": "^8.0.0",
+    "babel-eslint": "^8.1.2",
     "babel-loader": "^7.1.2",
     "babel-plugin-transform-exponentiation-operator": "^6.24.1",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
@@ -22,8 +22,8 @@
     "eslint": "^3.18.0",
     "eslint-config-airbnb-base": "^11.1.1",
     "eslint-loader": "^1.6.3",
-    "eslint-plugin-import": "^2.2.0",
-    "webpack": "^3.5.6"
+    "eslint-plugin-import": "^2.8.0",
+    "webpack": "^3.10.0"
   },
   "directories": {
     "lib": "lib"
@@ -32,8 +32,7 @@
     "babel-cli": "^6.26.0",
     "babel-plugin-add-module-exports": "^0.2.1",
     "babel-plugin-transform-es2015-modules-commonjs": "^6.26.0",
-    "csv": "^1.1.1",
-    "esdoc": "^1.0.3",
+    "csv": "^1.2.1",
     "esdoc-ecmascript-proposal-plugin": "^1.0.0",
     "esdoc-standard-plugin": "^1.0.0",
     "json-loader": "^0.5.7",
