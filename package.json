@@ -1,6 +1,6 @@
 {
   "name": "@jsmlt/jsmlt",
-  "version": "0.1.10",
+  "version": "0.1.11",
   "description": "JavaScript Machine Learning",
   "main": "distribution/index.js",
   "scripts": {
