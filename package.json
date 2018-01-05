@@ -34,8 +34,6 @@
     "babel-plugin-add-module-exports": "^0.2.1",
     "babel-plugin-transform-es2015-modules-commonjs": "^6.26.0",
     "csv": "^1.2.1",
-    "esdoc-ecmascript-proposal-plugin": "^1.0.0",
-    "esdoc-standard-plugin": "^1.0.0",
     "json-loader": "^0.5.7",
     "marchingsquares": "^1.2.0",
     "request": "^2.83.0"
