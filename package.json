@@ -6,8 +6,9 @@
   "scripts": {
     "start": "webpack --watch --progress",
     "compile": "babel --watch -d distribution/ src/",
+    "compile-once": "babel -d distribution/ src/",
     "build": "webpack -p",
-    "prepublish": "npm run compile",
+    "prepublish": "npm run compile-once",
     "build-documentation": "./node_modules/.bin/esdoc"
   },
   "author": "Jesper van Engelen <contact@jepps.nl> (https://jespervanengelen.com)",
