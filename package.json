@@ -24,6 +24,7 @@
     "eslint-config-airbnb-base": "^11.1.1",
     "eslint-loader": "^1.6.3",
     "eslint-plugin-import": "^2.8.0",
+    "karma-firefox-launcher": "^1.1.0",
     "webpack": "^3.10.0"
   },
   "directories": {
@@ -34,11 +35,8 @@
     "babel-plugin-add-module-exports": "^0.2.1",
     "babel-plugin-transform-es2015-modules-commonjs": "^6.26.0",
     "csv": "^1.2.1",
-    "jasmine-core": "^2.8.0",
+    "jasmine": "^2.8.0",
     "json-loader": "^0.5.7",
-    "karma": "^2.0.0",
-    "karma-chrome-launcher": "^2.2.0",
-    "karma-jasmine": "^1.1.1",
     "marchingsquares": "^1.2.0",
     "request": "^2.83.0"
   },
