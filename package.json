@@ -9,7 +9,8 @@
     "compile-once": "babel -d distribution/ src/",
     "build": "webpack -p",
     "prepublish": "npm run compile-once",
-    "build-documentation": "./node_modules/.bin/esdoc"
+    "build-documentation": "./node_modules/.bin/esdoc",
+    "test": "jasmine"
   },
   "author": "Jesper van Engelen <contact@jepps.nl> (https://jespervanengelen.com)",
   "license": "ISC",
