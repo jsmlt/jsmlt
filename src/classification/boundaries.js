@@ -49,7 +49,7 @@ export default class Boundaries {
      * Feature list of the grid points. n-by-2 array, where each row consists of the x- and
      * y-coordinates of a point on the grid.
      *
-     * @type {Array}
+     * @type {Array.<Array.<number>>}
      */
     this.features = null;
 
@@ -57,15 +57,16 @@ export default class Boundaries {
      * List of classifier predictions for each grid point. The nth prediction is the prediction for
      * the nth point in the `features` property. n-dimensional array.
      *
-     * @type {Array}
+     * @type {Array.<mixed>}
      */
     this.predictions = null;
 
     /**
      * Grid of classifier predictions for each grid point. m-by-n array, where the array element at
-     * index (j, i) contains the prediction for the grid point at x-index i and y-index j.
+     * index (j, i) contains the prediction for the grid point at x-index i and y-index j. This is
+     * simply a 2-dimensional version of the `predictions` property
      *
-     * @type {Array}
+     * @type {Array.<Array.<mixed>>}
      */
     this.predictionsGrid = null;
   }
