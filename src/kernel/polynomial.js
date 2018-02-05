@@ -15,7 +15,7 @@ export default class PolynomialKernel extends Kernel {
    * @param {number} [options.coef0 = 1] - Bias coefficient (not part of the dot product)
    * @param {number} [options.degree = 2] - Degree of the polynomial
    */
-  constructor({ gamma = 1, coef0 = 1, degree = 2 } = {}) {
+  constructor({ gamma = 1, coef0 = 0, degree = 2 } = {}) {
     super();
 
     /**

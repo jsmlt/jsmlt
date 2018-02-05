@@ -14,7 +14,7 @@ export default class SigmoidKernel extends Kernel {
    * @param {number} [options.gamma = 1] - Normalization parameter of basic dot product
    * @param {number} [options.coef0 = 1] - Bias coefficient (not part of the dot product)
    */
-  constructor({ gamma = 1, coef0 = 1 } = {}) {
+  constructor({ gamma = 0.01, coef0 = 0 } = {}) {
     super();
 
     /**
