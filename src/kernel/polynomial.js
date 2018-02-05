@@ -8,7 +8,7 @@ import * as Arrays from '../arrays';
  */
 export default class PolynomialKernel extends Kernel {
   /**
-   * Initialize the Gaussian kernel with user-specified parameters
+   * Initialize the Polynomial kernel with user-specified parameters
    *
    * @param {Object} [options] - User-defined options
    * @param {number} [options.gamma = 1] - Normalization parameter of basic dot product
