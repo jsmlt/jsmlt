@@ -41,6 +41,9 @@ export default class DecisionTree extends Classifier {
    *   (e.g., 1.0 for all features), or a string. If string, 'sqrt' and 'log2' are supported,
    *   causing the algorithm to use sqrt(n) and log2(n) features, respectively (where n is the
    *   total number of features)
+   * @param {number} [optionsUser.maxDepth = -1] - Maximum depth of the tree. The depth of the
+   *   tree is the number of nodes in the longest path from the decision tree root to a leaf. It
+   *   is an indicator of the complexity of the tree. Use -1 for no maximum depth
    */
   constructor(optionsUser = {}) {
     super();
@@ -49,6 +52,7 @@ export default class DecisionTree extends Classifier {
     const optionsDefault = {
       criterion: 'gini',
       numFeatures: 1.0,
+      maxDepth: -1,
     };
 
     const options = {
@@ -59,6 +63,7 @@ export default class DecisionTree extends Classifier {
     // Set options
     this.criterion = options.criterion;
     this.numFeatures = options.numFeatures;
+    this.maxDepth = options.maxDepth;
   }
 
   /**
@@ -256,9 +261,18 @@ export default class DecisionTree extends Classifier {
     const impurity = this.calculateImpurity([ySub]);
     node.impurity = impurity;
 
+    // If the node has only samples from a single class, no further splitting is possible
     if (impurity === 0) {
       node.type = 'leaf';
       node.prediction = ySub[0];
+
+      return node;
+    }
+
+    // Check whether the maximum depth has been reached, and make the node a leaf if that's the case
+    if (this.maxDepth >= 0 && depth >= this.maxDepth) {
+      node.type = 'leaf';
+      node.prediction = Arrays.valueCounts(ySub).reduce((r, x) => (x[1] > r[1] ? x : r))[0];
 
       return node;
     }

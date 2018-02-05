@@ -21,6 +21,9 @@ export default class RandomForest extends Classifier {
    *   (e.g., 1.0 for all features), or a string. If string, 'sqrt' and 'log2' are supported,
    *   causing the algorithm to use sqrt(n) and log2(n) features, respectively (where n is the
    *   total number of features)
+   * @param {number} [optionsUser.maxDepth = -1] - Maximum depth of each decision tree. The depth of
+   *   a decision tree is the number of nodes in the longest path from the decision tree root to a
+   *   leaf. It is an indicator of the complexity of the tree. Use -1 for no maximum depth
    * @param {boolean} [bootstrap = true] - Whether to select samples for each tree by bootstrapping.
    *   If false, all samples are used for each tree. If true, n samples are drawn with replacement
    *   from the full set of samples for each tree (where n is the total number of samples)
@@ -33,6 +36,7 @@ export default class RandomForest extends Classifier {
     const optionsDefault = {
       criterion: 'gini',
       numFeatures: 1.0,
+      maxDepth: -1,
       numTrees: 10,
       bootstrap: true,
     };
@@ -45,6 +49,7 @@ export default class RandomForest extends Classifier {
     // Set options
     this.criterion = options.criterion;
     this.numFeatures = options.numFeatures;
+    this.maxDepth = options.maxDepth;
     this.numTrees = options.numTrees;
     this.bootstrap = options.bootstrap;
   }
@@ -68,6 +73,7 @@ export default class RandomForest extends Classifier {
       const tree = new DecisionTree({
         criterion: this.criterion,
         numFeatures: this.numFeatures,
+        maxDepth: this.maxDepth,
       });
 
       // Select the input samples. If bootstrapping is disabled, use all samples. If it is enabled,
