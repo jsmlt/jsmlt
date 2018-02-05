@@ -13,7 +13,7 @@ export class BinarySVM extends Classifier {
    *
    * @param {Object} [optionsUser] - User-defined options for SVM
    * @param {number} [optionsUser.C = 100] - Regularization (i.e. penalty for slack variables)
-   * @param {Object} [optionsUser.kernel] - Kernel. Defaults to the linear kernel
+   * @param {Object} [optionsUser.kernel = null] - Kernel. Defaults to the linear kernel
    * @param {number} [optionsUser.convergenceNumPasses = 20] - Number of passes without alphas
    *   changing to treat the algorithm as converged
    * @param {number} [optionsUser.numericalTolerance = 1e-6] - Numerical tolerance for a
