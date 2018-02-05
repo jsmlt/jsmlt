@@ -74,7 +74,7 @@ export default class Boundaries {
   /**
    * Determine decision boundaries for a specific classifier.
    *
-   * @param {jsmlt.Classification.Classifier} classifier - Classifier for which to generate the
+   * @param {jsmlt.Supervised.Classifier} classifier - Classifier for which to generate the
    *   decision boundaries
    * @param {Array.<number>|number} resolution - Number of points on the x-axis and on the y-axis.
    *   Use integer for the same resolution on the x- and y-axis, and a 2-dimensional array to
