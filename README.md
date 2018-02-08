@@ -65,6 +65,8 @@ Running this simple example will output the classification result `[1,1,0,0]`, m
 ### Kernels
 - Linear kernel: [`JSMLT.Kernel.LinearKernel`](https://visualml.io/jsmlt/docs/class/src/kernel/linear.js~LinearKernel.html)
 - Gaussian (RBF) kernel: [`JSMLT.Kernel.GaussianKernel`](https://visualml.io/jsmlt/docs/class/src/kernel/gaussian.js~GaussianKernel.html)
+- Polynomial kernel: [`JSMLT.Kernel.PolynomialKernel`](https://visualml.io/jsmlt/docs/class/src/kernel/gaussian.js~PolynomialKernel.html)
+- Sigmoid kernel: [`JSMLT.Kernel.SigmoidKernel`](https://visualml.io/jsmlt/docs/class/src/kernel/gaussian.js~SigmoidKernel.html)
 
 ### Preprocessing
 - Encode string or other type of labels to integers: [`JSMLT.Preprocessing.LabelEncoder`](https://visualml.io/jsmlt/docs/class/src/preprocessing/labelencoder.js~LabelEncoder.html)
