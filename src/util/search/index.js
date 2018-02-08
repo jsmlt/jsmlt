@@ -3,8 +3,8 @@
 /**
  * Perform a binary search in a sorted array A to find the index i such that the search value is
  * larger than or equal to A[i], and strictly smaller than A[i+1]. Informally, this corresponds with
- * finding the interval in which the search value lies. Throws an error when the input value is outside
- * of the array range. Does not check whether the array is actually sorted.
+ * finding the interval in which the search value lies. Throws an error when the input value is
+ * outside of the array range. Does not check whether the array is actually sorted.
  *
  * @param {Array.<number>} array - Sorted input array
  * @param {number} value - Value for which the interval should be found
