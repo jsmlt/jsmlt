@@ -62,7 +62,7 @@ export function trainTestSplit(input, optionsUser = {}) {
 
   // Take a random sample from the list of possible indices, which are then used as the indices
   // of the elements to use for the training data
-  const trainIndices = Random.sample(indices, numTrainElements);
+  const trainIndices = Random.sample(indices, numTrainElements, false);
 
   // Create resulting training and test sets
   const trainArrays = input
