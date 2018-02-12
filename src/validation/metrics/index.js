@@ -37,6 +37,10 @@ export function accuracy(yTrue, yPred, normalize = true) {
  * @return {number} Calculated AUROC
  */
 export function auroc(yTrue, yPred) {
+  if (yTrue.length !== yPred.length) {
+    throw new Error('Number of true labels must match number of predicted labels.');
+  }
+  
   // Sort the prediction probabilities to get a list of all possible thresholds
   const sortedIndices = Arrays.argSort(yPred, (a, b) => a - b);
 
