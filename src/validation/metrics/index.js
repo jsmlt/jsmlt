@@ -53,7 +53,7 @@ export function auroc(yTrue, yPred) {
   let fp = numNegative;
   let tp = numPositive;
 
-  // List of fals positive rates and true positive rates. The false positive rate and true positive
+  // List of false positive rates and true positive rates. The false positive rate and true positive
   // rate at all indices i form pairs
   const fprs = [1];
   const tprs = [1];
