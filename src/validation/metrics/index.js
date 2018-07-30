@@ -40,6 +40,12 @@ export function auroc(yTrue, yPred) {
   if (yTrue.length !== yPred.length) {
     throw new Error('Number of true labels must match number of predicted labels.');
   }
+
+  const numClasses = Arrays.unique(yTrue).length;
+
+  if (numClasses != 2) {
+    throw new Error('Number of classes in true label vector must be exactly 2.');
+  }
   
   // Sort the prediction probabilities descendingly to get a list of all possible thresholds
   const sortedIndices = Arrays.argSort(yPred, (a, b) => b - a);
