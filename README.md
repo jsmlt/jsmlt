@@ -79,6 +79,7 @@ Running this simple example will output the classification result `[1,1,0,0]`, m
 
 ### Validation
 - Accuracy metric for validation: [`JSMLT.Validation.Metrics.accuracy`](https://visualml.io/jsmlt/docs/function/index.html#static-function-accuracy)
+- AUROC metric for validation: [`JSMLT.Validation.Metrics.auroc`](https://visualml.io/jsmlt/docs/function/index.html#static-function-auroc)
 
 ### Classification boundaries
 - Classification boundaries for trained classifier: [`JSMLT.Classification.Boundaries`](https://visualml.io/jsmlt/docs/class/src/classification/boundaries.js~Boundaries.html)
