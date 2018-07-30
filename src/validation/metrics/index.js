@@ -13,6 +13,7 @@ import * as Arrays from '../../arrays';
  *   correct predictions (if normalize=false)
  */
 export function accuracy(yTrue, yPred, normalize = true) {
+  // Check input lengths
   if (yTrue.length !== yPred.length) {
     throw new Error('Number of true labels must match number of predicted labels.');
   }
@@ -32,19 +33,32 @@ export function accuracy(yTrue, yPred, normalize = true) {
  * Calculate the area under the receiver-operator characteristic curve (AUROC) for a set of
  * predictions. Area is calculated using the Trapezoidal rule.
  *
- * @param {Array.<mixed>} yTrue - True labels
- * @param {Array.<mixed>} yPred - Predicted labels
+ * @param {Array.<number>} yTrue - True labels. Must contain only integers 0 and 1
+ * @param {Array.<mixed>} yPred - Predicted label confidences. Must be between 0 (fully confident
+ *   in negative prediction) and 1 (fully confident in positive prediction), both inclusive
  * @return {number} Calculated AUROC
  */
 export function auroc(yTrue, yPred) {
+  // Check input lengths
   if (yTrue.length !== yPred.length) {
     throw new Error('Number of true labels must match number of predicted labels.');
   }
 
+  // Check number of classes
   const numClasses = Arrays.unique(yTrue).length;
 
   if (numClasses != 2) {
     throw new Error('Number of classes in true label vector must be exactly 2.');
+  }
+
+  // Check class labels
+  if (!yTrue.includes(0) || !yTrue.includes(1)) {
+    throw new Error('True labels must be integers 0 and 1.');
+  }
+
+  // Check prediction confidence values
+  if (!yPred.every(x => x >= 0 && x <= 1)) {
+    throw new Error('Prediction confidence values must be between 0 and 1 (inclusive).');
   }
   
   // Sort the prediction probabilities descendingly to get a list of all possible thresholds
