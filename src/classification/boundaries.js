@@ -152,7 +152,7 @@ export default class Boundaries {
    */
   getGridDecisionBoundaries(grid) {
     // Get unique prediction values
-    const levels = Array.from(new Set(Arrays.flatten(grid)));
+    const levels = Arrays.unique(Arrays.flatten(grid));
 
     // Contours per level
     const contours = {};

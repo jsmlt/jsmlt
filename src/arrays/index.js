@@ -726,6 +726,16 @@ export function argMax(array) {
   return zipWithIndex(array).reduce((r, x) => (x[0] > r[0] ? x : r))[1];
 }
 
+/**
+ * Get unique elements in array
+ *
+ * @param {Array.<mixed>} array - Input array
+ * @return {Array.<mixed>} Array consisting of all unique elements in the input array
+ */
+export function unique(array) {
+  return [...new Set(array)];
+}
+
 // Miscellaneous
 // -----
 

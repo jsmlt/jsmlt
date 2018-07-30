@@ -434,6 +434,6 @@ export default class SVM extends OneVsAllClassifier {
     const classifiersSupportVectors = this.getClassifiers().map(
       x => x.classifier.getSupportVectors()
     );
-    return Array.from(new Set(Array.prototype.concat(...classifiersSupportVectors)));
+    return Arrays.unique(Array.prototype.concat(...classifiersSupportVectors));
   }
 }

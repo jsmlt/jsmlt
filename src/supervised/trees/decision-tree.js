@@ -119,7 +119,7 @@ export default class DecisionTree extends Classifier {
    * @return {number} Gini impurity
    */
   gini(labels) {
-    const uniqueLabels = [...new Set(labels)];
+    const uniqueLabels = Arrays.unique(labels);
     return uniqueLabels.reduce((r, label) => {
       const frac = labels.filter(x => x === label).length / labels.length;
       return r + frac * (1 - frac);
@@ -133,7 +133,7 @@ export default class DecisionTree extends Classifier {
    * @return {number} Shannon entropy
    */
   entropy(labels) {
-    const uniqueLabels = [...new Set(labels)];
+    const uniqueLabels = Arrays.unique(labels);
     return uniqueLabels.reduce((r, label) => {
       const frac = labels.filter(x => x === label).length / labels.length;
       return r - frac * Math.log(frac);
@@ -205,7 +205,7 @@ export default class DecisionTree extends Classifier {
     // that the impurity is minimized
     fIndices.forEach((fInd) => {
       // Extract unique, sorted sample values for this feature
-      const sampleValues = [...new Set(XSubT[fInd])];
+      const sampleValues = Arrays.unique(XSubT[fInd]);
       sampleValues.sort((a, b) => (a > b) * 2 - 1);
 
       // Find split values as the average value between all sorted unique values

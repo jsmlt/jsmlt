@@ -59,7 +59,7 @@ export class OneVsAllClassifier extends Classifier {
    */
   createClassifiers(y) {
     // Get unique labels
-    const uniqueClassIndices = Array.from(new Set(y));
+    const uniqueClassIndices = Arrays.unique(y);
 
     // Initialize label set and classifier for all labels
     this.classifiers = uniqueClassIndices.map((classIndex) => {
@@ -103,7 +103,7 @@ export class OneVsAllClassifier extends Classifier {
    * iteration, e.g. accuracy
    */
   trainIterative() {
-    let remainingClassIndices = Array.from(new Set(this.training.labels));
+    let remainingClassIndices = Arrays.unique(this.training.labels);
 
     let epoch = 0;
 
