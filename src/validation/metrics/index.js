@@ -47,7 +47,7 @@ export function auroc(yTrue, yPred) {
   // Check number of classes
   const numClasses = Arrays.unique(yTrue).length;
 
-  if (numClasses != 2) {
+  if (numClasses !== 2) {
     throw new Error('Number of classes in true label vector must be exactly 2.');
   }
 
