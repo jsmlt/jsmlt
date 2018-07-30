@@ -60,7 +60,7 @@ export function auroc(yTrue, yPred) {
   if (!yPred.every(x => x >= 0 && x <= 1)) {
     throw new Error('Prediction confidence values must be between 0 and 1 (inclusive).');
   }
-  
+
   // Sort the prediction probabilities descendingly to get a list of all possible thresholds
   const sortedIndices = Arrays.argSort(yPred, (a, b) => b - a);
 
@@ -80,7 +80,7 @@ export function auroc(yTrue, yPred) {
   const tprs = [0];
 
   // Loop over all possible thresholds and calculate the tpr/fpr
-  var thresholdIndexPrevious = -1;
+  let thresholdIndexPrevious = -1;
 
   sortedIndices.forEach((thresholdIndex) => {
     if (yTrue[thresholdIndex] === 0) {
