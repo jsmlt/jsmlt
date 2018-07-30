@@ -29,8 +29,8 @@ export function accuracy(yTrue, yPred, normalize = true) {
 }
 
 /**
- * Calculate the area under the receiver-operator curve (AUROC) for a set of predictions. Area is
- * calculated using the Trapezoidal rule.
+ * Calculate the area under the receiver-operator characteristic curve (AUROC) for a set of
+ * predictions. Area is calculated using the Trapezoidal rule.
  *
  * @param {Array.<mixed>} yTrue - True labels
  * @param {Array.<mixed>} yPred - Predicted labels
@@ -41,34 +41,43 @@ export function auroc(yTrue, yPred) {
     throw new Error('Number of true labels must match number of predicted labels.');
   }
   
-  // Sort the prediction probabilities to get a list of all possible thresholds
-  const sortedIndices = Arrays.argSort(yPred, (a, b) => a - b);
+  // Sort the prediction probabilities descendingly to get a list of all possible thresholds
+  const sortedIndices = Arrays.argSort(yPred, (a, b) => b - a);
 
   // To find the false positive rate and true positive rate, we need to know the number of negatives
   // and positives, respectively, in the true labels list
   const numNegative = yTrue.filter(x => x === 0).length;
   const numPositive = yTrue.filter(x => x === 1).length;
 
-  // Keep track of number of false positives and true positives. Initialize them with threshold 0
-  let fp = numNegative;
-  let tp = numPositive;
+  // Keep track of number of false positives and true positives. Initialize them with threshold 1,
+  // such that all examples are predicted to be negative
+  let fp = 0;
+  let tp = 0;
 
   // List of false positive rates and true positive rates. The false positive rate and true positive
   // rate at all indices i form pairs
-  const fprs = [1];
-  const tprs = [1];
+  const fprs = [0];
+  const tprs = [0];
 
   // Loop over all possible thresholds and calculate the tpr/fpr
+  var thresholdIndexPrevious = -1;
+
   sortedIndices.forEach((thresholdIndex) => {
     if (yTrue[thresholdIndex] === 0) {
-      fp -= 1;
+      fp += 1;
     } else {
-      tp -= 1;
+      tp += 1;
     }
 
-    // Add the newly calculated tpr/fpr pair to the lists
+    if (thresholdIndexPrevious >= 0 && yPred[thresholdIndex] === yPred[thresholdIndexPrevious]) {
+      fprs.splice(-1, 1);
+      tprs.splice(-1, 1);
+    }
+
     fprs.push(fp / numNegative);
     tprs.push(tp / numPositive);
+
+    thresholdIndexPrevious = thresholdIndex;
   });
 
   // The area under the ROC curve is calculated by taking the area under each pair of points that
@@ -76,8 +85,8 @@ export function auroc(yTrue, yPred) {
   // by the points and the corresponding points on the x-axis is used as the area.
 
   const fprsDiff = Arrays.sum(
-    fprs.slice(0, -1),
-    Arrays.scale(fprs.slice(1), -1),
+    Arrays.scale(fprs.slice(0, -1), -1),
+    fprs.slice(1),
   );
 
   const tprsMean = Arrays.scale(
