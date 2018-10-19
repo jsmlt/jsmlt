@@ -196,7 +196,7 @@ export function setArrayElement(A, index, value) {
  * @return Array Vector of n elements of the specified value
  */
 export function valueVector(n, value) {
-  return [...Array(n)].map(() => value);
+  return [...Array(n)].map(() => (typeof value === 'function' ? value() : value));
 }
 
 /**
@@ -353,11 +353,11 @@ export function scale(A, c) {
  * number for all elements, in which case it should be passed as an array of the same shape as the
  * input array.
  *
- * @param {Array.<number>} x - Input array
+ * @param {Array.<mixed>} A - Input array
  * @param {number|Array.<number>} y - The power to raise all elements to. Either a {number} (all
  *   elements will be raised to this power) or an array (elements in the input array will be raised
  *   to the power specified at the same position in the powers array)
- * @return {Array.<number>} Array containing the input elements, raised to the specified power
+ * @return {Array.<mixed>} Array containing the input elements, raised to the specified power
  */
 export function power(A, y) {
   return Array.isArray(A)
@@ -671,7 +671,7 @@ export function valueCounts(array) {
  * @param {function(element: mixed, !index: Number): boolean} callback - Callback function to be
  *   used for filtering. This function takes an array element and possibly its index as its input
  *   and should return true when the index should be used (filtered) and false when it shouldn't
- * @return {Array.<Number>} Array of array indices in the original array where the array element
+ * @return {Array.<number>} Array of array indices in the original array where the array element
  *   matches the filter
  */
 export function argFilter(array, callback) {
@@ -696,17 +696,17 @@ export function argFilter(array, callback) {
  *     == 0 : leave order of a and b unchanged with respect to each other
  *     > 0  : b after a
  *   Defaults to numeric sorting.
- * @return {Array.<Number>} Array of array indices such that the elements corresponding with these
+ * @return {Array.<number>} Array of array indices such that the elements corresponding with these
  *   indices in the original array are sorted
  */
-export function argSort(array, callback) {
-  const useCallback = typeof callback === 'function'
-    ? callback
+export function argSort(array, compareFunction = null) {
+  const compare = typeof compareFunction === 'function'
+    ? compareFunction
     : ((a, b) => a - b);
 
   return zipWithIndex(array)
     // Sort zipped elements + indices by element value
-    .sort((a, b) => useCallback(a[0], b[0]))
+    .sort((a, b) => compare(a[0], b[0]))
 
     // Map the zipped elements to the indices
     .map(x => x[1]);

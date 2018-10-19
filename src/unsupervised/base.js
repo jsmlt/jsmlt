@@ -15,7 +15,7 @@ export default class Clusterer {
    * Assign clusters to samples.
    *
    * @param {Array.<Array.<number>>} X - Features per data point
-   * @return {Array.<Number>} Cluster indices assigned to input data points. For n input data
+   * @return {Array.<number>} Cluster indices assigned to input data points. For n input data
    *   points, an n-dimensional array containing the cluster assignments will be returned
    */
   cluster(X) { throw new Error('Method must be implemented child class.'); }
