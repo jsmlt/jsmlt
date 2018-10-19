@@ -230,6 +230,10 @@ export function zeros(shape) {
   return full(shape, 0);
 }
 
+export function random(shape, min = 0, max = 1) {
+  return full(shape, () => Random.rand(min, max));
+}
+
 /**
  * Set all entries in an array to a specific value and return the resulting array. Original array
  * is not modified.
