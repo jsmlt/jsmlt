@@ -45,6 +45,14 @@ export class NN extends Classifiers {
     this.weights = [];
   }
 
+  /**
+   * Randomly initialize the weights for the neural network. For each subsequent pair of layers,
+   * where the first has n nodes and the second n' nodes, initialize an matrix with n rows and n'
+   * columns. Each cell in the matrix is assigned a random value in the range [-1, 1].
+   *
+   * The weights between layer k and layer k + 1 are stored in element k (starting at k = 0) of the
+   * weights array.
+   */
   initializeWeights() {
     // Initialize weights for each subsequent pair of layers
     for (let i = 0; i < this.layers.length - 1; i++) {
@@ -57,8 +65,10 @@ export class NN extends Classifiers {
   }
 
   train(X, y) {
+    // Initialize weights arrays
     this.initializeWeights();
 
+    // Train for specified number of epochs
     for (let i = 0; i < this.numEpochs; i++) {
       this.trainEpoch(X, y);
     }
@@ -68,12 +78,13 @@ export class NN extends Classifiers {
     // Shuffle data points
     const [XUse, yUse] = Arrays.shuffle(X, y);
 
+    // Train for each sample individually
     for (let i = 0; i < XUse.length; i += 1) {
-      this.trainSingleSample(XUse[i].slice(), y[i]);
+      this.trainSample(XUse[i].slice(), y[i]);
     }
   }
 
-  trainSingleSample(x, y) {
+  trainSample(x, y) {
     const [activations, outputs] = forwardPass(x);
 
     // Calculate deltas
@@ -110,6 +121,14 @@ export class NN extends Classifiers {
     }
   }
 
+  /**
+   * Pass a sample through the network, calculating the activations and outputs for all nodes in the
+   * network.
+   *
+   * @param {Array.<number>} x - Data point features
+   * @return {Array} - Array with two elements: containing the activations and outputs,
+   *   respectively, for each node in the network
+   */
   forwardPass(x) {
     if (x.length != this.numInputs) {
       throw new Error('Number of features of samples should match the number of network inputs.');
@@ -119,16 +138,17 @@ export class NN extends Classifiers {
     outputs = this.layers.map(x => Arrays.zeros(x));
     activations = this.layers.map(x => Arrays.zeros(x));
 
-    // Fill the outputs of the first layer, and initialize the activations to an empty list
+    // Fill the outputs of the first layer with the sample features, and initialize the activations
+    // of the first layer to an empty list
     outputs[0] = x.slice();
     activations[0] = [];
 
     // Propagate the inputs layer-by-layer
     for (let layer = 1; layer < this.layers.length; layer++) {
       // Calculate the activation and output of each node in the layer
-      for (let node = 0; node < this.layers[layer].length; node++) {
-        // Calculate the activation of the weighted sum of the inputs in the previous layer
-        activations[layer][node] = outputs[k].reduce((r, a, i) => {
+      for (let node = 0; node < this.layers[layer]; node++) {
+        // Calculate the activation as the weighted sum of the inputs in the previous layer
+        activations[layer][node] = outputs[layer - 1].reduce((r, a, i) => {
           return r + a * this.weights[layer - 1][i][node];
         }, 0);
 
