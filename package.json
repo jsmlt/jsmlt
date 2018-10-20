@@ -29,7 +29,11 @@
     "eslint-loader": "^2.1.1",
     "eslint-plugin-import": "^2.14.0",
     "karma-firefox-launcher": "^1.1.0",
-    "webpack": "^4.21.0"
+    "webpack": "^4.21.0",
+
+    "lodash": ">=4.17.5",
+     "brace-expansion": ">=1.1.7",
+     "randomatic": ">=3.0.0"
   },
   "directories": {
     "lib": "lib"
