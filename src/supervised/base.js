@@ -24,7 +24,7 @@ export class Estimator {
    * @return {Array.<mixed>} Predictions. Label of class with highest prevalence among k nearest
    *   neighbours for each sample
    */
-  test(X) { throw new Error('Method must be implemented child class.'); }
+  predict(X) { throw new Error('Method must be implemented child class.'); }
 }
 
 /**

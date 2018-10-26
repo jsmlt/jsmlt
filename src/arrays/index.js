@@ -196,7 +196,7 @@ export function setArrayElement(A, index, value) {
  * @return Array Vector of n elements of the specified value
  */
 export function valueVector(n, value) {
-  return [...Array(n)].map(() => value);
+  return [...Array(n)].map(() => (typeof value === 'function' ? value() : value));
 }
 
 /**
@@ -228,10 +228,6 @@ export function full(shape, value) {
  */
 export function zeros(shape) {
   return full(shape, 0);
-}
-
-export function random(shape, min = 0, max = 1) {
-  return full(shape, () => Random.rand(min, max));
 }
 
 /**

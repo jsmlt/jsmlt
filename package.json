@@ -23,6 +23,7 @@
     "babel-preset-es2015": "^6.24.1",
     "babel-register": "^6.26.0",
     "chai": "^4.2.0",
+    "chai-almost": "^1.0.1",
     "chai-stats": "^0.3.0",
     "eslint": "^5.7.0",
     "eslint-config-airbnb-base": "^13.1.0",
