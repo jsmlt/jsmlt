@@ -6,37 +6,28 @@ var FullyConnected = require('./index.js');
 chai.use(chaiAlmost());
 var expect = chai.expect;
 
-/**
- * Construct the sample network, consisting of two layers: an input layer with 3 nodes (including)
- * a bias node, and an output layer with 2 nodes. The weights are set as follows, where node 0 in
- * the first layer is the bias node, rows correspond to input nodes, and columns correspond to
- * output nodes:
- *    0  1
- *   -1  0
- *    2 -2
- *
- * @return {Object} Neural network classifier
- */
-function getSampleNetwork() {
-  var network = new FullyConnected.FullyConnected({
-    numInputs: 2,
-    numOutputs: 2
-  });
-
-  network.setWeights([[
-    [0, 1],
-    [-1, 0],
-    [2, -2],
-  ]]);
-
-  return network;
-}
-
 describe('Supervised.NeuralNetwork.FullyConnected', function() {
   describe('.forwardPass, .deltaRule', function() {
-    it('should generate correct outputs, activations, and deltas', function() {
-      // Construct network
-      const network = getSampleNetwork();
+    it('should generate correct outputs, activations, and deltas for network without hidden layers', function() {
+      /**
+       * Construct the sample network, consisting of two layers: an input layer with 3 nodes (including)
+       * a bias node, and an output layer with 2 nodes. The weights are set as follows, where node 0 in
+       * the first layer is the bias node, rows correspond to input nodes, and columns correspond to
+       * output nodes:
+       *    0  1
+       *   -1  0
+       *    2 -2
+       */
+      var network = new FullyConnected.FullyConnected({
+        numInputs: 2,
+        numOutputs: 2
+      });
+
+      network.setWeights([[
+        [0, 1],
+        [-1, 0],
+        [2, -2],
+      ]]);
 
       // Test forward pass
       const [activations, outputs] = network.forwardPass([0.2, 0.4], 0);

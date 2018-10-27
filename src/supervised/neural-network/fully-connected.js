@@ -27,8 +27,9 @@ export default class FullyConnected extends Classifier {
 
     // Parse options
     const optionsDefault = {
-      numInputs: 10,
-      numOutputs: 2,
+      numInputs: 'auto',
+      numOutputs: 'auto',
+      hiddenLayers: [],
       numEpochs: 20,
       learningRate: 0.01,
     };
@@ -40,11 +41,12 @@ export default class FullyConnected extends Classifier {
 
     this.numInputs = options.numInputs;
     this.numOutputs = options.numOutputs;
+    this.hiddenLayers = options.hiddenLayers;
     this.numEpochs = options.numEpochs;
     this.learningRate = options.learningRate;
 
     // Initialize to empty layers
-    this.layers = [this.numInputs + 1, this.numOutputs];
+    this.layers = [];
     this.weights = [];
   }
 
@@ -93,34 +95,18 @@ export default class FullyConnected extends Classifier {
   }
 
   train(X, y) {
-    // console.log('')
-    // console.log('Training...')
+    const numInputs = this.numInputs == 'auto' ? X[0].length : this.numInputs;
+    const numOutputs = this.numOutputs == 'auto' ? Arrays.unique(y).length : this.numOutputs;
+
+    this.layers = [numInputs + 1, ...this.hiddenLayers, numOutputs];
+
     // Initialize weights arrays
     this.initializeWeights();
 
-    // X = [[1, 0]];
-    // this.weights = [[
-    //   [0, 0],
-    //   [1, 0],
-    //   [0, 0]
-    // ]];
-    // this.weights = [[
-    //   [1,1],
-    //   [0,0],
-    //   [0,0],
-    // ]];
     // Train for specified number of epochs
-    // console.log(JSON.parse(JSON.stringify(this.weights)));
     for (let i = 0; i < this.numEpochs; i++) {
       this.trainEpoch(X, y);
     }
-
-    // console.log(this.weights);
-    // console.log(JSON.parse(JSON.stringify(this.weights)));
-    return;
-    // console.log('');
-    // console.log('-----');
-    // console.log('');
   }
 
   trainEpoch(X, y) {
@@ -187,7 +173,7 @@ export default class FullyConnected extends Classifier {
     // Pass the sample through the network
     const [activations, outputs] = this.forwardPass(x);
 
-    const targets = [...Array(this.numOutputs)].map((a, i) => i == y ? 1 : 0);
+    const targets = [...Array(this.layers[this.layers.length - 1])].map((a, i) => i == y ? 1 : 0);
     // console.log(targets);
 
     const deltas = this.deltaRule(activations, outputs, targets);
@@ -239,7 +225,7 @@ export default class FullyConnected extends Classifier {
    *   respectively, for each node in the network
    */
   forwardPass(x) {
-    if (x.length != this.numInputs) {
+    if (x.length != this.layers[0] - 1) {
       throw new Error('Number of features of samples should match the number of network inputs.');
     }
 
