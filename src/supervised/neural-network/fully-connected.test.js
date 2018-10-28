@@ -18,10 +18,8 @@ describe('Supervised.NeuralNetwork.FullyConnected', function() {
        *   -1  0
        *    2 -2
        */
-      var network = new FullyConnected.FullyConnected({
-        numInputs: 2,
-        numOutputs: 2
-      });
+      var network = new FullyConnected.FullyConnected();
+      network.layers = [3, 2];
 
       network.setWeights([[
         [0, 1],
