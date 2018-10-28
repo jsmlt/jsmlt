@@ -671,7 +671,7 @@ export function valueCounts(array) {
  * @param {function(element: mixed, !index: Number): boolean} callback - Callback function to be
  *   used for filtering. This function takes an array element and possibly its index as its input
  *   and should return true when the index should be used (filtered) and false when it shouldn't
- * @return {Array.<Number>} Array of array indices in the original array where the array element
+ * @return {Array.<number>} Array of array indices in the original array where the array element
  *   matches the filter
  */
 export function argFilter(array, callback) {
@@ -696,7 +696,7 @@ export function argFilter(array, callback) {
  *     == 0 : leave order of a and b unchanged with respect to each other
  *     > 0  : b after a
  *   Defaults to numeric sorting.
- * @return {Array.<Number>} Array of array indices such that the elements corresponding with these
+ * @return {Array.<number>} Array of array indices such that the elements corresponding with these
  *   indices in the original array are sorted
  */
 export function argSort(array, compareFunction = null) {

@@ -18,9 +18,19 @@ export default class FullyConnected extends Classifier {
    * Constructor. Initialize class members and store user-defined options.
    *
    * @param {Object} [optionsUser] User-defined options
-   * @param {trackAccuracy} [optionsUser.trackAccuracy = false] Whether to track accuracy during the
-   *   training process. This will let the perceptron keep track of the error rate on the test set
-   *   in each training iteration
+   * @param {number} [optionsUser.numInputs = 'auto'] Number of features each input sample has.
+   *   The first layer of the network has this (plus one bias node) as the number of nodes. Defaults
+   *   to 'auto', which determines the number of input nodes on the dimensionality of the training
+   *   data upon the training call
+   * @param {number} [optionsUser.numOutputs = 'auto'] Number of possible outputs for the network.
+   *   The final layer of the network has this as the number of nodes. Defaults to 'auto', which
+   *   determines the number of input nodes on the number of unique labels in the data upon the
+   *   training call
+   * @param {Array.<number>} [optionsUser.hiddenLayers = []] Number of nodes in the hidden layers.
+   *   Each entry in this array corresponds to a single hidden layer
+   * @param {number} [optionsUser.numEpochs = 20] Number of epochs (i.e., passes over all training
+   *   data) to train the network for
+   * @param {number} [optionsUser.learningRate = 0.01] Learning rate for training
    */
   constructor(optionsUser = {}) {
     super();
@@ -45,15 +55,41 @@ export default class FullyConnected extends Classifier {
     this.numEpochs = options.numEpochs;
     this.learningRate = options.learningRate;
 
-    // Initialize to empty layers
+    // Initialize layers, connectivity, and weights
+
+    /**
+     * Number of nodes (including bias nodes) in each layer of the network. Filled at the start of
+     * training.
+     *
+     * @type {Array.<number>}
+     */
     this.layers = [];
+
+    /**
+     * Weights between each pair of nodes in subsequent layers. Each entry in the main array
+     * contains a matrix of weights between the nodes in that layer and the nodes in the next layer.
+     * This includes entries for weights between unconnected (e.g., where the output node is a bias
+     * node) nodes
+     *
+     * @type {Array.<Array.<Array.<number>>>}
+     */
     this.weights = [];
+
+    /**
+     * Boolean matrix of connectivity between each pair of nodes in subsequent layers. For format,
+     * see {@link FullyConnected#weights}.
+     *
+     * @type {Array.<Array.<Array.<boolean>>>}
+     */
+    this.connectivity = [];
   }
 
   /**
    * Randomly initialize the weights for the neural network. For each subsequent pair of layers,
    * where the first has n nodes and the second n' nodes, initialize an matrix with n rows and n'
-   * columns. Each cell in the matrix is assigned a random value in the range [-1, 1].
+   * columns. Each cell in the matrix is assigned a random value in the range [-1, 1]. Furthermore,
+   * the connectivity of each pair of nodes in subsequent layers is stored (where all nodes in each
+   * layer are connected to all non-bias nodes in the next layer).
    *
    * The weights between layer k and layer k + 1 are stored in element k (starting at k = 0) of the
    * weights array.
@@ -70,7 +106,6 @@ export default class FullyConnected extends Classifier {
 
       // Initialize weights from this layer to the next layer to a random real number in the
       // range [-1, 1]
-      //this.weights.push(Arrays.full(shape, 0));
       this.weights.push(Arrays.full(shape, () => Random.rand(-1, 1)));
 
       // Initialize connectivity between nodes by connecting all nodes (including bias nodes; these
@@ -85,19 +120,18 @@ export default class FullyConnected extends Classifier {
 
       this.connectivity.push(connectivity);
     }
-    // this.weights = [[
-    //   [0, 0],
-    //   [-1, 0],
-    //   [1, 2],
-    // ]];
-    // console.log(JSON.parse(JSON.stringify(this.weights)));
-    //throw new Error();
   }
 
+  /**
+   * @see {@link Classifier#train}
+   */
   train(X, y) {
+    // Determine number of inputs (one input for each feature sample) and number of outputs (one
+    // output for each possible class) automatically depending on user settings
     const numInputs = this.numInputs == 'auto' ? X[0].length : this.numInputs;
     const numOutputs = this.numOutputs == 'auto' ? Arrays.unique(y).length : this.numOutputs;
 
+    // Initialize layers
     this.layers = [numInputs + 1, ...this.hiddenLayers, numOutputs];
 
     // Initialize weights arrays
@@ -109,36 +143,63 @@ export default class FullyConnected extends Classifier {
     }
   }
 
+  /**
+   * Train the network for one epoch. Samples will be shuffled inside this function before training.
+   *
+   * @param {Array.<Array.<number>>} X - Features of samples to train with
+   * @param {Array.<mixed>} y - Labels of samples
+   */
   trainEpoch(X, y) {
     // Shuffle data points
-    // const a = Arrays.shuffle([0, 1, 2, 3, 4, 5]);
     const [XUse, yUse] = Arrays.shuffle(X, y);
+
     // Train for each sample individually
     for (let i = 0; i < XUse.length; i += 1) {
       this.trainSample(XUse[i].slice(), yUse[i]);
-      // throw new Error();
     }
-    // console.log(this.weights[0][0]);
-    //console.log(this.calculateRMSE(X, y));
-    // console.log('next epoch');
   }
 
+  /**
+   * Calculate root-mean-square error of the network on some data set.
+   *
+   * @param {Array.<Array.<number>>} X - Features of samples to calculate RMSE for
+   * @param {Array.<mixed>} y - Labels of samples
+   * @return {number} Root-mean-squared error
+   */
   calculateRMSE(X, y) {
     return Math.sqrt(
       X.reduce((a, x, i) => a + this.calculateError(x, y[i]) ** 2, 0) / X.length
     );
   }
 
+  /**
+   * Calculate the squared error between the network outputs for a sample and the specified outputs.
+   *
+   * @param {Array.<number>} x - Input sample
+   * @param {number} y - Sample label
+   * @return {number} Sum of squared errors between the outputs corresponding to the sample label
+   *   and the outputs obtained passing the sample through the network
+   */
   calculateError(x, y) {
     const [activations, outputs] = this.forwardPass(x);
     return outputs[outputs.length - 1].reduce((a, o, i) => a + 0.5 * ((o - (y[i] == i)) ** 2), 0);
   }
 
+  /**
+   * Apply the delta rule to the result of a forward pass through the network, expressed by the
+   * specified activations and outputs. The network targets corresponding to the forward pass need
+   * to be specified too.
+   *
+   * @param {Array.<Array.<number>>} activations - Network activations for each node in each layer
+   * @param {Array.<Array.<number>>} outputs - Network outputs (i.e., the activations passed through
+   *   the activation function) for each node in each layer
+   * @param {Array.<number>} targets - Network targets for the final layer
+   * @return {Array.<Array.<number>>} Deltas calculated for each node in each layer. The deltas
+   *   for the bias nodes are not calculated, and set to 0
+   */
   deltaRule(activations, outputs, targets) {
     // Calculate deltas using the generalized delta rule
     let deltas = this.layers.map(x => Arrays.zeros(x));
-
-    // const errBefore = this.calculateError(x, y);
 
     // Start at the final layer, and calculate deltas going backward until the second layer
     for (let k = this.layers.length - 1; k > 0; k--) {
@@ -168,25 +229,21 @@ export default class FullyConnected extends Classifier {
     return deltas;
   }
 
+  /**
+   * Train the network on a single sample
+   *
+   * @param {Array.<number>} x - Input sample
+   * @param {number} y - Sample label
+   */
   trainSample(x, y) {
-    //x = [1, 2];
     // Pass the sample through the network
     const [activations, outputs] = this.forwardPass(x);
 
+    // Apply one-hot encoding to the sample label
     const targets = [...Array(this.layers[this.layers.length - 1])].map((a, i) => i == y ? 1 : 0);
-    // console.log(targets);
 
+    // Calculate of delta for each node in each layer
     const deltas = this.deltaRule(activations, outputs, targets);
-
-    // console.log(activations);
-    // console.log(outputs);
-
-    // console.log('x-a-o-d');
-    // console.log(x);
-    // console.log(activations);
-    // console.log(outputs);
-    // console.log(deltas);
-    // console.log('next sample');
 
     // Update weights
     for (let k = 0; k < this.layers.length - 1; k++) {
@@ -199,19 +256,11 @@ export default class FullyConnected extends Classifier {
           if (!this.connectivity[k][i][j]) {
             continue;
           }
-          // console.log('to node ' + j);
 
           // Update weights
-          //console.log('Weight delta: ' + (outputs[k][i] * deltas[k + 1][j]));
-          // console.log(this.learningRate * outputs[k][i] * deltas[k + 1][j]);
           this.weights[k][i][j] -= this.learningRate * outputs[k][i] * deltas[k + 1][j];
-          // const errAfter = this.calculateError(x, y);
-          // console.log('Change: ' + (errBefore - errAfter));
-          // break;
         }
-        // break;
       }
-      // break;
     }
 
   }
@@ -267,27 +316,38 @@ export default class FullyConnected extends Classifier {
     return [activations, outputs];
   }
 
+  /**
+   * Get the activation function value for the specified input.
+   *
+   * @param {number} a - Input value
+   * @return {number} Return value of activation function applied to input value
+   */
   activationFunction(a) {
     return sigmoid(a);
   }
 
+  /**
+   * Get the function value for the derivative of the activation function for the specified input.
+   *
+   * @param {number} a - Input value
+   * @return {number} Return value of derivative of activation function applied to input value
+   */
   activationFunctionDerivative(a) {
     return sigmoid(a) * (1 - sigmoid(a));
   }
 
-  addLayer(numNodes) {
-    this.layers.push(numNodes);
-  }
-
+  /**
+   * Manually set the weights matrices of the network.
+   *
+   * @brief {Array.<Array.<Array<number>>>} Weight matrix for each pair of subsequent layers
+   *   For more information, see {@link FullyConnected#weights}
+   */
   setWeights(weights) {
     this.weights = weights;
   }
 
   /**
-   * Make a prediction for a data set.
-   *
-   * @param {Array.Array.<number>} X - Data set to make predictions for
-   * @return {Array.<number>} Predictions
+   * @see {@link Classifier#predict}
    */
   predict(X) {
     //console.log(JSON.parse(JSON.stringify(this.forwardPass(X[500]))));
