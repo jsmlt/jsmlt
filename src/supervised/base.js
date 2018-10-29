@@ -24,7 +24,7 @@ export class Estimator {
    * @return {Array.<mixed>} Predictions. Label of class with highest prevalence among k nearest
    *   neighbours for each sample
    */
-  test(X) { throw new Error('Method must be implemented child class.'); }
+  predict(X) { throw new Error('Method must be implemented child class.'); }
 }
 
 /**
@@ -147,7 +147,7 @@ export class OneVsAllClassifier extends Classifier {
   /**
    * Make a probabilistic prediction for a data set.
    *
-   * @param {Array.Array.<number>} features - Features for each data point
+   * @param {Array.Array.<number>} X - Features for each data point
    * @return {Array.Array.<number>} Probability predictions. Each array element contains the
    *   probability of that particular class. The array elements are ordered in the order the classes
    *   appear in the training data (i.e., if class "A" occurs first in the labels list in the
