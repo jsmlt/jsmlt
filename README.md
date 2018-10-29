@@ -57,6 +57,7 @@ Running this simple example will output the classification result `[1,1,0,0]`, m
 - Support Vector Machine (SVM): [`JSMLT.Supervised.SVM.SVM`](https://visualml.io/jsmlt/docs/class/src/supervised/svm/svm.js~SVM.html)
 - Perceptron: [`JSMLT.Supervised.Linear.Perceptron`](https://visualml.io/jsmlt/docs/class/src/supervised/linear/perceptron.js~Perceptron.html)
 - k-nearest neighbors: [`JSMLT.Supervised.Neighbors.KNN`](https://visualml.io/jsmlt/docs/class/src/supervised/neighbors/knn.js~KNN.html)
+- Neural Networks: [`JSMLT.Supervised.NeuralNetwork.FullyConnected`](https://visualml.io/jsmlt/docs/class/src/supervised/neural-network/fully-connected.js~FullyConnected.html)
 - Logistic Regression: [`JSMLT.Supervised.Neighbors.LogisticRegression`](https://visualml.io/jsmlt/docs/class/src/supervised/linear/logistic_regression.js~LogisticRegression.html)
 
 ### Unsupervised learning algorithms (clustering)
