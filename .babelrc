@@ -1,4 +1,4 @@
 {
-  "presets" : ["es2015"],
-  "plugins": ["transform-object-rest-spread", "babel-plugin-add-module-exports", "babel-plugin-transform-exponentiation-operator"]
+  "presets" : ["@babel/preset-env"],
+  "plugins": ["@babel/plugin-proposal-object-rest-spread", "@babel/plugin-transform-exponentiation-operator", "babel-plugin-add-module-exports"]
 }
