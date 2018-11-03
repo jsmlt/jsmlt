@@ -15,6 +15,8 @@
   "author": "Jesper van Engelen <contact@jepps.nl> (https://jespervanengelen.com)",
   "license": "ISC",
   "devDependencies": {
+    "@babel/core": "^7.1.2",
+    "@babel/preset-env": "^7.1.0",
     "babel-core": "^6.26.3",
     "babel-eslint": "^10.0.1",
     "babel-loader": "^8.0.4",
@@ -22,6 +24,7 @@
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-preset-es2015": "^6.24.1",
     "babel-register": "^6.26.0",
+    "brace-expansion": ">=1.1.7",
     "chai": "^4.2.0",
     "chai-almost": "^1.0.1",
     "chai-stats": "^0.3.0",
@@ -33,10 +36,10 @@
     "eslint-loader": "^2.1.1",
     "eslint-plugin-import": "^2.14.0",
     "karma-firefox-launcher": "^1.1.0",
-    "webpack": "^4.21.0",
     "lodash": ">=4.17.5",
-    "brace-expansion": ">=1.1.7",
-    "randomatic": ">=3.0.0"
+    "randomatic": ">=3.0.0",
+    "webpack": "^4.21.0",
+    "webpack-cli": "^3.1.2"
   },
   "directories": {
     "lib": "lib"

@@ -2,21 +2,54 @@ var expect = require('chai').expect;
 var arrays = require('./index.js');
 
 describe('Arrays', function() {
+  describe('.areArrayDimensionsConsistent', function() {
+    it('should validate the consistency of multidimensional arrays', function() {
+      expect(arrays.areArrayDimensionsConsistent([])).to.equal(true);
+      expect(arrays.areArrayDimensionsConsistent([1, 2])).to.equal(true);
+      expect(arrays.areArrayDimensionsConsistent([[1], [2], [3]])).to.equal(true);
+      expect(arrays.areArrayDimensionsConsistent([[[1, 2], [2, 3], [3, 4]], [[1, 2], [2, 3], [3, 4]]])).to.equal(true);
+
+      expect(arrays.areArrayDimensionsConsistent([[1], [2, 3], [4]])).to.equal(false);
+      expect(arrays.areArrayDimensionsConsistent([[1], [2], []])).to.equal(false);
+      expect(arrays.areArrayDimensionsConsistent([[[1, 2], [2, 3], [3, 4]], [[5], [6], [7]]])).to.equal(false);
+    });
+  });
+
+  describe('.hasShape', function() {
+    it('should check whether a multidimensional array has the specified shape', function() {
+      // Zero-dimensional
+      expect(arrays.hasShape([], []), false);
+      expect(arrays.hasShape(1, []), true);
+
+      // One-dimensional
+      expect(arrays.hasShape(1, [1]), false);
+      expect(arrays.hasShape([1], [1]), true);
+      expect(arrays.hasShape([[1]], [1]), false);
+      expect(arrays.hasShape([1, 1, 1], [3]), true);
+
+      // Two-dimensional
+      expect(arrays.hasShape([[1]], [1, 1]), true);
+      expect(arrays.hasShape([[1], [2, 3]], [2, 1]), false);
+      expect(arrays.hasShape([[1], [2]], [2, 1]), true);
+      expect(arrays.hasShape([[1, 2, 3], [4, 5, 6]], [2, 3]), true);
+    });
+  });
+
   describe('.dot', function() {
     it('should calculate the dot product of two vectors', function() {
-      expect(arrays.dot([1, 2, 3], [4, 5, 6])).to.equal(32)
-      expect(arrays.dot([1, 2, 3], [4, 5, 0])).to.equal(14)
-      expect(arrays.dot([1, 2, 0], [4, 5, 6])).to.equal(14)
-      expect(arrays.dot([1, 2, -3], [4, 5, 6])).to.equal(-4)
+      expect(arrays.dot([1, 2, 3], [4, 5, 6])).to.equal(32);
+      expect(arrays.dot([1, 2, 3], [4, 5, 0])).to.equal(14);
+      expect(arrays.dot([1, 2, 0], [4, 5, 6])).to.equal(14);
+      expect(arrays.dot([1, 2, -3], [4, 5, 6])).to.equal(-4);
     });
   });
 
   describe('.scale', function() {
     it('should scale a vector', function() {
-      expect(arrays.scale([-1, 2, 3], -2)).to.deep.equal([2, -4, -6])
-      expect(arrays.scale([-1, 2, 3], 0)).to.deep.equal([-0, 0, 0])
-      expect(arrays.scale([-1, 2, 3], 1)).to.deep.equal([-1, 2, 3])
-      expect(arrays.scale([-1, 2, 3], 2)).to.deep.equal([-2, 4, 6])
+      expect(arrays.scale([-1, 2, 3], -2)).to.deep.equal([2, -4, -6]);
+      expect(arrays.scale([-1, 2, 3], 0)).to.deep.equal([-0, 0, 0]);
+      expect(arrays.scale([-1, 2, 3], 1)).to.deep.equal([-1, 2, 3]);
+      expect(arrays.scale([-1, 2, 3], 2)).to.deep.equal([-2, 4, 6]);
     });
 
     it('should scale a multidimensional array', function() {
