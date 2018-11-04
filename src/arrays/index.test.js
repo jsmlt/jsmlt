@@ -35,6 +35,20 @@ describe('Arrays', function() {
     });
   });
 
+  describe('.getShape', function() {
+    it('should return the correct shape for valid multidimensional arrays', function() {
+      // Zero-dimensional
+      expect(arrays.getShape(0), []);
+
+      // One-dimensional
+      expect(arrays.getShape([]), [1]);
+      expect(arrays.getShape([1, 2]), [2]);
+
+      // Two-dimensional
+      expect(arrays.getShape([[1, 2], [3, 4], [5, 6]]), [3, 2]);
+    });
+  });
+
   describe('.dot', function() {
     it('should calculate the dot product of two vectors', function() {
       expect(arrays.dot([1, 2, 3], [4, 5, 6])).to.equal(32);
