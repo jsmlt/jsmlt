@@ -13,6 +13,9 @@ function sigmoid(x) {
   return 1 / (1 + Math.exp(-x));
 }
 
+/**
+ * Fully connected neural network with variable number of hidden layers.
+ */
 export default class FullyConnected extends Classifier {
   /**
    * Constructor. Initialize class members and store user-defined options.
@@ -99,7 +102,7 @@ export default class FullyConnected extends Classifier {
     this.connectivity = [];
 
     // Initialize weights for each subsequent pair of layers
-    for (let i = 0; i < this.layers.length - 1; i++) {
+    for (let i = 0; i < this.layers.length - 1; i += 1) {
       // Shape of the weight and connectivity matrices for the weights between the nodes in this and
       // the next layer
       const shape = [this.layers[i], this.layers[i + 1]];
@@ -115,7 +118,9 @@ export default class FullyConnected extends Classifier {
       // All layers but the last layer have a bias node: remove the connections between all nodes
       // and bias nodes in the next layer
       if (i < this.layers.length - 2) {
-        connectivity.forEach(x => x[0] = false);
+        for (const x of connectivity) {
+          x[0] = false;
+        }
       }
 
       this.connectivity.push(connectivity);
@@ -128,8 +133,8 @@ export default class FullyConnected extends Classifier {
   train(X, y) {
     // Determine number of inputs (one input for each feature sample) and number of outputs (one
     // output for each possible class) automatically depending on user settings
-    const numInputs = this.numInputs == 'auto' ? X[0].length : this.numInputs;
-    const numOutputs = this.numOutputs == 'auto' ? Arrays.unique(y).length : this.numOutputs;
+    const numInputs = this.numInputs === 'auto' ? X[0].length : this.numInputs;
+    const numOutputs = this.numOutputs === 'auto' ? Arrays.unique(y).length : this.numOutputs;
 
     // Initialize layers
     this.layers = [numInputs + 1, ...this.hiddenLayers, numOutputs];
@@ -138,7 +143,7 @@ export default class FullyConnected extends Classifier {
     this.initializeWeights();
 
     // Train for specified number of epochs
-    for (let i = 0; i < this.numEpochs; i++) {
+    for (let i = 0; i < this.numEpochs; i += 1) {
       this.trainEpoch(X, y);
     }
   }
@@ -182,7 +187,7 @@ export default class FullyConnected extends Classifier {
    */
   calculateError(x, y) {
     const [activations, outputs] = this.forwardPass(x);
-    return outputs[outputs.length - 1].reduce((a, o, i) => a + 0.5 * ((o - (y[i] == i)) ** 2), 0);
+    return outputs[outputs.length - 1].reduce((a, o, i) => a + 0.5 * ((o - (y[i] === i)) ** 2), 0);
   }
 
   /**
@@ -199,26 +204,24 @@ export default class FullyConnected extends Classifier {
    */
   deltaRule(activations, outputs, targets) {
     // Calculate deltas using the generalized delta rule
-    let deltas = this.layers.map(x => Arrays.zeros(x));
+    const deltas = this.layers.map(x => Arrays.zeros(x));
 
     // Start at the final layer, and calculate deltas going backward until the second layer
-    for (let k = this.layers.length - 1; k > 0; k--) {
+    for (let k = this.layers.length - 1; k > 0; k -= 1) {
       // Index of first regular node in this layer
       const startNode = (k < this.layers.length - 1) ? 1 : 0;
 
       // Loop over all non-bias nodes in the layer
-      for (let i = startNode; i < this.layers[k]; i++) {
+      for (let i = startNode; i < this.layers[k]; i += 1) {
         // Extract output and activation for this node
         const activation = activations[k][i];
         const output = outputs[k][i];
 
-        // Last layer
-        if (k == this.layers.length - 1) {
-          // console.log(output - target);
+        if (k === this.layers.length - 1) {
+          // Last layer
           deltas[k][i] = this.activationFunctionDerivative(activation) * (output - targets[i]);
-        }
-        // Earlier layers
-        else {
+        } else {
+          // Earlier layers
           // Calculate sum of weighted deltas in next layer
           const nextDeltaSum = deltas[k + 1].reduce((r, a, j) => r + a * this.weights[k][i][j], 0);
           deltas[k][i] = this.activationFunctionDerivative(activation) * nextDeltaSum;
@@ -240,19 +243,20 @@ export default class FullyConnected extends Classifier {
     const [activations, outputs] = this.forwardPass(x);
 
     // Apply one-hot encoding to the sample label
-    const targets = [...Array(this.layers[this.layers.length - 1])].map((a, i) => i == y ? 1 : 0);
+    const targets = [...Array(this.layers[this.layers.length - 1])].map(
+      (a, i) => (i === y ? 1 : 0));
 
     // Calculate of delta for each node in each layer
     const deltas = this.deltaRule(activations, outputs, targets);
 
     // Update weights
-    for (let k = 0; k < this.layers.length - 1; k++) {
+    for (let k = 0; k < this.layers.length - 1; k += 1) {
       // console.log('Updating weights in layer ' + k);
 
       // Loop over all pairs of connected nodes in layers k and k + 1
-      for (let i = 0; i < this.layers[k]; i++) {
+      for (let i = 0; i < this.layers[k]; i += 1) {
         // console.log('Updating weights from node ' + i);
-        for (let j = 0; j < this.layers[k + 1]; j++) {
+        for (let j = 0; j < this.layers[k + 1]; j += 1) {
           if (!this.connectivity[k][i][j]) {
             continue;
           }
@@ -262,7 +266,6 @@ export default class FullyConnected extends Classifier {
         }
       }
     }
-
   }
 
   /**
@@ -274,13 +277,13 @@ export default class FullyConnected extends Classifier {
    *   respectively, for each node in the network
    */
   forwardPass(x) {
-    if (x.length != this.layers[0] - 1) {
+    if (x.length !== this.layers[0] - 1) {
       throw new Error('Number of features of samples should match the number of network inputs.');
     }
 
     // Output and activations of nodes in each layer, including a bias node
-    let activations = this.layers.map(a => Arrays.zeros(a));
-    let outputs = this.layers.map(a => Arrays.zeros(a));
+    const activations = this.layers.map(a => Arrays.zeros(a));
+    const outputs = this.layers.map(a => Arrays.zeros(a));
 
     // Fill the outputs of the first layer with the sample features, and initialize the activations
     // of the first layer to an empty list
@@ -288,7 +291,7 @@ export default class FullyConnected extends Classifier {
     outputs[0] = [1, ...x.slice()];
 
     // Propagate the inputs layer-by-layer
-    for (let layer = 1; layer < this.layers.length; layer++) {
+    for (let layer = 1; layer < this.layers.length; layer += 1) {
       // Index of first regular node in this layer
       let startNode = 0;
 
@@ -301,12 +304,11 @@ export default class FullyConnected extends Classifier {
       }
 
       // Calculate the activation and output of each (non-bias) node in the layer
-      for (let node = startNode; node < this.layers[layer]; node++) {
+      for (let node = startNode; node < this.layers[layer]; node += 1) {
         // Calculate the activation as the weighted sum of the outputs (including the bias node) of
         // the previous layer
-        activations[layer][node] = outputs[layer - 1].reduce((r, a, i) => {
-          return r + a * this.weights[layer - 1][i][node];
-        }, 0);
+        activations[layer][node] = outputs[layer - 1].reduce((r, a, i) =>
+          r + a * this.weights[layer - 1][i][node], 0);
 
         // Calculate the output of this node by applying the activation function to the activation
         outputs[layer][node] = this.activationFunction(activations[layer][node]);
@@ -350,8 +352,7 @@ export default class FullyConnected extends Classifier {
    * @see {@link Classifier#predict}
    */
   predict(X) {
-    //console.log(JSON.parse(JSON.stringify(this.forwardPass(X[500]))));
-    return X.map(x => {
+    return X.map((x) => {
       const [activations, outputs] = this.forwardPass(x);
       return Arrays.argMax(outputs[outputs.length - 1]);
     });

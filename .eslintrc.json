@@ -20,6 +20,8 @@
     "prefer-destructuring": "off",
     "function-paren-newline": "off",
     "no-loop-func": "off",
+    "implicit-arrow-linebreak": "off",
+    "operator-linebreak": "off",
     "require-jsdoc": ["error", {
       "require": {
         "FunctionDeclaration": true,

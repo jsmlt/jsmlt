@@ -19,7 +19,9 @@ export function randint(a, b, shape = null) {
   if (Number.isInteger(shape)) {
     // List of random integers
     return [...Array(shape)].map(x => randint(a, b));
-  } else if (Array.isArray(shape) && shape.length > 0) {
+  }
+
+  if (Array.isArray(shape) && shape.length > 0) {
     if (shape.length === 1) {
       // Single shape item remaining; return list of integers
       return randint(a, b, shape[0]);

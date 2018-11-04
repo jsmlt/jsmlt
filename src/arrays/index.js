@@ -5,49 +5,6 @@
  */
 
 /**
- * Check whether the dimensions of an array are consistent, i.e., whether it is a valid
- * multidimensional array. For this to be the case, the number of elements needs to be the same for
- * all elements along the same array axis. Thus, an array [[0], [0, 1]] is considered invalid, since
- * its the first element along the first axis has 1 element, whereas the second element along the
- * first axis has two elements.
- *
- * @param {Array.<mixed>} A - Arbitrarily nested array to check for consistency.
- * @return {boolean} Whether the array dimensions are consistent
- */
-export function areArrayDimensionsConsistent(A) {
-  // Get dimensionality by recursively checking the size of the first element of the array along
-  // each axis
-  const firstElementShape = [];
-  let remaining = A.slice()
-
-  while (Array.isArray(remaining)) {
-    firstElementShape.push(remaining.length);
-    remaining = remaining[0];
-  }
-
-  return hasShape(A, firstElementShape);
-}
-
-/**
- * Check whether a possibly multidimensional array has a certain shape. This checks whether each
- * element along each axis has the number of elements specified by the passed shape.
- *
- * @param {mixed} A - Arbitrarily nested array for which to check whether it has the specified
- *   shape, or a non-array type. For non-array types, the function will only return true if shape
- *   is an empty array (corresponding to a multidimensional array of order 0).
- * @param {Array.<number>} shape - Shape array, specifying the number of elements per dimension.
- *   nlement corresponds to the number of elements in the n-th dimension.
- * @return {boolean} True if the input array has the specified shape, false otherwise.
- */
-export function hasShape(A, shape) {
-  if (!Array.isArray(A)) {
-    return shape.length == 0;
-  }
-
-  return A.length == shape[0] && A.every(x => hasShape(x, shape.slice(1)));
-}
-
-/**
  * Find the shape of an array, i.e. the number of elements per dimension of the array. Note that
  * this function assumes that the array dimensionality is consistent, and determines the size of
  * each axis by recursively looping over the first entry of each axis.
@@ -68,6 +25,49 @@ export function getShape(A) {
   B.unshift(A.length);
 
   return B;
+}
+
+/**
+ * Check whether a possibly multidimensional array has a certain shape. This checks whether each
+ * element along each axis has the number of elements specified by the passed shape.
+ *
+ * @param {mixed} A - Arbitrarily nested array for which to check whether it has the specified
+ *   shape, or a non-array type. For non-array types, the function will only return true if shape
+ *   is an empty array (corresponding to a multidimensional array of order 0).
+ * @param {Array.<number>} shape - Shape array, specifying the number of elements per dimension.
+ *   nlement corresponds to the number of elements in the n-th dimension.
+ * @return {boolean} True if the input array has the specified shape, false otherwise.
+ */
+export function hasShape(A, shape) {
+  if (!Array.isArray(A)) {
+    return shape.length === 0;
+  }
+
+  return A.length === shape[0] && A.every(x => hasShape(x, shape.slice(1)));
+}
+
+/**
+ * Check whether the dimensions of an array are consistent, i.e., whether it is a valid
+ * multidimensional array. For this to be the case, the number of elements needs to be the same for
+ * all elements along the same array axis. Thus, an array [[0], [0, 1]] is considered invalid, since
+ * its the first element along the first axis has 1 element, whereas the second element along the
+ * first axis has two elements.
+ *
+ * @param {Array.<mixed>} A - Arbitrarily nested array to check for consistency.
+ * @return {boolean} Whether the array dimensions are consistent
+ */
+export function areArrayDimensionsConsistent(A) {
+  // Get dimensionality by recursively checking the size of the first element of the array along
+  // each axis
+  const firstElementShape = [];
+  let remaining = A.slice();
+
+  while (Array.isArray(remaining)) {
+    firstElementShape.push(remaining.length);
+    remaining = remaining[0];
+  }
+
+  return hasShape(A, firstElementShape);
 }
 
 /**
@@ -741,7 +741,7 @@ export function argFilter(array, callback) {
  *   used for sorting. This function takes two array elements and returns an integer indicating
  *   sort order of the two elements a and b:
  *     < 0  : a before b
- *     == 0 : leave order of a and b unchanged with respect to each other
+ *     === 0 : leave order of a and b unchanged with respect to each other
  *     > 0  : b after a
  *   Defaults to numeric sorting.
  * @return {Array.<number>} Array of array indices such that the elements corresponding with these
@@ -808,4 +808,3 @@ export function meshGrid(x, y) {
 
   return [gridX, gridY];
 }
-

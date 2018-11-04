@@ -1,11 +1,11 @@
-import Arrays from './arrays';
+import * as Arrays from './arrays';
 import Classification from './classification';
 import Data from './data';
 import * as Datasets from './datasets';
 import Kernel from './kernel';
 import * as ModelSelection from './model-selection';
 import Preprocessing from './preprocessing';
-import Random from './random';
+import * as Random from './random';
 import Supervised from './supervised';
 import UI from './ui';
 import Unsupervised from './unsupervised';

@@ -65,18 +65,18 @@ export function trainTestSplit(input, optionsUser = {}) {
   const trainIndices = Random.sample(indices, numTrainElements, false);
 
   // Create resulting training and test sets
-  const trainArrays = input
-    .map(trainArray =>
+  const trainArrays =
+    input.map(trainArray =>
       trainArray
-      .filter((x, i) => trainIndices.includes(i))
-      .map(x => (Array.isArray(x) ? x.slice() : x))
+        .filter((x, i) => trainIndices.includes(i))
+        .map(x => (Array.isArray(x) ? x.slice() : x))
     );
 
-  const testArrays = input
-    .map(testArray =>
+  const testArrays =
+    input.map(testArray =>
       testArray
-      .filter((x, i) => !trainIndices.includes(i))
-      .map(x => (Array.isArray(x) ? x.slice() : x))
+        .filter((x, i) => !trainIndices.includes(i))
+        .map(x => (Array.isArray(x) ? x.slice() : x))
     );
 
   // Return train and test sets

@@ -76,7 +76,9 @@ export default class DecisionTree extends Classifier {
   calculateImpurity(groups) {
     if (this.criterion === 'gini') {
       return this.calculateWeightedImpurity(groups, this.gini);
-    } else if (this.criterion === 'entropy') {
+    }
+
+    if (this.criterion === 'entropy') {
       return this.calculateWeightedImpurity(groups, this.entropy);
     }
 
@@ -108,8 +110,7 @@ export default class DecisionTree extends Classifier {
 
     // Return the weighted sum of impurities
     return impurities.reduce((r, a, i) =>
-      r + a * groups[i].length / numElements
-    , 0);
+      r + a * groups[i].length / numElements, 0);
   }
 
   /**
