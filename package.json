@@ -10,7 +10,7 @@
     "build": "webpack -p",
     "prepublish": "npm run compile-once",
     "build-documentation": "./node_modules/.bin/esdoc",
-    "test": "mocha --require babel-register \"src/**/test.js\" \"src/**/*.test.js\""
+    "test": "mocha --require @babel/register \"./src/**/test.js\" \"./src/**/*.test.js\""
   },
   "author": "Jesper van Engelen <contact@jepps.nl> (https://jespervanengelen.com)",
   "license": "ISC",
@@ -20,8 +20,10 @@
     "@babel/plugin-proposal-object-rest-spread": "^7.0.0",
     "@babel/plugin-transform-exponentiation-operator": "^7.1.0",
     "@babel/preset-env": "^7.1.0",
+    "@babel/register": "^7.0.0",
     "babel-core": "^7.0.0-bridge.0",
-    "babel-loader": "^8.0.4",
+    "babel-eslint": "^10.0.1",
+    "babel-loader": "^8.0.0-beta.6",
     "babel-plugin-add-module-exports": "^1.0.0",
     "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
     "babel-register": "^6.26.0",

@@ -1,4 +1,10 @@
 {
-  "presets" : ["@babel/preset-env"],
-  "plugins": ["@babel/plugin-proposal-object-rest-spread", "@babel/plugin-transform-exponentiation-operator", "babel-plugin-add-module-exports"]
+  "presets": [
+    "@babel/preset-env"
+  ],
+  "plugins": [
+    "@babel/plugin-proposal-object-rest-spread",
+    "@babel/plugin-transform-exponentiation-operator",
+    "babel-plugin-add-module-exports"
+  ]
 }
