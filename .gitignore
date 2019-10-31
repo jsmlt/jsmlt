@@ -9,6 +9,9 @@ distribution
 # Build files
 build
 
+# OSX files
+.DS_Store
+
 ### Standard
 
 # Logs
