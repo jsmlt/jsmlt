@@ -37,7 +37,7 @@
     "eslint-plugin-import": "^2.18.2",
     "karma-firefox-launcher": "^1.2.0",
     "lodash": "^4.17.15",
-    "marked": "^0.7.0",
+    "marked": "^4.0.10",
     "randomatic": ">=3.1.1",
     "webpack": "^4.41.2",
     "webpack-cli": "^3.3.10"
